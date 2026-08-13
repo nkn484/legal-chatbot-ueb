@@ -1,0 +1,20 @@
+{
+    "max_file_bytes":  10485760,
+    "schema_version":  1,
+    "protected_branches":  [
+                               "main",
+                               "master"
+                           ],
+    "checkpoint_branch":  "opencode/legal-chatbot-build",
+    "require_clean_start":  true,
+    "push_tags":  false,
+    "allowed_remote_urls":  [
+                                "https://github.com/nkn484/legal-chatbot-ueb",
+                                "https://github.com/nkn484/legal-chatbot-ueb.git",
+                                "git@github.com:nkn484/legal-chatbot-ueb.git",
+                                "ssh://git@github.com/nkn484/legal-chatbot-ueb.git"
+                            ],
+    "force_push":  false,
+    "repository":  "nkn484/legal-chatbot-ueb",
+    "remote_name":  "origin"
+}

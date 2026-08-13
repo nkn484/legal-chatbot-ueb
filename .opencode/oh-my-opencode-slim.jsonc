@@ -1,0 +1,80 @@
+{
+  "$schema": "https://unpkg.com/oh-my-opencode-slim@latest/oh-my-opencode-slim.schema.json",
+  "backgroundJobs": {
+    "maxSessionsPerAgent": 2,
+    "strategy": "checkpoint-compatible",
+    "maxRetainedSnapshots": 20,
+    "orchestratorWake": {
+      "enabled": true,
+      "intervalMs": 300000
+    },
+    "wallClockTimeoutMs": 900000,
+    "abortGraceMs": 10000
+  },
+  "agents": {
+    "orchestrator": {
+      "permission": {
+        "edit": "deny",
+        "write": "deny",
+        "apply_patch": "deny",
+        "bash": "ask"
+      }
+    },
+    "explorer": {
+      "permission": {
+        "edit": "deny",
+        "write": "deny",
+        "apply_patch": "deny",
+        "bash": "deny"
+      }
+    },
+    "librarian": {
+      "permission": {
+        "edit": "deny",
+        "write": "deny",
+        "apply_patch": "deny",
+        "bash": "deny"
+      }
+    },
+    "oracle": {
+      "permission": {
+        "edit": "deny",
+        "write": "deny",
+        "apply_patch": "deny",
+        "bash": "deny"
+      }
+    },
+    "council": {
+      "permission": {
+        "edit": "deny",
+        "write": "deny",
+        "apply_patch": "deny",
+        "bash": "deny"
+      }
+    },
+    "observer": {
+      "permission": {
+        "edit": "deny",
+        "write": "deny",
+        "apply_patch": "deny",
+        "bash": "deny"
+      }
+    },
+    "fixer": {
+      "permission": {
+        "edit": "ask",
+        "write": "ask",
+        "apply_patch": "ask",
+        "bash": "ask"
+      }
+    },
+    "designer": {
+      "permission": {
+        "edit": "ask",
+        "write": "ask",
+        "apply_patch": "ask",
+        "bash": "ask"
+      }
+    }
+  }
+}

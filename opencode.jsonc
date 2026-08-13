@@ -1,0 +1,73 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "prompts/00_HARD_RULES.md",
+    "docs/OMO_SLIM_AGENTS.md"
+  ],
+  "share": "disabled",
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "reserved": 12000
+  },
+  "permission": {
+    "*": "ask",
+    "read": "allow",
+    "glob": "allow",
+    "grep": "allow",
+    "lsp": "allow",
+    "skill": "allow",
+    "task": "allow",
+    "todowrite": "allow",
+    "edit": {
+      "*": "ask",
+      ".agent-run/prompt-state.json": "deny"
+    },
+    "write": {
+      "*": "ask",
+      ".agent-run/prompt-state.json": "deny"
+    },
+    "apply_patch": "ask",
+    "bash": {
+      "*": "ask",
+      "git status*": "allow",
+      "git diff*": "allow",
+      "git log*": "allow",
+      "rg *": "allow",
+      "python3 scripts/prompt_gate.py context*": "allow",
+      "python3 scripts/prompt_gate.py check*": "allow",
+      "python3 scripts/prompt_gate.py start*": "allow",
+      "python3 scripts/prompt_gate.py submit*": "allow",
+      "python3 scripts/prompt_gate.py status*": "allow",
+      "python3 scripts/prompt_gate.py approve*": "deny",
+      "python3 scripts/prompt_gate.py reject*": "deny",
+      "python3 scripts/prompt_gate.py defer-group*": "deny",
+      "python scripts/prompt_gate.py context*": "allow",
+      "python scripts/prompt_gate.py check*": "allow",
+      "python scripts/prompt_gate.py start*": "allow",
+      "python scripts/prompt_gate.py submit*": "allow",
+      "python scripts/prompt_gate.py status*": "allow",
+      "python scripts/prompt_gate.py approve*": "deny",
+      "python scripts/prompt_gate.py reject*": "deny",
+      "python scripts/prompt_gate.py defer-group*": "deny",
+      "git push*": "deny",
+      "git reset --hard*": "deny",
+      "git clean*": "deny",
+      "rm -rf*": "deny",
+      "docker compose down -v*": "deny"
+    }
+  },
+  "watcher": {
+    "ignore": [
+      "**/.git/**",
+      "**/node_modules/**",
+      "**/.venv/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/.pytest_cache/**",
+      "**/__pycache__/**",
+      "**/data/**",
+      "**/object-storage/**"
+    ]
+  }
+}

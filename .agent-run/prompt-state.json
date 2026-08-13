@@ -1,0 +1,726 @@
+{
+  "schema_version": 1,
+  "project": "chatbot-phap-luat",
+  "prompts": {
+    "01.1": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "01.2": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "01.3": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "02.1": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "02.2": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "02.3": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "02.4": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "02.5": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "02.6": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "02.7": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "03.1": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "03.2": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "03.3": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "03.4": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "03.5": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "03.6": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "03.7": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "03.8": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "03.9": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "04.1": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "04.2": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "04.3": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "04.4": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "04.5": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "04.6": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "04.7": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "04.8": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "04.9": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "04.10": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "04.11": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "04.12": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "04.13": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "05.1": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "05.2": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "05.3": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "05.4": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "05.5": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "05.6": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "05.7": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "05.8": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "05.9": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "05.10": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "05.11": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "05.12": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "06.1": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "06.2": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "06.3": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "06.4": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "06.5": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "06.6": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "06.7": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "06.8": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "06.9": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "06.10": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "06.11": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "07.1": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "07.2": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "07.3": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "07.4": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "07.5": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "07.6": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "07.7": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "07.8": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "07.9": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "08.1": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "08.2": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "08.3": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "08.4": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "08.5": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "08.6": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "08.7": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    },
+    "08.8": {
+      "status": "NOT_STARTED",
+      "started_at": null,
+      "submitted_at": null,
+      "human_approved_at": null,
+      "human_approved_by": null,
+      "approval_note": null,
+      "report": null,
+      "evidence": []
+    }
+  }
+}

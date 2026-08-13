@@ -1,0 +1,1680 @@
+{
+  "schema_version": 1,
+  "project": "chatbot-phap-luat",
+  "prompts": {
+    "01.1": {
+      "title": "Kiểm kê repository",
+      "group": "01",
+      "dependencies": [],
+      "command": "/prompt-01-1",
+      "write_roots": [
+        "docs/",
+        ".agent-run/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/01.1.md"
+    },
+    "01.2": {
+      "title": "Khóa phạm vi Core Demo",
+      "group": "01",
+      "dependencies": [
+        "01.1"
+      ],
+      "command": "/prompt-01-2",
+      "write_roots": [
+        "docs/",
+        ".agent-run/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/01.2.md"
+    },
+    "01.3": {
+      "title": "Thiết lập bộ điều phối",
+      "group": "01",
+      "dependencies": [
+        "01.2"
+      ],
+      "command": "/prompt-01-3",
+      "write_roots": [
+        "docs/",
+        ".agent-run/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/01.3.md"
+    },
+    "02.1": {
+      "title": "Chốt bounded contexts và ownership",
+      "group": "02",
+      "dependencies": [
+        "01.3"
+      ],
+      "command": "/prompt-02-1",
+      "write_roots": [
+        "docs/architecture/",
+        "contracts/",
+        "docs/progress/"
+      ],
+      "preferred_agents": [
+        "oracle",
+        "librarian",
+        "council"
+      ],
+      "required_report": "docs/progress/02.1.md"
+    },
+    "02.2": {
+      "title": "ADR công nghệ và giao tiếp",
+      "group": "02",
+      "dependencies": [
+        "02.1"
+      ],
+      "command": "/prompt-02-2",
+      "write_roots": [
+        "docs/architecture/",
+        "contracts/",
+        "docs/progress/"
+      ],
+      "preferred_agents": [
+        "oracle",
+        "librarian",
+        "council"
+      ],
+      "required_report": "docs/progress/02.2.md"
+    },
+    "02.3": {
+      "title": "Domain schema và state machine",
+      "group": "02",
+      "dependencies": [
+        "02.2"
+      ],
+      "command": "/prompt-02-3",
+      "write_roots": [
+        "docs/architecture/",
+        "contracts/",
+        "docs/progress/"
+      ],
+      "preferred_agents": [
+        "oracle",
+        "librarian",
+        "council"
+      ],
+      "required_report": "docs/progress/02.3.md"
+    },
+    "02.4": {
+      "title": "OpenAPI public và internal",
+      "group": "02",
+      "dependencies": [
+        "02.3"
+      ],
+      "command": "/prompt-02-4",
+      "write_roots": [
+        "docs/architecture/",
+        "contracts/",
+        "docs/progress/"
+      ],
+      "preferred_agents": [
+        "oracle",
+        "librarian",
+        "council"
+      ],
+      "required_report": "docs/progress/02.4.md"
+    },
+    "02.5": {
+      "title": "AsyncAPI và độ tin cậy event",
+      "group": "02",
+      "dependencies": [
+        "02.4"
+      ],
+      "command": "/prompt-02-5",
+      "write_roots": [
+        "docs/architecture/",
+        "contracts/",
+        "docs/progress/"
+      ],
+      "preferred_agents": [
+        "oracle",
+        "librarian",
+        "council"
+      ],
+      "required_report": "docs/progress/02.5.md"
+    },
+    "02.6": {
+      "title": "Threat model và privacy model",
+      "group": "02",
+      "dependencies": [
+        "02.5"
+      ],
+      "command": "/prompt-02-6",
+      "write_roots": [
+        "docs/architecture/",
+        "contracts/",
+        "docs/progress/"
+      ],
+      "preferred_agents": [
+        "oracle",
+        "librarian",
+        "council"
+      ],
+      "required_report": "docs/progress/02.6.md"
+    },
+    "02.7": {
+      "title": "Cổng nghiệm thu kiến trúc",
+      "group": "02",
+      "dependencies": [
+        "02.6"
+      ],
+      "command": "/prompt-02-7",
+      "write_roots": [
+        "docs/architecture/",
+        "contracts/",
+        "docs/progress/"
+      ],
+      "preferred_agents": [
+        "oracle",
+        "librarian",
+        "council"
+      ],
+      "required_report": "docs/progress/02.7.md"
+    },
+    "03.1": {
+      "title": "Khởi tạo monorepo",
+      "group": "03",
+      "dependencies": [
+        "02.7"
+      ],
+      "command": "/prompt-03-1",
+      "write_roots": [
+        "services/",
+        "packages/",
+        "infra/",
+        "deploy/",
+        ".github/",
+        "docs/",
+        "tests/",
+        "Makefile"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/03.1.md"
+    },
+    "03.2": {
+      "title": "Runtime template cho backend service",
+      "group": "03",
+      "dependencies": [
+        "03.1"
+      ],
+      "command": "/prompt-03-2",
+      "write_roots": [
+        "services/",
+        "packages/",
+        "infra/",
+        "deploy/",
+        ".github/",
+        "docs/",
+        "tests/",
+        "Makefile"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/03.2.md"
+    },
+    "03.3": {
+      "title": "Hạ tầng Docker Compose",
+      "group": "03",
+      "dependencies": [
+        "03.2"
+      ],
+      "command": "/prompt-03-3",
+      "write_roots": [
+        "services/",
+        "packages/",
+        "infra/",
+        "deploy/",
+        ".github/",
+        "docs/",
+        "tests/",
+        "Makefile"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/03.3.md"
+    },
+    "03.4": {
+      "title": "API Gateway/BFF",
+      "group": "03",
+      "dependencies": [
+        "03.3"
+      ],
+      "command": "/prompt-03-4",
+      "write_roots": [
+        "services/",
+        "packages/",
+        "infra/",
+        "deploy/",
+        ".github/",
+        "docs/",
+        "tests/",
+        "Makefile"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/03.4.md"
+    },
+    "03.5": {
+      "title": "CI và supply-chain controls",
+      "group": "03",
+      "dependencies": [
+        "03.4"
+      ],
+      "command": "/prompt-03-5",
+      "write_roots": [
+        "services/",
+        "packages/",
+        "infra/",
+        "deploy/",
+        ".github/",
+        "docs/",
+        "tests/",
+        "Makefile"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/03.5.md"
+    },
+    "03.6": {
+      "title": "Identity authentication",
+      "group": "03",
+      "dependencies": [
+        "03.5"
+      ],
+      "command": "/prompt-03-6",
+      "write_roots": [
+        "services/",
+        "packages/",
+        "infra/",
+        "deploy/",
+        ".github/",
+        "docs/",
+        "tests/",
+        "Makefile"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/03.6.md"
+    },
+    "03.7": {
+      "title": "RBAC và service identity",
+      "group": "03",
+      "dependencies": [
+        "03.6"
+      ],
+      "command": "/prompt-03-7",
+      "write_roots": [
+        "services/",
+        "packages/",
+        "infra/",
+        "deploy/",
+        ".github/",
+        "docs/",
+        "tests/",
+        "Makefile"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/03.7.md"
+    },
+    "03.8": {
+      "title": "Audit append-only",
+      "group": "03",
+      "dependencies": [
+        "03.7"
+      ],
+      "command": "/prompt-03-8",
+      "write_roots": [
+        "services/",
+        "packages/",
+        "infra/",
+        "deploy/",
+        ".github/",
+        "docs/",
+        "tests/",
+        "Makefile"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/03.8.md"
+    },
+    "03.9": {
+      "title": "Cổng nghiệm thu nền tảng",
+      "group": "03",
+      "dependencies": [
+        "03.8"
+      ],
+      "command": "/prompt-03-9",
+      "write_roots": [
+        "services/",
+        "packages/",
+        "infra/",
+        "deploy/",
+        ".github/",
+        "docs/",
+        "tests/",
+        "Makefile"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/03.9.md"
+    },
+    "04.1": {
+      "title": "Document schema và migration",
+      "group": "04",
+      "dependencies": [
+        "03.9"
+      ],
+      "command": "/prompt-04-1",
+      "write_roots": [
+        "services/document-service/",
+        "services/processing-service/",
+        "services/index-service/",
+        "packages/contracts/",
+        "infra/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/04.1.md"
+    },
+    "04.2": {
+      "title": "Upload và object storage",
+      "group": "04",
+      "dependencies": [
+        "04.1"
+      ],
+      "command": "/prompt-04-2",
+      "write_roots": [
+        "services/document-service/",
+        "services/processing-service/",
+        "services/index-service/",
+        "packages/contracts/",
+        "infra/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/04.2.md"
+    },
+    "04.3": {
+      "title": "Lifecycle và versioning",
+      "group": "04",
+      "dependencies": [
+        "04.2"
+      ],
+      "command": "/prompt-04-3",
+      "write_roots": [
+        "services/document-service/",
+        "services/processing-service/",
+        "services/index-service/",
+        "packages/contracts/",
+        "infra/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/04.3.md"
+    },
+    "04.4": {
+      "title": "Outbox và processing request",
+      "group": "04",
+      "dependencies": [
+        "04.3"
+      ],
+      "command": "/prompt-04-4",
+      "write_roots": [
+        "services/document-service/",
+        "services/processing-service/",
+        "services/index-service/",
+        "packages/contracts/",
+        "infra/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/04.4.md"
+    },
+    "04.5": {
+      "title": "Processing job engine",
+      "group": "04",
+      "dependencies": [
+        "04.4"
+      ],
+      "command": "/prompt-04-5",
+      "write_roots": [
+        "services/document-service/",
+        "services/processing-service/",
+        "services/index-service/",
+        "packages/contracts/",
+        "infra/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/04.5.md"
+    },
+    "04.6": {
+      "title": "Trích xuất PDF/DOCX/HTML/TXT",
+      "group": "04",
+      "dependencies": [
+        "04.5"
+      ],
+      "command": "/prompt-04-6",
+      "write_roots": [
+        "services/document-service/",
+        "services/processing-service/",
+        "services/index-service/",
+        "packages/contracts/",
+        "infra/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/04.6.md"
+    },
+    "04.7": {
+      "title": "OCR tiếng Việt",
+      "group": "04",
+      "dependencies": [
+        "04.6"
+      ],
+      "command": "/prompt-04-7",
+      "write_roots": [
+        "services/document-service/",
+        "services/processing-service/",
+        "services/index-service/",
+        "packages/contracts/",
+        "infra/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/04.7.md"
+    },
+    "04.8": {
+      "title": "Chuẩn hóa và chunking pháp lý",
+      "group": "04",
+      "dependencies": [
+        "04.7"
+      ],
+      "command": "/prompt-04-8",
+      "write_roots": [
+        "services/document-service/",
+        "services/processing-service/",
+        "services/index-service/",
+        "packages/contracts/",
+        "infra/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/04.8.md"
+    },
+    "04.9": {
+      "title": "Quality gate và review artifact",
+      "group": "04",
+      "dependencies": [
+        "04.8"
+      ],
+      "command": "/prompt-04-9",
+      "write_roots": [
+        "services/document-service/",
+        "services/processing-service/",
+        "services/index-service/",
+        "packages/contracts/",
+        "infra/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/04.9.md"
+    },
+    "04.10": {
+      "title": "Index schema và Full Text Search",
+      "group": "04",
+      "dependencies": [
+        "04.9"
+      ],
+      "command": "/prompt-04-10",
+      "write_roots": [
+        "services/document-service/",
+        "services/processing-service/",
+        "services/index-service/",
+        "packages/contracts/",
+        "infra/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/04.10.md"
+    },
+    "04.11": {
+      "title": "Embedding và vector index",
+      "group": "04",
+      "dependencies": [
+        "04.10"
+      ],
+      "command": "/prompt-04-11",
+      "write_roots": [
+        "services/document-service/",
+        "services/processing-service/",
+        "services/index-service/",
+        "packages/contracts/",
+        "infra/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/04.11.md"
+    },
+    "04.12": {
+      "title": "Reindex, unpublish và rollback",
+      "group": "04",
+      "dependencies": [
+        "04.11"
+      ],
+      "command": "/prompt-04-12",
+      "write_roots": [
+        "services/document-service/",
+        "services/processing-service/",
+        "services/index-service/",
+        "packages/contracts/",
+        "infra/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/04.12.md"
+    },
+    "04.13": {
+      "title": "Cổng nghiệm thu pipeline dữ liệu",
+      "group": "04",
+      "dependencies": [
+        "04.12"
+      ],
+      "command": "/prompt-04-13",
+      "write_roots": [
+        "services/document-service/",
+        "services/processing-service/",
+        "services/index-service/",
+        "packages/contracts/",
+        "infra/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle"
+      ],
+      "required_report": "docs/progress/04.13.md"
+    },
+    "05.1": {
+      "title": "Retrieval contract và query normalization",
+      "group": "05",
+      "dependencies": [
+        "04.13"
+      ],
+      "command": "/prompt-05-1",
+      "write_roots": [
+        "services/retrieval-service/",
+        "services/provider-service/",
+        "services/citation-service/",
+        "services/chat-service/",
+        "packages/contracts/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/05.1.md"
+    },
+    "05.2": {
+      "title": "Hybrid fusion",
+      "group": "05",
+      "dependencies": [
+        "05.1"
+      ],
+      "command": "/prompt-05-2",
+      "write_roots": [
+        "services/retrieval-service/",
+        "services/provider-service/",
+        "services/citation-service/",
+        "services/chat-service/",
+        "packages/contracts/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/05.2.md"
+    },
+    "05.3": {
+      "title": "Reranker và fallback",
+      "group": "05",
+      "dependencies": [
+        "05.2"
+      ],
+      "command": "/prompt-05-3",
+      "write_roots": [
+        "services/retrieval-service/",
+        "services/provider-service/",
+        "services/citation-service/",
+        "services/chat-service/",
+        "packages/contracts/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/05.3.md"
+    },
+    "05.4": {
+      "title": "Evidence sufficiency",
+      "group": "05",
+      "dependencies": [
+        "05.3"
+      ],
+      "command": "/prompt-05-4",
+      "write_roots": [
+        "services/retrieval-service/",
+        "services/provider-service/",
+        "services/citation-service/",
+        "services/chat-service/",
+        "packages/contracts/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/05.4.md"
+    },
+    "05.5": {
+      "title": "Provider configuration và secret",
+      "group": "05",
+      "dependencies": [
+        "05.4"
+      ],
+      "command": "/prompt-05-5",
+      "write_roots": [
+        "services/retrieval-service/",
+        "services/provider-service/",
+        "services/citation-service/",
+        "services/chat-service/",
+        "packages/contracts/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/05.5.md"
+    },
+    "05.6": {
+      "title": "Validate, activate và rollback Provider",
+      "group": "05",
+      "dependencies": [
+        "05.5"
+      ],
+      "command": "/prompt-05-6",
+      "write_roots": [
+        "services/retrieval-service/",
+        "services/provider-service/",
+        "services/citation-service/",
+        "services/chat-service/",
+        "packages/contracts/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/05.6.md"
+    },
+    "05.7": {
+      "title": "Provider Gateway adapters",
+      "group": "05",
+      "dependencies": [
+        "05.6"
+      ],
+      "command": "/prompt-05-7",
+      "write_roots": [
+        "services/retrieval-service/",
+        "services/provider-service/",
+        "services/citation-service/",
+        "services/chat-service/",
+        "packages/contracts/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/05.7.md"
+    },
+    "05.8": {
+      "title": "Citation Service",
+      "group": "05",
+      "dependencies": [
+        "05.7"
+      ],
+      "command": "/prompt-05-8",
+      "write_roots": [
+        "services/retrieval-service/",
+        "services/provider-service/",
+        "services/citation-service/",
+        "services/chat-service/",
+        "packages/contracts/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/05.8.md"
+    },
+    "05.9": {
+      "title": "Prompt registry và input/output guardrails",
+      "group": "05",
+      "dependencies": [
+        "05.8"
+      ],
+      "command": "/prompt-05-9",
+      "write_roots": [
+        "services/retrieval-service/",
+        "services/provider-service/",
+        "services/citation-service/",
+        "services/chat-service/",
+        "packages/contracts/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/05.9.md"
+    },
+    "05.10": {
+      "title": "Chat Orchestrator",
+      "group": "05",
+      "dependencies": [
+        "05.9"
+      ],
+      "command": "/prompt-05-10",
+      "write_roots": [
+        "services/retrieval-service/",
+        "services/provider-service/",
+        "services/citation-service/",
+        "services/chat-service/",
+        "packages/contracts/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/05.10.md"
+    },
+    "05.11": {
+      "title": "Privacy và conversation lifecycle",
+      "group": "05",
+      "dependencies": [
+        "05.10"
+      ],
+      "command": "/prompt-05-11",
+      "write_roots": [
+        "services/retrieval-service/",
+        "services/provider-service/",
+        "services/citation-service/",
+        "services/chat-service/",
+        "packages/contracts/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/05.11.md"
+    },
+    "05.12": {
+      "title": "Cổng nghiệm thu RAG/Chat",
+      "group": "05",
+      "dependencies": [
+        "05.11"
+      ],
+      "command": "/prompt-05-12",
+      "write_roots": [
+        "services/retrieval-service/",
+        "services/provider-service/",
+        "services/citation-service/",
+        "services/chat-service/",
+        "packages/contracts/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/05.12.md"
+    },
+    "06.1": {
+      "title": "Feedback intake",
+      "group": "06",
+      "dependencies": [
+        "05.12"
+      ],
+      "command": "/prompt-06-1",
+      "write_roots": [
+        "services/feedback-service/",
+        "services/evaluation-service/",
+        "packages/contracts/",
+        "datasets/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/06.1.md"
+    },
+    "06.2": {
+      "title": "Annotation task workflow",
+      "group": "06",
+      "dependencies": [
+        "06.1"
+      ],
+      "command": "/prompt-06-2",
+      "write_roots": [
+        "services/feedback-service/",
+        "services/evaluation-service/",
+        "packages/contracts/",
+        "datasets/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/06.2.md"
+    },
+    "06.3": {
+      "title": "Taxonomy lỗi và quality handbook",
+      "group": "06",
+      "dependencies": [
+        "06.2"
+      ],
+      "command": "/prompt-06-3",
+      "write_roots": [
+        "services/feedback-service/",
+        "services/evaluation-service/",
+        "packages/contracts/",
+        "datasets/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/06.3.md"
+    },
+    "06.4": {
+      "title": "Golden Answer approval",
+      "group": "06",
+      "dependencies": [
+        "06.3"
+      ],
+      "command": "/prompt-06-4",
+      "write_roots": [
+        "services/feedback-service/",
+        "services/evaluation-service/",
+        "packages/contracts/",
+        "datasets/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/06.4.md"
+    },
+    "06.5": {
+      "title": "Dataset Registry",
+      "group": "06",
+      "dependencies": [
+        "06.4"
+      ],
+      "command": "/prompt-06-5",
+      "write_roots": [
+        "services/feedback-service/",
+        "services/evaluation-service/",
+        "packages/contracts/",
+        "datasets/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/06.5.md"
+    },
+    "06.6": {
+      "title": "Dataset quality, PII và leakage gate",
+      "group": "06",
+      "dependencies": [
+        "06.5"
+      ],
+      "command": "/prompt-06-6",
+      "write_roots": [
+        "services/feedback-service/",
+        "services/evaluation-service/",
+        "packages/contracts/",
+        "datasets/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/06.6.md"
+    },
+    "06.7": {
+      "title": "Evaluation Runner",
+      "group": "06",
+      "dependencies": [
+        "06.6"
+      ],
+      "command": "/prompt-06-7",
+      "write_roots": [
+        "services/feedback-service/",
+        "services/evaluation-service/",
+        "packages/contracts/",
+        "datasets/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/06.7.md"
+    },
+    "06.8": {
+      "title": "Metrics và slicing",
+      "group": "06",
+      "dependencies": [
+        "06.7"
+      ],
+      "command": "/prompt-06-8",
+      "write_roots": [
+        "services/feedback-service/",
+        "services/evaluation-service/",
+        "packages/contracts/",
+        "datasets/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/06.8.md"
+    },
+    "06.9": {
+      "title": "Candidate Registry và promotion gate",
+      "group": "06",
+      "dependencies": [
+        "06.8"
+      ],
+      "command": "/prompt-06-9",
+      "write_roots": [
+        "services/feedback-service/",
+        "services/evaluation-service/",
+        "packages/contracts/",
+        "datasets/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/06.9.md"
+    },
+    "06.10": {
+      "title": "Fine-tuning export tùy chọn",
+      "group": "06",
+      "dependencies": [
+        "06.9"
+      ],
+      "command": "/prompt-06-10",
+      "write_roots": [
+        "services/feedback-service/",
+        "services/evaluation-service/",
+        "packages/contracts/",
+        "datasets/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/06.10.md"
+    },
+    "06.11": {
+      "title": "Cổng nghiệm thu Answer Improvement",
+      "group": "06",
+      "dependencies": [
+        "06.10"
+      ],
+      "command": "/prompt-06-11",
+      "write_roots": [
+        "services/feedback-service/",
+        "services/evaluation-service/",
+        "packages/contracts/",
+        "datasets/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "librarian",
+        "fixer",
+        "oracle",
+        "council"
+      ],
+      "required_report": "docs/progress/06.11.md"
+    },
+    "07.1": {
+      "title": "Frontend foundation",
+      "group": "07",
+      "dependencies": [
+        "06.11"
+      ],
+      "command": "/prompt-07-1",
+      "write_roots": [
+        "apps/web-chat/",
+        "apps/admin-portal/",
+        "infra/",
+        "deploy/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "designer",
+        "fixer",
+        "oracle",
+        "observer"
+      ],
+      "required_report": "docs/progress/07.1.md"
+    },
+    "07.2": {
+      "title": "Web Chat",
+      "group": "07",
+      "dependencies": [
+        "07.1"
+      ],
+      "command": "/prompt-07-2",
+      "write_roots": [
+        "apps/web-chat/",
+        "apps/admin-portal/",
+        "infra/",
+        "deploy/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "designer",
+        "fixer",
+        "oracle",
+        "observer"
+      ],
+      "required_report": "docs/progress/07.2.md"
+    },
+    "07.3": {
+      "title": "Citation viewer và feedback UI",
+      "group": "07",
+      "dependencies": [
+        "07.2"
+      ],
+      "command": "/prompt-07-3",
+      "write_roots": [
+        "apps/web-chat/",
+        "apps/admin-portal/",
+        "infra/",
+        "deploy/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "designer",
+        "fixer",
+        "oracle",
+        "observer"
+      ],
+      "required_report": "docs/progress/07.3.md"
+    },
+    "07.4": {
+      "title": "Admin tài liệu và Provider",
+      "group": "07",
+      "dependencies": [
+        "07.3"
+      ],
+      "command": "/prompt-07-4",
+      "write_roots": [
+        "apps/web-chat/",
+        "apps/admin-portal/",
+        "infra/",
+        "deploy/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "designer",
+        "fixer",
+        "oracle",
+        "observer"
+      ],
+      "required_report": "docs/progress/07.4.md"
+    },
+    "07.5": {
+      "title": "Admin annotation/evaluation",
+      "group": "07",
+      "dependencies": [
+        "07.4"
+      ],
+      "command": "/prompt-07-5",
+      "write_roots": [
+        "apps/web-chat/",
+        "apps/admin-portal/",
+        "infra/",
+        "deploy/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "designer",
+        "fixer",
+        "oracle",
+        "observer"
+      ],
+      "required_report": "docs/progress/07.5.md"
+    },
+    "07.6": {
+      "title": "Telemetry và dashboard",
+      "group": "07",
+      "dependencies": [
+        "07.5"
+      ],
+      "command": "/prompt-07-6",
+      "write_roots": [
+        "apps/web-chat/",
+        "apps/admin-portal/",
+        "infra/",
+        "deploy/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "designer",
+        "fixer",
+        "oracle",
+        "observer"
+      ],
+      "required_report": "docs/progress/07.6.md"
+    },
+    "07.7": {
+      "title": "Security hardening",
+      "group": "07",
+      "dependencies": [
+        "07.6"
+      ],
+      "command": "/prompt-07-7",
+      "write_roots": [
+        "apps/web-chat/",
+        "apps/admin-portal/",
+        "infra/",
+        "deploy/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "designer",
+        "fixer",
+        "oracle",
+        "observer"
+      ],
+      "required_report": "docs/progress/07.7.md"
+    },
+    "07.8": {
+      "title": "Reliability, backup và chaos",
+      "group": "07",
+      "dependencies": [
+        "07.7"
+      ],
+      "command": "/prompt-07-8",
+      "write_roots": [
+        "apps/web-chat/",
+        "apps/admin-portal/",
+        "infra/",
+        "deploy/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "designer",
+        "fixer",
+        "oracle",
+        "observer"
+      ],
+      "required_report": "docs/progress/07.8.md"
+    },
+    "07.9": {
+      "title": "Cổng nghiệm thu UI/Operations",
+      "group": "07",
+      "dependencies": [
+        "07.8"
+      ],
+      "command": "/prompt-07-9",
+      "write_roots": [
+        "apps/web-chat/",
+        "apps/admin-portal/",
+        "infra/",
+        "deploy/",
+        "tests/",
+        "docs/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "designer",
+        "fixer",
+        "oracle",
+        "observer"
+      ],
+      "required_report": "docs/progress/07.9.md"
+    },
+    "08.1": {
+      "title": "Contract integration",
+      "group": "08",
+      "dependencies": [
+        "07.9"
+      ],
+      "command": "/prompt-08-1",
+      "write_roots": [
+        "tests/",
+        "deploy/",
+        "docs/",
+        ".github/",
+        "release/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "fixer",
+        "oracle",
+        "council",
+        "observer"
+      ],
+      "required_report": "docs/progress/08.1.md"
+    },
+    "08.2": {
+      "title": "E2E vòng đời tài liệu",
+      "group": "08",
+      "dependencies": [
+        "08.1"
+      ],
+      "command": "/prompt-08-2",
+      "write_roots": [
+        "tests/",
+        "deploy/",
+        "docs/",
+        ".github/",
+        "release/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "fixer",
+        "oracle",
+        "council",
+        "observer"
+      ],
+      "required_report": "docs/progress/08.2.md"
+    },
+    "08.3": {
+      "title": "E2E hỏi đáp và Provider failures",
+      "group": "08",
+      "dependencies": [
+        "08.2"
+      ],
+      "command": "/prompt-08-3",
+      "write_roots": [
+        "tests/",
+        "deploy/",
+        "docs/",
+        ".github/",
+        "release/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "fixer",
+        "oracle",
+        "council",
+        "observer"
+      ],
+      "required_report": "docs/progress/08.3.md"
+    },
+    "08.4": {
+      "title": "E2E Answer Improvement",
+      "group": "08",
+      "dependencies": [
+        "08.3"
+      ],
+      "command": "/prompt-08-4",
+      "write_roots": [
+        "tests/",
+        "deploy/",
+        "docs/",
+        ".github/",
+        "release/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "fixer",
+        "oracle",
+        "council",
+        "observer"
+      ],
+      "required_report": "docs/progress/08.4.md"
+    },
+    "08.5": {
+      "title": "Bộ nghiệm thu AI",
+      "group": "08",
+      "dependencies": [
+        "08.4"
+      ],
+      "command": "/prompt-08-5",
+      "write_roots": [
+        "tests/",
+        "deploy/",
+        "docs/",
+        ".github/",
+        "release/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "fixer",
+        "oracle",
+        "council",
+        "observer"
+      ],
+      "required_report": "docs/progress/08.5.md"
+    },
+    "08.6": {
+      "title": "Accuracy, load và cost acceptance",
+      "group": "08",
+      "dependencies": [
+        "08.5"
+      ],
+      "command": "/prompt-08-6",
+      "write_roots": [
+        "tests/",
+        "deploy/",
+        "docs/",
+        ".github/",
+        "release/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "fixer",
+        "oracle",
+        "council",
+        "observer"
+      ],
+      "required_report": "docs/progress/08.6.md"
+    },
+    "08.7": {
+      "title": "Release package và runbooks",
+      "group": "08",
+      "dependencies": [
+        "08.6"
+      ],
+      "command": "/prompt-08-7",
+      "write_roots": [
+        "tests/",
+        "deploy/",
+        "docs/",
+        ".github/",
+        "release/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "fixer",
+        "oracle",
+        "council",
+        "observer"
+      ],
+      "required_report": "docs/progress/08.7.md"
+    },
+    "08.8": {
+      "title": "Final release gate",
+      "group": "08",
+      "dependencies": [
+        "08.7"
+      ],
+      "command": "/prompt-08-8",
+      "write_roots": [
+        "tests/",
+        "deploy/",
+        "docs/",
+        ".github/",
+        "release/"
+      ],
+      "preferred_agents": [
+        "explorer",
+        "fixer",
+        "oracle",
+        "council",
+        "observer"
+      ],
+      "required_report": "docs/progress/08.8.md"
+    }
+  }
+}
