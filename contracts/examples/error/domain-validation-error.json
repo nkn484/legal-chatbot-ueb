@@ -1,0 +1,1 @@
+{"error_id":"err-fictional-001","code":"FIELD_INVALID","message":"Giá trị không hợp lệ.","field_path":"metadata.document_number","reason_codes":["FIELD_INVALID"],"correlation_id":"cor-fictional-001"}

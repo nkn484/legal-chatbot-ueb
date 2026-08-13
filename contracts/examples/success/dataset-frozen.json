@@ -1,0 +1,1 @@
+{"dataset_id":"dst-fictional-001","revision":1,"status":"FROZEN","members":[{"golden_answer_id":"gld-fictional-001","split":"TRAIN","approval_snapshot_hash":"sha256:approval-fictional-0001","citation_validation_id":"cit-fictional-001"}],"manifest_hash":"sha256:manifest-fictional-0001","frozen_at":"2026-08-13T00:00:00Z"}

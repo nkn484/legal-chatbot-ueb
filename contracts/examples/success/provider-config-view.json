@@ -1,0 +1,1 @@
+{"provider_config_id":"pcv-fictional-001","display_name":"Nhà cung cấp hư cấu","provider_kind":"FICTIONAL","endpoint_profile_id":"epp-fictional-001","capabilities":["TEXT_GENERATION"],"status":"DRAFT","configuration_ready":false,"revision":1,"last_validation":{"status":"NOT_VALIDATED","checked_at":"2026-08-13T00:00:00Z","reason_codes":["OUT_OF_SCOPE"]}}

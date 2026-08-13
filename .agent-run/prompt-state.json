@@ -74,14 +74,26 @@
       ]
     },
     "02.3": {
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "submitted_at": null,
-      "human_approved_at": null,
-      "human_approved_by": null,
-      "approval_note": null,
-      "report": null,
-      "evidence": []
+      "status": "PASS",
+      "started_at": "2026-08-13T08:24:34.183230+00:00",
+      "submitted_at": "2026-08-13T09:05:06.203973+00:00",
+      "human_approved_at": "2026-08-13T09:07:23.985671+00:00",
+      "human_approved_by": "USER",
+      "approval_note": "Đã kiểm tra kết quả và đồng ý",
+      "report": "docs\\progress\\02.3.md",
+      "evidence": [
+        "contracts\\schemas\\common.schema.json",
+        "contracts\\schemas\\document.schema.json",
+        "contracts\\schemas\\chat.schema.json",
+        "contracts\\schemas\\citation.schema.json",
+        "contracts\\schemas\\provider-config-view.schema.json",
+        "contracts\\schemas\\feedback.schema.json",
+        "contracts\\schemas\\evaluation.schema.json",
+        "contracts\\state-machines\\domain-state-machines.v1.json",
+        "contracts\\examples\\manifest.json",
+        "contracts\\validate_schemas.py",
+        "docs\\architecture\\schema-open-fields.md"
+      ]
     },
     "02.4": {
       "status": "NOT_STARTED",

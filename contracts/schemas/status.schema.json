@@ -1,0 +1,4 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema","$id":"https://schemas.example.invalid/legal-chatbot/v1/status.schema.json","title":"Status snapshot","description":"Version-neutral additive local status exchange; owners constrain lifecycle states.","x-owner":"cross-contract","$ref":"#/$defs/StatusSnapshot",
+  "$defs":{"StatusSnapshot":{"type":"object","properties":{"state":{"type":"string","minLength":1},"state_revision":{"$ref":"common.schema.json#/$defs/Revision"},"changed_at":{"$ref":"common.schema.json#/$defs/Timestamp"},"changed_by":{"$ref":"common.schema.json#/$defs/ActorRef"},"reason_codes":{"type":"array","items":{"$ref":"common.schema.json#/$defs/ReasonCode"},"uniqueItems":true}},"required":["state","state_revision","changed_at"],"additionalProperties":false}}
+}

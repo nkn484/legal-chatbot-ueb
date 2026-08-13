@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/legal-chatbot/v1/common.schema.json",
+  "title": "Common exchange values",
+  "description": "Version-neutral additive exchange values; not persistence models.",
+  "x-owner": "cross-contract",
+  "$ref": "#/$defs/Refusal",
+  "$defs": {
+    "Id": {"type":"string","pattern":"^[A-Za-z0-9][A-Za-z0-9._:-]{2,127}$","description":"Opaque identifier."},
+    "Revision": {"type":"integer","minimum":1,"description":"Positive revision."},
+    "Timestamp": {"type":"string","format":"date-time","description":"RFC3339 timestamp."},
+    "HashValue": {"type":"string","pattern":"^[A-Za-z0-9][A-Za-z0-9._:-]{7,255}$","description":"Opaque hash value and profile."},
+    "LineageRef": {"type":"object","properties":{"id":{"$ref":"#/$defs/Id"},"hash":{"$ref":"#/$defs/HashValue"}},"required":["id","hash"],"additionalProperties":false},
+    "ActorRef": {"type":"object","properties":{"actor_id":{"$ref":"#/$defs/Id"},"actor_kind":{"type":"string","minLength":1}},"required":["actor_id","actor_kind"],"additionalProperties":false},
+    "ReasonCode": {"type":"string","pattern":"^[A-Z][A-Z0-9_]{1,127}$"},
+    "Refusal": {"type":"object","description":"Safe user-facing refusal with no raw context.","properties":{"code":{"type":"string","enum":["INSUFFICIENT_EVIDENCE","OUT_OF_SCOPE","AMBIGUOUS_QUERY","CONFLICTING_EVIDENCE","ACCESS_FILTERED","CITATION_INVALID","SOURCE_INACTIVE","SOURCE_REVOKED"]},"message":{"type":"string","minLength":1,"description":"Thông báo an toàn bằng tiếng Việt cho người dùng."},"retryable":{"type":"boolean"},"reason_codes":{"type":"array","items":{"$ref":"#/$defs/ReasonCode"},"uniqueItems":true}},"required":["code","message","retryable"],"additionalProperties":false}
+  }
+}
