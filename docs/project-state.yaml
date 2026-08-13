@@ -1,0 +1,161 @@
+snapshot:
+  date: "2026-08-13"
+  prompt_id: "01.1"
+  repository_classification: orchestration_pack_only
+  basis: "Read-only inventory of repository metadata and declared project paths."
+
+classifier_legend:
+  EXISTS: "Artifact is present in the inspected repository."
+  PARTIAL: "Artifact or process exists, but is incomplete for the stated capability."
+  MISSING: "Artifact is absent from the inspected repository."
+  UNKNOWN: "Inventory evidence is insufficient to determine the assertion."
+
+evidence_paths:
+  - AGENTS.md
+  - README.md
+  - prompts/00_HARD_RULES.md
+  - prompts/manifest.json
+  - prompts/groups/01_DIEU_PHOI.md
+  - prompts/groups/02_KIEN_TRUC_HOP_DONG.md
+  - prompts/groups/03_NEN_TANG_BAO_MAT.md
+  - prompts/groups/04_DU_LIEU_TAI_LIEU_CHI_MUC.md
+  - prompts/groups/05_RAG_CHAT_PROVIDER.md
+  - prompts/groups/06_CAI_THIEN_CAU_TRA_LOI.md
+  - prompts/groups/07_GIAO_DIEN_VAN_HANH.md
+  - prompts/groups/08_TICH_HOP_NGHIEM_THU.md
+  - docs/templates/progress-report.md
+  - scripts/prompt_gate.py
+  - scripts/verify_pack.py
+  - .opencode/
+  - .agent-run/prompt-state.json
+
+caveats:
+  - "Prompt specifications describe planned work; they are not implementation evidence."
+  - "Generated .opencode/node_modules content is tooling dependency material, not product source or compliance evidence."
+  - "No dedicated secret scanner or git-history scan was run; secret assessment is therefore NOT_MEASURED."
+  - "Application, architecture, RAG, deployment, security, and test compliance cannot be inferred from this pack-only snapshot."
+
+working_tree_baseline:
+  captured_by: "git status --short"
+  entries:
+    - path: .agent-run/prompt-state.json
+      status: PARTIAL
+      detail: "Modified gate-managed state; outside this writer's scope and not edited."
+    - path: Chatbot_Phap_luat_OpenCode_OMO_Repo_Pack.zip
+      status: PARTIAL
+      detail: "Deleted pre-existing/user change; preserved and not restored by this writer."
+
+secret_assessment:
+  status: UNKNOWN
+  confirmed_exposure: false
+  environment_filename_inventory:
+    status: MISSING
+    detail: "No .env* filename was discovered in the safe inventory."
+  measurement: "NOT_MEASURED: no dedicated secret scanner or history scanner was run; no candidate secret values were inspected or printed."
+
+pack_process_assets:
+  agents_instruction:
+    status: EXISTS
+    path: AGENTS.md
+  hard_rules:
+    status: EXISTS
+    path: prompts/00_HARD_RULES.md
+  prompt_groups:
+    status: EXISTS
+    path: prompts/groups/
+  numbered_prompt_commands:
+    status: EXISTS
+    detail: "72 declared numbered commands; pack verification script checks this count."
+  prompt_manifest:
+    status: EXISTS
+    path: prompts/manifest.json
+  gate_script:
+    status: EXISTS
+    path: scripts/prompt_gate.py
+  pack_verification_script:
+    status: PARTIAL
+    path: scripts/verify_pack.py
+    detail: "Pack/lifecycle validation exists; product validation is not implemented."
+  omo_configuration:
+    status: EXISTS
+    path: .opencode/
+  progress_template:
+    status: EXISTS
+    path: docs/templates/progress-report.md
+  gitignore:
+    status: MISSING
+    path: .gitignore
+
+product_artifacts:
+  applications:
+    status: MISSING
+    paths:
+      - apps/web-chat/
+      - apps/admin-portal/
+  services:
+    status: MISSING
+    paths:
+      - services/api-gateway/
+      - services/identity-service/
+      - services/audit-service/
+      - services/document-service/
+      - services/processing-service/
+      - services/index-service/
+      - services/retrieval-service/
+      - services/provider-service/
+      - services/citation-service/
+      - services/chat-service/
+      - services/feedback-service/
+      - services/evaluation-service/
+  contracts:
+    status: MISSING
+    path: contracts/
+  migrations:
+    status: MISSING
+    detail: "No product migration directory or files discovered in the safe inventory."
+  docker_infrastructure:
+    status: MISSING
+    paths:
+      - infra/
+      - deploy/
+  continuous_integration:
+    status: MISSING
+    path: .github/
+  product_test_suites:
+    status: MISSING
+    path: tests/
+
+input_discrepancy:
+  requested_input:
+    status: MISSING
+    path: 00_NGUYEN_TAC_CUNG.md
+  canonical_input:
+    status: EXISTS
+    path: prompts/00_HARD_RULES.md
+  detail: "The prompt-group reference names 00_NGUYEN_TAC_CUNG.md, while the repository's canonical hard-rules file is prompts/00_HARD_RULES.md."
+
+prompt_group_readiness:
+  "01":
+    status: PARTIAL
+    evidence: "Orchestration pack and Prompt 01 specifications exist; the requested inventory is documentation only."
+  "02":
+    status: MISSING
+    evidence: "Architecture and contract artifacts are planned but not implemented."
+  "03":
+    status: MISSING
+    evidence: "Monorepo/product platform, services, deployment, CI, and tests are absent."
+  "04":
+    status: MISSING
+    evidence: "Document, processing, index, migrations, and data-pipeline implementations are absent."
+  "05":
+    status: MISSING
+    evidence: "Retrieval, provider, citation, and chat implementations are absent."
+  "06":
+    status: MISSING
+    evidence: "Feedback, golden-answer, dataset, and evaluation implementations are absent."
+  "07":
+    status: MISSING
+    evidence: "Web applications, operations, and hardening implementations are absent."
+  "08":
+    status: MISSING
+    evidence: "Integration, E2E, acceptance, release, and runbook artifacts are absent."
