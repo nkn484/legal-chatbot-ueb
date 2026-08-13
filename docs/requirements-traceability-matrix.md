@@ -1,0 +1,26 @@
+# Ma trận truy vết yêu cầu — Core Demo v1
+
+Mỗi requirement xuất hiện đúng một lần. “Owner/capability” là ánh xạ dự kiến theo boundary hiện hữu trong `AGENTS.md`, không phải quyết định kiến trúc hay hợp nhất service; Prompt 02.1 sở hữu phê duyệt cuối cùng. Mọi trạng thái triển khai/test là `NOT_STARTED` hoặc `NOT_MEASURED`.
+
+| REQ | Ưu tiên | User story | Owner/capability dự kiến | Contract/artifact dự kiến | Test/evidence dự kiến | HR liên quan | Prompt tương lai | Implementation | Test |
+|---|---|---|---|---|---|---|---|---|---|
+| REQ-SCP-001 | MUST | US-RES-01 | retrieval-service, chat-service | Retrieval scope/refusal policy | In/out-domain cases | HR-18, HR-19 | 05.1, 05.4, 05.10 | NOT_STARTED | NOT_MEASURED |
+| REQ-USR-001 | MUST | US-RES-01 | identity-service, web-chat | Auth/access contract | Anonymous-demo access test | HR-27 | 03.6, 03.7, 07.2 | NOT_STARTED | NOT_MEASURED |
+| REQ-USR-002 | MUST | US-CUR-01, US-ADM-01 | identity-service, document-service, admin-portal | Admin authorization contract | Authorized/unauthorized corpus admin test | HR-27, HR-23 | 03.7, 04.2, 07.4 | NOT_STARTED | NOT_MEASURED |
+| REQ-DOC-001 | MUST | US-CUR-01 | document-service, processing-service | Document metadata/validation artifact | Type, text-layer, page-count, approval evidence | HR-19, HR-21, HR-23 | 04.1, 04.2, 04.6 | NOT_STARTED | NOT_MEASURED |
+| REQ-DOC-002 | MUST | US-CUR-01 | document-service, processing-service, index-service | Lifecycle, hash, review/publish artifacts | Lifecycle and no-auto-publish tests | HR-15, HR-21, HR-22 | 04.2–04.5, 04.8–04.12 | NOT_STARTED | NOT_MEASURED |
+| REQ-RET-001 | MUST | US-RES-01 | retrieval-service, chat-service | Retrieval response/answer policy | No answer-provider-call evidence | HR-18, HR-23 | 05.1, 05.4, 05.10 | NOT_STARTED | NOT_MEASURED |
+| REQ-RET-002 | MUST | US-RES-01 | document-service, index-service, retrieval-service | Publish/active filter contract | Unpublished/inactive exclusion test | HR-15 | 04.3, 04.10, 04.12, 05.1 | NOT_STARTED | NOT_MEASURED |
+| REQ-RET-003 | MUST | US-RES-01 | citation-service, document-service, chat-service | Canonical citation artifact; dependency resolution evidence required before feasible downstream path can be claimed | Claim-to-canonical-source validation; current manifest condition: 05.8 depends on 05.7 → 05.6 → 05.5, while 05.6 requires real minimal Provider request conflicting with no-Provider Core scope | HR-16, HR-17, HR-23 | 05.8, 05.10 | NOT_STARTED | NOT_MEASURED |
+| REQ-RET-004 | MUST | US-RES-01 | retrieval-service, chat-service | Sufficiency/refusal policy | 2 outside, 1 ambiguous, and 1 materially conflicting multi-source refusal tests | HR-18 | 05.4, 05.10, 05.12 | NOT_STARTED | NOT_MEASURED |
+| REQ-RET-005 | MUST | US-RES-01 | document-service, processing-service, retrieval-service, chat-service | Legal-effect provenance and injection guard artifacts | Unconfirmed-effect plus malicious-user and source-embedded instruction tests; scope/publish/citation/refusal cannot be overridden | HR-19, HR-20 | 04.1, 04.8, 05.9, 05.10 | NOT_STARTED | NOT_MEASURED |
+| REQ-UX-001 | SHOULD | US-RES-01 | web-chat | Notice UI artifact | UI evidence of notice | HR-17 | 07.2 | NOT_STARTED | NOT_MEASURED |
+| REQ-OPS-001 | MUST | US-CUR-01, US-ADM-01 | document-service, admin-portal, deploy | Local/demo deployment and admin artifact | Isolated demo/corpus-only review | HR-04, HR-27, HR-42 | 02.2, 03.3, 07.4 | NOT_STARTED | NOT_MEASURED |
+| REQ-NFR-001 | MUST | US-ADM-01 | audit-service, chat-service, document-service | Privacy/retention ADR and audit policy | Redaction/retention tests | HR-23, HR-38 | 02.6, 03.8, 05.11 | NOT_STARTED | NOT_MEASURED |
+| REQ-NFR-002 | SHOULD | US-RES-01 | chat-service, retrieval-service, evaluation-service | Benchmark report | Recorded 5-session run with P50/P95/P99/success rate | HR-05, HR-39, HR-41 | 05.12, 08.6 | NOT_STARTED | NOT_MEASURED |
+| REQ-DATA-001 | MUST | US-RES-01, US-CUR-01 | document-service, retrieval-service, evaluation-service | Frozen demo acceptance fixture with provenance; not Golden Answer/training dataset | Exact 15-case fixture review/run, including 1 materially conflicting multi-source refusal and 1 injection non-override case | HR-20, HR-21, HR-22, HR-39 | 04.13, 05.12, 08.5 | NOT_STARTED | NOT_MEASURED |
+| REQ-PLN-001 | MUST | US-RES-01, US-CUR-01 | Planning capability | Scope/progress artifacts | Scope review; no production claim | HR-01, HR-02, HR-05, HR-41 | 01.3 | NOT_STARTED | NOT_MEASURED |
+| REQ-AI-001 | LATER | None; excluded from core | feedback-service, evaluation-service | Group 06 feedback/golden/dataset/evaluation/candidate artifacts | Group 06 safety/evaluation evidence | HR-29, HR-30, HR-33, HR-34 | 06.1–06.11 | NOT_STARTED | NOT_MEASURED |
+| REQ-OPS-002 | LATER | None; excluded from core | Future capability; no core owner commitment | Deferred roadmap/ADR as applicable | Explicit out-of-scope review | HR-04, HR-23, HR-33, HR-42 | Future approved prompts only | NOT_STARTED | NOT_MEASURED |
+
+Answer Improvement remains `LATER` and maps only to Group 06; it is not a Core Demo capability.

@@ -17,44 +17,61 @@
       ]
     },
     "01.2": {
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "submitted_at": null,
-      "human_approved_at": null,
-      "human_approved_by": null,
-      "approval_note": null,
-      "report": null,
-      "evidence": []
+      "status": "PASS",
+      "started_at": "2026-08-13T04:20:31.204085+00:00",
+      "submitted_at": "2026-08-13T04:49:22.193250+00:00",
+      "human_approved_at": "2026-08-13T05:47:59.059579+00:00",
+      "human_approved_by": "USER",
+      "approval_note": "Đã kiểm tra kết quả và đồng ý",
+      "report": "docs\\progress\\01.2.md",
+      "evidence": [
+        "docs\\scope-v1.md",
+        "docs\\acceptance-criteria.md",
+        "docs\\requirements-traceability-matrix.md"
+      ]
     },
     "01.3": {
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "submitted_at": null,
-      "human_approved_at": null,
-      "human_approved_by": null,
-      "approval_note": null,
-      "report": null,
-      "evidence": []
+      "status": "PASS",
+      "started_at": "2026-08-13T05:49:02.663101+00:00",
+      "submitted_at": "2026-08-13T07:05:22.557730+00:00",
+      "human_approved_at": "2026-08-13T07:07:25.130011+00:00",
+      "human_approved_by": "USER",
+      "approval_note": "Đã kiểm tra kết quả và đồng ý",
+      "report": "docs\\progress\\01.3.md",
+      "evidence": [
+        "docs\\prompt-state.yaml",
+        "docs\\prompt-transition-rules.md",
+        "docs\\decision-log.md"
+      ]
     },
     "02.1": {
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "submitted_at": null,
-      "human_approved_at": null,
-      "human_approved_by": null,
-      "approval_note": null,
-      "report": null,
-      "evidence": []
+      "status": "PASS",
+      "started_at": "2026-08-13T07:08:50.086068+00:00",
+      "submitted_at": "2026-08-13T07:29:42.928353+00:00",
+      "human_approved_at": "2026-08-13T07:33:24.511648+00:00",
+      "human_approved_by": "USER",
+      "approval_note": "Đã kiểm tra kết quả và đồng ý",
+      "report": "docs\\progress\\02.1.md",
+      "evidence": [
+        "docs\\architecture\\container-map.md",
+        "docs\\architecture\\data-ownership.md"
+      ]
     },
     "02.2": {
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "submitted_at": null,
-      "human_approved_at": null,
-      "human_approved_by": null,
-      "approval_note": null,
-      "report": null,
-      "evidence": []
+      "status": "PASS",
+      "started_at": "2026-08-13T07:34:13.613196+00:00",
+      "submitted_at": "2026-08-13T08:08:58.342137+00:00",
+      "human_approved_at": "2026-08-13T08:10:51.287717+00:00",
+      "human_approved_by": "USER",
+      "approval_note": "Đã kiểm tra kết quả và đồng ý",
+      "report": "docs\\progress\\02.2.md",
+      "evidence": [
+        "docs\\architecture\\adr\\ADR-001-communication.md",
+        "docs\\architecture\\adr\\ADR-002-persistence-storage-cache.md",
+        "docs\\architecture\\adr\\ADR-003-monorepo-runtimes.md",
+        "docs\\architecture\\adr\\ADR-004-observability.md",
+        "docs\\architecture\\adr\\ADR-005-identity-integration.md"
+      ]
     },
     "02.3": {
       "status": "NOT_STARTED",
