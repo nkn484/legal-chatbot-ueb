@@ -1,0 +1,35 @@
+openapi: 3.1.1
+jsonSchemaDialect: https://spec.openapis.org/oas/3.1/dialect/base
+info: {title: UEB Public API v1, version: 1.0.0}
+servers: [{url: /, description: Deployment base is injected; no domain is asserted by this contract.}]
+x-ueb-audience: PUBLIC
+paths:
+  /v1/questions:
+    post:
+      operationId: askQuestion
+      tags: [questions]
+      summary: Ask a Vietnamese legal question.
+      description: Anonymous request. chat-service owns the route; the gateway routes only and does not aggregate or read a database. Insufficient, ambiguous, conflicting, inactive, or citation-invalid evidence returns the 200 REFUSAL branch.
+      security: []
+      x-ueb-owner-service: chat-service
+      x-ueb-data-access: OWNER_SERVICE_ONLY
+      x-ueb-request-max-bytes: 16384
+      x-ueb-timeout-ms: 25000
+      parameters: [{$ref: components-v1.yaml#/components/parameters/Idempotency-Key}]
+      requestBody:
+        required: true
+        content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/QuestionRequest}}}
+      responses:
+        '200': {description: Answer or safe refusal, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}, Idempotency-Replayed: {$ref: components-v1.yaml#/components/headers/Idempotency-Replayed}}, content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/QuestionResult}}}}
+        '400': {$ref: '#/components/responses/Problem'}
+        '409': {$ref: '#/components/responses/Problem'}
+        '413': {$ref: '#/components/responses/Problem'}
+        '422': {$ref: '#/components/responses/Problem'}
+        '429': {$ref: '#/components/responses/ProblemRetry'}
+        '500': {$ref: '#/components/responses/Problem'}
+        '503': {$ref: '#/components/responses/ProblemRetry'}
+        '504': {$ref: '#/components/responses/Problem'}
+components:
+  responses:
+    Problem: {description: Safe problem, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}}, content: {application/problem+json: {schema: {$ref: components-v1.yaml#/components/schemas/Problem}}}}
+    ProblemRetry: {description: Safe transient problem, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}, Retry-After: {$ref: components-v1.yaml#/components/headers/Retry-After}}, content: {application/problem+json: {schema: {$ref: components-v1.yaml#/components/schemas/Problem}}}}

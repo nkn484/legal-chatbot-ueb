@@ -1,0 +1,69 @@
+version: 1
+examples:
+  - {path: examples/success/question-request.json, schema_ref: components-v1.yaml#/components/schemas/QuestionRequest, expected: VALID, operation_id: askQuestion, role: REQUEST}
+  - {path: examples/success/public-answer.json, schema_ref: components-v1.yaml#/components/schemas/QuestionResult, expected: VALID, operation_id: askQuestion, role: RESPONSE, semantic_check: public_answer}
+  - {path: examples/refusal/public-refusal.json, schema_ref: components-v1.yaml#/components/schemas/QuestionResult, expected: VALID, operation_id: askQuestion, role: RESPONSE}
+  - {path: examples/success/accepted-ingestion.json, schema_ref: components-v1.yaml#/components/schemas/AcceptedIngestion, expected: VALID, operation_id: createDocumentUpload, role: RESPONSE}
+  - {path: examples/success/document-page.json, schema_ref: components-v1.yaml#/components/schemas/DocumentPage, expected: VALID, operation_id: listDocuments, role: RESPONSE}
+  - {path: examples/success/document-view.json, schema_ref: components-v1.yaml#/components/schemas/DocumentView, expected: VALID, operation_id: getDocument, role: RESPONSE}
+  - {path: examples/success/document-version-view.json, schema_ref: components-v1.yaml#/components/schemas/DocumentVersionView, expected: VALID, operation_id: getDocumentVersion, role: RESPONSE}
+  - {path: examples/success/review-request.json, schema_ref: components-v1.yaml#/components/schemas/ReviewDecisionRequest, expected: VALID, operation_id: recordVersionReview, role: REQUEST}
+  - {path: examples/success/publish-request.json, schema_ref: components-v1.yaml#/components/schemas/PublishRequest, expected: VALID, operation_id: publishDocument, role: REQUEST}
+  - {path: examples/success/unpublish-request.json, schema_ref: components-v1.yaml#/components/schemas/ReasonCodeRequest, expected: VALID, operation_id: unpublishDocument, role: REQUEST}
+  - {path: examples/success/job-view.json, schema_ref: components-v1.yaml#/components/schemas/JobView, expected: VALID, operation_id: getProcessingJob, role: RESPONSE}
+  - {path: examples/success/audit-page.json, schema_ref: components-v1.yaml#/components/schemas/AuditRecordPage, expected: VALID, operation_id: listAuditRecords, role: RESPONSE}
+  - {path: examples/success/internal-metadata-response.json, schema_ref: components-v1.yaml#/components/schemas/DocumentVersionMetadataView, expected: VALID, operation_id: getInternalDocumentVersionMetadata, role: RESPONSE}
+  - {path: examples/success/internal-eligibility-request.json, schema_ref: components-v1.yaml#/components/schemas/IdBatch, expected: VALID, operation_id: checkDocumentVersionEligibilityBatch, role: REQUEST}
+  - {path: examples/success/internal-eligibility-result.json, schema_ref: components-v1.yaml#/components/schemas/EligibilityBatchResult, expected: VALID, operation_id: checkDocumentVersionEligibilityBatch, role: RESPONSE}
+  - {path: examples/success/canonical-metadata-request.json, schema_ref: components-v1.yaml#/components/schemas/CanonicalMetadataBatch, expected: VALID, operation_id: getCanonicalMetadataBatch, role: REQUEST}
+  - {path: examples/success/canonical-metadata-result.json, schema_ref: components-v1.yaml#/components/schemas/CanonicalMetadataBatchResult, expected: VALID, operation_id: getCanonicalMetadataBatch, role: RESPONSE}
+  - {path: examples/success/chunk-batch-request.json, schema_ref: components-v1.yaml#/components/schemas/ChunkBatchRequest, expected: VALID, operation_id: getProcessingChunksBatch, role: REQUEST}
+  - {path: examples/success/chunk-batch-result.json, schema_ref: components-v1.yaml#/components/schemas/ChunkBatchResult, expected: VALID, operation_id: getProcessingChunksBatch, role: RESPONSE}
+  - {path: examples/success/index-search-request.json, schema_ref: components-v1.yaml#/components/schemas/IndexSearchRequest, expected: VALID, operation_id: searchIndex, role: REQUEST}
+  - {path: examples/success/index-search-result.json, schema_ref: components-v1.yaml#/components/schemas/IndexSearchResult, expected: VALID, operation_id: searchIndex, role: RESPONSE}
+  - {path: examples/success/context-validation-request.json, schema_ref: components-v1.yaml#/components/schemas/ContextValidationRequest, expected: VALID, operation_id: validateIndexRetrievalContext, role: REQUEST}
+  - {path: examples/success/context-validation-result.json, schema_ref: components-v1.yaml#/components/schemas/ContextValidationResult, expected: VALID, operation_id: validateIndexRetrievalContext, role: RESPONSE}
+  - {path: examples/success/retrieval-request.json, schema_ref: components-v1.yaml#/components/schemas/RetrievalRequest, expected: VALID, operation_id: runRetrieval, role: REQUEST}
+  - {path: examples/success/retrieval-result.json, schema_ref: components-v1.yaml#/components/schemas/RetrievalRunResult, expected: VALID, operation_id: runRetrieval, role: RESPONSE}
+  - {path: examples/success/citation-request.json, schema_ref: components-v1.yaml#/components/schemas/CitationValidationRequest, expected: VALID, operation_id: validateCitations, role: REQUEST, semantic_check: citation_binding}
+  - {path: examples/success/citation-result.json, schema_ref: components-v1.yaml#/components/schemas/CitationValidationResult, expected: VALID, operation_id: validateCitations, role: RESPONSE, semantic_check: citation_claim_complete}
+  - {path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem, expected: VALID, role: ERROR}
+  - {path: examples/invalid/public-answer-claim-without-citation-ids.json, schema_ref: components-v1.yaml#/components/schemas/QuestionResult, expected: INVALID_SCHEMA, keyword: required}
+  - {path: examples/invalid/public-refusal-with-citations.json, schema_ref: components-v1.yaml#/components/schemas/QuestionResult, expected: INVALID_SCHEMA, keyword: oneOf}
+  - {path: examples/invalid/upload-response-with-object-location.json, schema_ref: components-v1.yaml#/components/schemas/AcceptedIngestion, expected: INVALID_SCHEMA, keyword: additionalProperties}
+  - {path: examples/invalid/admin-document-with-source-endpoint-url.json, schema_ref: components-v1.yaml#/components/schemas/DocumentView, expected: INVALID_SCHEMA, keyword: additionalProperties}
+  - {path: examples/invalid/internal-citation-request-with-canonical-url.json, schema_ref: components-v1.yaml#/components/schemas/CitationValidationRequest, expected: INVALID_SCHEMA, keyword: additionalProperties}
+  - {path: examples/invalid/page-limit-over-100.json, schema_ref: components-v1.yaml#/components/parameters/Limit/schema, expected: INVALID_SCHEMA, keyword: maximum}
+  - {path: examples/invalid/question-over-4000.json, schema_ref: components-v1.yaml#/components/schemas/QuestionRequest, expected: INVALID_SCHEMA, keyword: maxLength, boundary_self_test: question_over_4000}
+  - {path: examples/invalid/public-answer-dangling-citation-ref.json, schema_ref: components-v1.yaml#/components/schemas/QuestionResult, expected: INVALID_SEMANTIC, semantic_check: public_answer}
+  - {path: examples/invalid/public-answer-duplicate-citation-ref.json, schema_ref: components-v1.yaml#/components/schemas/QuestionResult, expected: INVALID_SEMANTIC, semantic_check: public_answer}
+  - {path: examples/invalid/public-answer-wrong-claim-mapping.json, schema_ref: components-v1.yaml#/components/schemas/QuestionResult, expected: INVALID_SEMANTIC, semantic_check: public_answer}
+  - {path: examples/invalid/citation-result-missing-claim.json, schema_ref: components-v1.yaml#/components/schemas/CitationValidationResult, expected: INVALID_SEMANTIC, semantic_check: citation_claim_complete}
+  - {path: examples/invalid/citation-result-wrong-binding.json, schema_ref: components-v1.yaml#/components/schemas/CitationValidationResult, expected: INVALID_SEMANTIC, semantic_check: citation_claim_complete}
+  - {path: examples/invalid/citation-result-injected-chunk.json, schema_ref: components-v1.yaml#/components/schemas/CitationValidationResult, expected: INVALID_SEMANTIC, semantic_check: citation_claim_complete}
+  - {path: examples/invalid/index-search-result-wrong-binding.json, schema_ref: components-v1.yaml#/components/schemas/IndexSearchResult, expected: INVALID_SEMANTIC, semantic_check: binding_index}
+  - {path: examples/invalid/context-validation-request-wrong-binding.json, schema_ref: components-v1.yaml#/components/schemas/ContextValidationRequest, expected: INVALID_SEMANTIC, semantic_check: binding_context}
+  - {path: examples/invalid/retrieval-result-wrong-binding.json, schema_ref: components-v1.yaml#/components/schemas/RetrievalRunResult, expected: INVALID_SEMANTIC, semantic_check: binding_retrieval}
+  - {path: examples/invalid/citation-request-wrong-binding.json, schema_ref: components-v1.yaml#/components/schemas/CitationValidationRequest, expected: INVALID_SEMANTIC, semantic_check: binding_citation}
+  - {path: examples/invalid/context-validation-request-injected-chunk.json, schema_ref: components-v1.yaml#/components/schemas/ContextValidationRequest, expected: INVALID_SEMANTIC, semantic_check: binding_context}
+error_examples:
+  - {operation_id: askQuestion, status: '400', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
+  - {operation_id: createDocumentUpload, status: '400', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
+  - {operation_id: listDocuments, status: '400', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
+  - {operation_id: getDocument, status: '404', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
+  - {operation_id: getDocumentVersion, status: '404', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
+  - {operation_id: recordVersionReview, status: '412', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
+  - {operation_id: publishDocument, status: '412', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
+  - {operation_id: unpublishDocument, status: '412', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
+  - {operation_id: getProcessingJob, status: '404', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
+  - {operation_id: listAuditRecords, status: '400', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
+  - {operation_id: getInternalDocumentVersionMetadata, status: '404', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
+  - {operation_id: streamInternalDocumentVersionContent, status: '404', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
+  - {operation_id: checkDocumentVersionEligibilityBatch, status: '422', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
+  - {operation_id: getCanonicalMetadataBatch, status: '422', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
+  - {operation_id: getProcessingChunksBatch, status: '422', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
+  - {operation_id: searchIndex, status: '422', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
+  - {operation_id: validateIndexRetrievalContext, status: '422', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
+  - {operation_id: runRetrieval, status: '422', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
+  - {operation_id: validateCitations, status: '422', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
+contract_only_coverage: [streamInternalDocumentVersionContent]

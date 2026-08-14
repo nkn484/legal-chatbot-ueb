@@ -1,0 +1,1 @@
+{"request_binding_id":"bind-01","context_id":"ctx-01","grounded_answer":{"grounded_answer_id":"answer-01","chat_id":"chat-01","context_id":"ctx-01","snapshot_hash":"snap-0001","outcome":"ANSWER","claims":[{"claim_id":"claim-01","text":"Nội dung được căn cứ.","chunk_ids":["chunk-01"]},{"claim_id":"claim-02","text":"Căn cứ thứ hai.","chunk_ids":["chunk-02"]}]}}

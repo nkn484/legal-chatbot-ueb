@@ -1,0 +1,159 @@
+openapi: 3.1.1
+jsonSchemaDialect: https://spec.openapis.org/oas/3.1/dialect/base
+info: {title: UEB Admin API v1, version: 1.0.0}
+servers: [{url: /, description: Deployment base is injected; no domain is asserted by this contract.}]
+x-ueb-audience: ADMIN
+paths:
+  /v1/admin/documents:
+    post:
+      operationId: createDocumentUpload
+      tags: [documents]
+      description: document-service creates an ingestion request and queued job only; upload never establishes safety, publication, legal effect, or source provenance. Exactly one PDF is declared; detected MIME/signature/malware/quarantine enforcement is runtime NOT_MEASURED. Gateway routes only and does not aggregate or read a database. Owner enforces documents:write resource authorization.
+      security: [{BearerAuth: []}]
+      x-ueb-required-scopes: [documents:write]
+      x-ueb-owner-service: document-service
+      x-ueb-data-access: OWNER_SERVICE_ONLY
+      x-ueb-request-max-bytes: 26214400
+      x-ueb-decompressed-max-bytes: 52428800
+      x-ueb-timeout-ms: 5000
+      parameters: [{$ref: components-v1.yaml#/components/parameters/Idempotency-Key}]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                file: {type: string, format: binary, description: One PDF file.}
+              required: [file]
+            encoding:
+              file:
+                contentType: application/pdf
+      responses:
+        '202': {description: Ingestion accepted, headers: {Cache-Control: {schema: {const: no-store}}, Location: {$ref: components-v1.yaml#/components/headers/Location}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}, Idempotency-Replayed: {$ref: components-v1.yaml#/components/headers/Idempotency-Replayed}}, content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/AcceptedIngestion}}}}
+        '401': {$ref: '#/components/responses/Problem'}
+        '403': {$ref: '#/components/responses/Problem'}
+        '400': {$ref: '#/components/responses/Problem'}
+        '409': {$ref: '#/components/responses/Problem'}
+        '413': {$ref: '#/components/responses/Problem'}
+        '422': {$ref: '#/components/responses/Problem'}
+        '429': {$ref: '#/components/responses/ProblemRetry'}
+        '500': {$ref: '#/components/responses/Problem'}
+        '503': {$ref: '#/components/responses/ProblemRetry'}
+        '504': {$ref: '#/components/responses/Problem'}
+    get:
+      operationId: listDocuments
+      tags: [documents]
+      description: document-service lists a fixed stable document sort. Owner enforces documents:read and returns non-enumerating 404 only for a specific inaccessible resource.
+      security: [{BearerAuth: []}]
+      x-ueb-required-scopes: [documents:read]
+      x-ueb-owner-service: document-service
+      x-ueb-data-access: OWNER_SERVICE_ONLY
+      x-ueb-request-max-bytes: 0
+      x-ueb-timeout-ms: 2000
+      parameters:
+        - {$ref: components-v1.yaml#/components/parameters/Cursor}
+        - {$ref: components-v1.yaml#/components/parameters/Limit}
+        - {name: status, in: query, schema: {type: string, enum: [DRAFT, PUBLISHED, UNPUBLISHED, ARCHIVED]}}
+        - {name: active, in: query, schema: {type: boolean}}
+      responses: {'200': {description: Sanitized fixed-sort page, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}}, content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/DocumentPage}}}}, '400': {$ref: '#/components/responses/Problem'}, '401': {$ref: '#/components/responses/Problem'}, '403': {$ref: '#/components/responses/Problem'}, '429': {$ref: '#/components/responses/ProblemRetry'}, '500': {$ref: '#/components/responses/Problem'}, '503': {$ref: '#/components/responses/ProblemRetry'}, '504': {$ref: '#/components/responses/Problem'}}
+  /v1/admin/documents/{documentId}:
+    get:
+      operationId: getDocument
+      tags: [documents]
+      description: document-service owns this document. Owner enforces documents:read and uses non-enumerating 404 when resource authorization fails.
+      security: [{BearerAuth: []}]
+      x-ueb-required-scopes: [documents:read]
+      x-ueb-owner-service: document-service
+      x-ueb-data-access: OWNER_SERVICE_ONLY
+      x-ueb-request-max-bytes: 0
+      x-ueb-timeout-ms: 1000
+      parameters: [{name: documentId, in: path, required: true, schema: {$ref: components-v1.yaml#/components/schemas/OpaqueId}}]
+      responses: {'200': {description: Sanitized document, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}}, content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/DocumentView}}}}, '400': {$ref: '#/components/responses/Problem'}, '401': {$ref: '#/components/responses/Problem'}, '403': {$ref: '#/components/responses/Problem'}, '404': {$ref: '#/components/responses/Problem'}, '429': {$ref: '#/components/responses/ProblemRetry'}, '500': {$ref: '#/components/responses/Problem'}, '503': {$ref: '#/components/responses/ProblemRetry'}, '504': {$ref: '#/components/responses/Problem'}}
+  /v1/admin/documents/{documentId}/versions/{versionId}:
+    get:
+      operationId: getDocumentVersion
+      tags: [documents]
+      description: document-service owns this version. Owner enforces documents:read and uses non-enumerating 404 for inaccessible resources.
+      security: [{BearerAuth: []}]
+      x-ueb-required-scopes: [documents:read]
+      x-ueb-owner-service: document-service
+      x-ueb-data-access: OWNER_SERVICE_ONLY
+      x-ueb-request-max-bytes: 0
+      x-ueb-timeout-ms: 1000
+      parameters: [{name: documentId, in: path, required: true, schema: {$ref: components-v1.yaml#/components/schemas/OpaqueId}}, {name: versionId, in: path, required: true, schema: {$ref: components-v1.yaml#/components/schemas/OpaqueId}}]
+      responses: {'200': {description: Sanitized version, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}}, content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/DocumentVersionView}}}}, '400': {$ref: '#/components/responses/Problem'}, '401': {$ref: '#/components/responses/Problem'}, '403': {$ref: '#/components/responses/Problem'}, '404': {$ref: '#/components/responses/Problem'}, '429': {$ref: '#/components/responses/ProblemRetry'}, '500': {$ref: '#/components/responses/Problem'}, '503': {$ref: '#/components/responses/ProblemRetry'}, '504': {$ref: '#/components/responses/Problem'}}
+  /v1/admin/documents/{documentId}/versions/{versionId}/review-decisions:
+    post:
+      operationId: recordVersionReview
+      tags: [documents]
+      description: document-service records a bounded review command after documents:review and resource authorization; revision mismatch is 412 and absent precondition is 428.
+      security: [{BearerAuth: []}]
+      x-ueb-required-scopes: [documents:review]
+      x-ueb-owner-service: document-service
+      x-ueb-data-access: OWNER_SERVICE_ONLY
+      x-ueb-request-max-bytes: 1024
+      x-ueb-timeout-ms: 3000
+      parameters: [{$ref: components-v1.yaml#/components/parameters/Idempotency-Key}, {$ref: components-v1.yaml#/components/parameters/If-Match}, {name: documentId, in: path, required: true, schema: {$ref: components-v1.yaml#/components/schemas/OpaqueId}}, {name: versionId, in: path, required: true, schema: {$ref: components-v1.yaml#/components/schemas/OpaqueId}}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/ReviewDecisionRequest}}}}
+      responses: {'200': {description: Sanitized version, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}, Idempotency-Replayed: {$ref: components-v1.yaml#/components/headers/Idempotency-Replayed}}, content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/DocumentVersionView}}}}, '400': {$ref: '#/components/responses/Problem'}, '401': {$ref: '#/components/responses/Problem'}, '403': {$ref: '#/components/responses/Problem'}, '409': {$ref: '#/components/responses/Problem'}, '412': {$ref: '#/components/responses/Problem'}, '428': {$ref: '#/components/responses/Problem'}, '429': {$ref: '#/components/responses/ProblemRetry'}, '500': {$ref: '#/components/responses/Problem'}, '503': {$ref: '#/components/responses/ProblemRetry'}, '504': {$ref: '#/components/responses/Problem'}}
+  /v1/admin/documents/{documentId}/publish:
+    post:
+      operationId: publishDocument
+      tags: [documents]
+      description: document-service publishes only after documents:publish and resource authorization. It does not synchronously run Processing or Index.
+      security: [{BearerAuth: []}]
+      x-ueb-required-scopes: [documents:publish]
+      x-ueb-owner-service: document-service
+      x-ueb-data-access: OWNER_SERVICE_ONLY
+      x-ueb-request-max-bytes: 1024
+      x-ueb-timeout-ms: 3000
+      parameters: [{$ref: components-v1.yaml#/components/parameters/Idempotency-Key}, {$ref: components-v1.yaml#/components/parameters/If-Match}, {name: documentId, in: path, required: true, schema: {$ref: components-v1.yaml#/components/schemas/OpaqueId}}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/PublishRequest}}}}
+      responses: {'200': {description: Sanitized document, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}}, content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/DocumentView}}}}, '400': {$ref: '#/components/responses/Problem'}, '401': {$ref: '#/components/responses/Problem'}, '403': {$ref: '#/components/responses/Problem'}, '409': {$ref: '#/components/responses/Problem'}, '412': {$ref: '#/components/responses/Problem'}, '428': {$ref: '#/components/responses/Problem'}, '429': {$ref: '#/components/responses/ProblemRetry'}, '500': {$ref: '#/components/responses/Problem'}, '503': {$ref: '#/components/responses/ProblemRetry'}, '504': {$ref: '#/components/responses/Problem'}}
+  /v1/admin/documents/{documentId}/unpublish:
+    post:
+      operationId: unpublishDocument
+      tags: [documents]
+      description: document-service unpublishes after documents:publish and resource authorization; the bounded reason is a code, not free text.
+      security: [{BearerAuth: []}]
+      x-ueb-required-scopes: [documents:publish]
+      x-ueb-owner-service: document-service
+      x-ueb-data-access: OWNER_SERVICE_ONLY
+      x-ueb-request-max-bytes: 1024
+      x-ueb-timeout-ms: 3000
+      parameters: [{$ref: components-v1.yaml#/components/parameters/Idempotency-Key}, {$ref: components-v1.yaml#/components/parameters/If-Match}, {name: documentId, in: path, required: true, schema: {$ref: components-v1.yaml#/components/schemas/OpaqueId}}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/ReasonCodeRequest}}}}
+      responses: {'200': {description: Sanitized document, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}}, content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/DocumentView}}}}, '400': {$ref: '#/components/responses/Problem'}, '401': {$ref: '#/components/responses/Problem'}, '403': {$ref: '#/components/responses/Problem'}, '409': {$ref: '#/components/responses/Problem'}, '412': {$ref: '#/components/responses/Problem'}, '428': {$ref: '#/components/responses/Problem'}, '429': {$ref: '#/components/responses/ProblemRetry'}, '500': {$ref: '#/components/responses/Problem'}, '503': {$ref: '#/components/responses/ProblemRetry'}, '504': {$ref: '#/components/responses/Problem'}}
+  /v1/admin/processing-jobs/{jobId}:
+    get:
+      operationId: getProcessingJob
+      tags: [processing]
+      description: processing-service owns the job and enforces processing:read resource authorization; its sanitized view excludes artifacts, storage references, and failure stacks.
+      security: [{BearerAuth: []}]
+      x-ueb-required-scopes: [processing:read]
+      x-ueb-owner-service: processing-service
+      x-ueb-data-access: OWNER_SERVICE_ONLY
+      x-ueb-request-max-bytes: 0
+      x-ueb-timeout-ms: 1000
+      parameters: [{name: jobId, in: path, required: true, schema: {$ref: components-v1.yaml#/components/schemas/OpaqueId}}]
+      responses: {'200': {description: Sanitized job, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}}, content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/JobView}}}}, '400': {$ref: '#/components/responses/Problem'}, '401': {$ref: '#/components/responses/Problem'}, '403': {$ref: '#/components/responses/Problem'}, '404': {$ref: '#/components/responses/Problem'}, '429': {$ref: '#/components/responses/ProblemRetry'}, '500': {$ref: '#/components/responses/Problem'}, '503': {$ref: '#/components/responses/ProblemRetry'}, '504': {$ref: '#/components/responses/Problem'}}
+  /v1/admin/audit-records:
+    get:
+      operationId: listAuditRecords
+      tags: [audit]
+      description: audit-service lists the fixed stable audit sort. Owner enforces audit:read; only listed bounded filters are accepted, never arbitrary query or sort.
+      security: [{BearerAuth: []}]
+      x-ueb-required-scopes: [audit:read]
+      x-ueb-owner-service: audit-service
+      x-ueb-data-access: OWNER_SERVICE_ONLY
+      x-ueb-request-max-bytes: 0
+      x-ueb-timeout-ms: 2000
+      parameters: [{$ref: components-v1.yaml#/components/parameters/Cursor}, {$ref: components-v1.yaml#/components/parameters/AuditLimit}, {name: actor_id, in: query, schema: {type: string, maxLength: 128}}, {name: action_code, in: query, schema: {type: string, maxLength: 64}}, {name: service_code, in: query, schema: {type: string, maxLength: 64}}, {name: occurred_from, in: query, schema: {type: string, format: date-time}}, {name: occurred_to, in: query, schema: {type: string, format: date-time}}]
+      responses: {'200': {description: Sanitized fixed-sort audit page, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}}, content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/AuditRecordPage}}}}, '400': {$ref: '#/components/responses/Problem'}, '401': {$ref: '#/components/responses/Problem'}, '403': {$ref: '#/components/responses/Problem'}, '429': {$ref: '#/components/responses/ProblemRetry'}, '500': {$ref: '#/components/responses/Problem'}, '503': {$ref: '#/components/responses/ProblemRetry'}, '504': {$ref: '#/components/responses/Problem'}}
+components:
+  securitySchemes: {BearerAuth: {$ref: components-v1.yaml#/components/securitySchemes/BearerAuth}}
+  responses:
+    Problem: {description: Safe problem, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}}, content: {application/problem+json: {schema: {$ref: components-v1.yaml#/components/schemas/Problem}}}}
+    ProblemRetry: {description: Safe transient problem, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}, Retry-After: {$ref: components-v1.yaml#/components/headers/Retry-After}}, content: {application/problem+json: {schema: {$ref: components-v1.yaml#/components/schemas/Problem}}}}

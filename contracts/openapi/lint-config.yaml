@@ -1,0 +1,38 @@
+version: 1
+specs:
+  - public-v1.yaml
+  - admin-v1.yaml
+  - internal-document-v1.yaml
+  - internal-processing-v1.yaml
+  - internal-index-v1.yaml
+  - internal-retrieval-v1.yaml
+  - internal-citation-v1.yaml
+operation_inventory:
+  askQuestion: {spec: public-v1.yaml, audience: PUBLIC, owner: chat-service, scopes: [], max_bytes: 16384, timeout_ms: 25000}
+  createDocumentUpload: {spec: admin-v1.yaml, audience: ADMIN, owner: document-service, scopes: [documents:write], max_bytes: 26214400, timeout_ms: 5000}
+  listDocuments: {spec: admin-v1.yaml, audience: ADMIN, owner: document-service, scopes: [documents:read], max_bytes: 0, timeout_ms: 2000}
+  getDocument: {spec: admin-v1.yaml, audience: ADMIN, owner: document-service, scopes: [documents:read], max_bytes: 0, timeout_ms: 1000}
+  getDocumentVersion: {spec: admin-v1.yaml, audience: ADMIN, owner: document-service, scopes: [documents:read], max_bytes: 0, timeout_ms: 1000}
+  recordVersionReview: {spec: admin-v1.yaml, audience: ADMIN, owner: document-service, scopes: [documents:review], max_bytes: 1024, timeout_ms: 3000}
+  publishDocument: {spec: admin-v1.yaml, audience: ADMIN, owner: document-service, scopes: [documents:publish], max_bytes: 1024, timeout_ms: 3000}
+  unpublishDocument: {spec: admin-v1.yaml, audience: ADMIN, owner: document-service, scopes: [documents:publish], max_bytes: 1024, timeout_ms: 3000}
+  getProcessingJob: {spec: admin-v1.yaml, audience: ADMIN, owner: processing-service, scopes: [processing:read], max_bytes: 0, timeout_ms: 1000}
+  listAuditRecords: {spec: admin-v1.yaml, audience: ADMIN, owner: audit-service, scopes: [audit:read], max_bytes: 0, timeout_ms: 2000}
+  getInternalDocumentVersionMetadata: {spec: internal-document-v1.yaml, audience: INTERNAL, owner: document-service, scopes: [document.version:read], max_bytes: 0, timeout_ms: 1000}
+  streamInternalDocumentVersionContent: {spec: internal-document-v1.yaml, audience: INTERNAL, owner: document-service, scopes: [document.content:read], max_bytes: 0, timeout_ms: 10000}
+  checkDocumentVersionEligibilityBatch: {spec: internal-document-v1.yaml, audience: INTERNAL, owner: document-service, scopes: [document.eligibility:read], max_bytes: 16384, timeout_ms: 1000}
+  getCanonicalMetadataBatch: {spec: internal-document-v1.yaml, audience: INTERNAL, owner: document-service, scopes: [document.metadata:read], max_bytes: 16384, timeout_ms: 1000}
+  getProcessingChunksBatch: {spec: internal-processing-v1.yaml, audience: INTERNAL, owner: processing-service, scopes: [processing.chunks:read], max_bytes: 16384, timeout_ms: 2000}
+  searchIndex: {spec: internal-index-v1.yaml, audience: INTERNAL, owner: index-service, scopes: [index.search], max_bytes: 8192, timeout_ms: 2000}
+  validateIndexRetrievalContext: {spec: internal-index-v1.yaml, audience: INTERNAL, owner: index-service, scopes: [index.context:validate], max_bytes: 16384, timeout_ms: 1000}
+  runRetrieval: {spec: internal-retrieval-v1.yaml, audience: INTERNAL, owner: retrieval-service, scopes: [retrieval.run], max_bytes: 8192, timeout_ms: 8000}
+  validateCitations: {spec: internal-citation-v1.yaml, audience: INTERNAL, owner: citation-service, scopes: [citation.validate], max_bytes: 262144, timeout_ms: 8000}
+forbidden_path_tokens: [provider, source-systems, connector, feedback, evaluation, training]
+forbidden_property_tokens: [secret, password, credential, api_key, apikey, authorization, access_token, refresh_token, private_key, storage_key, object_key, bucket, presign, signed_url, manifest_uri]
+required_extensions: [x-ueb-owner-service, x-ueb-data-access, x-ueb-request-max-bytes, x-ueb-timeout-ms]
+defined_headers: [Idempotency-Key, If-Match, X-Request-Id, X-Request-Deadline-At, Retry-After, Idempotency-Replayed, Location]
+success_required_headers: [Cache-Control, X-Request-Id]
+problem_required_headers: [Cache-Control, X-Request-Id]
+public_allowed_paths: [/v1/questions]
+external_local_ref_policy: local_under_contracts_only
+expected_examples: examples/manifest.yaml

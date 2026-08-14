@@ -1,0 +1,25 @@
+openapi: 3.1.1
+jsonSchemaDialect: https://spec.openapis.org/oas/3.1/dialect/base
+info: {title: UEB Internal Citation API v1, version: 1.0.0}
+servers: [{url: /, description: Deployment base is injected; no domain is asserted by this contract.}]
+x-ueb-audience: INTERNAL
+paths:
+  /internal/v1/citation-validations:
+    post:
+      operationId: validateCitations
+      tags: [citation-internal]
+      description: citation-service validates an ANSWER GroundedAnswer bound to the same request context after scope and resource authorization. The caller supplies no title, URL, excerpt, or locator; citation-service renders canonical fields and returns VALID citations or a safe REFUSAL.
+      security: [{BearerAuth: []}]
+      x-ueb-required-scopes: [citation.validate]
+      x-ueb-owner-service: citation-service
+      x-ueb-data-access: OWNER_SERVICE_ONLY
+      x-ueb-request-max-bytes: 262144
+      x-ueb-timeout-ms: 8000
+      parameters: [{$ref: components-v1.yaml#/components/parameters/X-Request-Deadline-At}, {$ref: components-v1.yaml#/components/parameters/Idempotency-Key}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/CitationValidationRequest}}}}
+      responses: {'200': {description: Canonical citations rendered by the owner service, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}}, content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/CitationValidationResult}}}}, '400': {$ref: '#/components/responses/Problem'}, '401': {$ref: '#/components/responses/Problem'}, '403': {$ref: '#/components/responses/Problem'}, '409': {$ref: '#/components/responses/Problem'}, '413': {$ref: '#/components/responses/Problem'}, '422': {$ref: '#/components/responses/Problem'}, '429': {$ref: '#/components/responses/ProblemRetry'}, '500': {$ref: '#/components/responses/Problem'}, '503': {$ref: '#/components/responses/ProblemRetry'}, '504': {$ref: '#/components/responses/Problem'}}
+components:
+  securitySchemes: {BearerAuth: {$ref: components-v1.yaml#/components/securitySchemes/BearerAuth}}
+  responses:
+    Problem: {description: Safe problem, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}}, content: {application/problem+json: {schema: {$ref: components-v1.yaml#/components/schemas/Problem}}}}
+    ProblemRetry: {description: Safe transient problem, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}, Retry-After: {$ref: components-v1.yaml#/components/headers/Retry-After}}, content: {application/problem+json: {schema: {$ref: components-v1.yaml#/components/schemas/Problem}}}}

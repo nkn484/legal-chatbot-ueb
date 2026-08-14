@@ -1,0 +1,65 @@
+openapi: 3.1.1
+jsonSchemaDialect: https://spec.openapis.org/oas/3.1/dialect/base
+info: {title: UEB Internal Document API v1, version: 1.0.0}
+servers: [{url: /, description: Deployment base is injected; no domain is asserted by this contract.}]
+x-ueb-audience: INTERNAL
+paths:
+  /internal/v1/document-versions/{versionId}/metadata:
+    get:
+      operationId: getInternalDocumentVersionMetadata
+      tags: [document-internal]
+      description: document-service owns and authorizes the version. Metadata is sanitized and excludes any storage location.
+      security: [{BearerAuth: []}]
+      x-ueb-required-scopes: [document.version:read]
+      x-ueb-owner-service: document-service
+      x-ueb-data-access: OWNER_SERVICE_ONLY
+      x-ueb-request-max-bytes: 0
+      x-ueb-timeout-ms: 1000
+      parameters: [{$ref: components-v1.yaml#/components/parameters/X-Request-Deadline-At}, {name: versionId, in: path, required: true, schema: {$ref: components-v1.yaml#/components/schemas/OpaqueId}}]
+      responses: {'200': {description: Sanitized metadata response is at most 16 KiB, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}}, content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/DocumentVersionMetadataView}}}}, '400': {$ref: '#/components/responses/Problem'}, '401': {$ref: '#/components/responses/Problem'}, '403': {$ref: '#/components/responses/Problem'}, '404': {$ref: '#/components/responses/Problem'}, '429': {$ref: '#/components/responses/ProblemRetry'}, '500': {$ref: '#/components/responses/Problem'}, '503': {$ref: '#/components/responses/ProblemRetry'}, '504': {$ref: '#/components/responses/Problem'}}
+  /internal/v1/document-versions/{versionId}/content:
+    get:
+      operationId: streamInternalDocumentVersionContent
+      tags: [document-internal]
+      description: document-service authorizes and proxies PDF content; it returns neither a URL nor a key.
+      security: [{BearerAuth: []}]
+      x-ueb-required-scopes: [document.content:read]
+      x-ueb-owner-service: document-service
+      x-ueb-data-access: OWNER_SERVICE_ONLY
+      x-ueb-request-max-bytes: 0
+      x-ueb-timeout-ms: 10000
+      parameters: [{$ref: components-v1.yaml#/components/parameters/X-Request-Deadline-At}, {name: versionId, in: path, required: true, schema: {$ref: components-v1.yaml#/components/schemas/OpaqueId}}]
+      responses: {'200': {description: Proxied PDF, maximum 25 MiB., headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}}, content: {application/pdf: {schema: {type: string, format: binary}}}}, '400': {$ref: '#/components/responses/Problem'}, '401': {$ref: '#/components/responses/Problem'}, '403': {$ref: '#/components/responses/Problem'}, '404': {$ref: '#/components/responses/Problem'}, '429': {$ref: '#/components/responses/ProblemRetry'}, '500': {$ref: '#/components/responses/Problem'}, '503': {$ref: '#/components/responses/ProblemRetry'}, '504': {$ref: '#/components/responses/Problem'}}
+  /internal/v1/document-versions/eligibility:batch:
+    post:
+      operationId: checkDocumentVersionEligibilityBatch
+      tags: [document-internal]
+      description: document-service checks retrieval eligibility for up to 100 owner version identifiers after scope and resource authorization.
+      security: [{BearerAuth: []}]
+      x-ueb-required-scopes: [document.eligibility:read]
+      x-ueb-owner-service: document-service
+      x-ueb-data-access: OWNER_SERVICE_ONLY
+      x-ueb-request-max-bytes: 16384
+      x-ueb-timeout-ms: 1000
+      parameters: [{$ref: components-v1.yaml#/components/parameters/X-Request-Deadline-At}, {$ref: components-v1.yaml#/components/parameters/Idempotency-Key}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/IdBatch}}}}
+      responses: {'200': {description: Eligibility outcomes, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}}, content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/EligibilityBatchResult}}}}, '400': {$ref: '#/components/responses/Problem'}, '401': {$ref: '#/components/responses/Problem'}, '403': {$ref: '#/components/responses/Problem'}, '409': {$ref: '#/components/responses/Problem'}, '413': {$ref: '#/components/responses/Problem'}, '422': {$ref: '#/components/responses/Problem'}, '429': {$ref: '#/components/responses/ProblemRetry'}, '500': {$ref: '#/components/responses/Problem'}, '503': {$ref: '#/components/responses/ProblemRetry'}, '504': {$ref: '#/components/responses/Problem'}}
+  /internal/v1/documents/canonical-metadata:batch:
+    post:
+      operationId: getCanonicalMetadataBatch
+      tags: [document-internal]
+      description: document-service returns canonical legal metadata for at most 50 authorized bindings; no excerpt or chunk is returned.
+      security: [{BearerAuth: []}]
+      x-ueb-required-scopes: [document.metadata:read]
+      x-ueb-owner-service: document-service
+      x-ueb-data-access: OWNER_SERVICE_ONLY
+      x-ueb-request-max-bytes: 16384
+      x-ueb-timeout-ms: 1000
+      parameters: [{$ref: components-v1.yaml#/components/parameters/X-Request-Deadline-At}, {$ref: components-v1.yaml#/components/parameters/Idempotency-Key}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/CanonicalMetadataBatch}}}}
+      responses: {'200': {description: Canonical metadata only, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}}, content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/CanonicalMetadataBatchResult}}}}, '400': {$ref: '#/components/responses/Problem'}, '401': {$ref: '#/components/responses/Problem'}, '403': {$ref: '#/components/responses/Problem'}, '409': {$ref: '#/components/responses/Problem'}, '413': {$ref: '#/components/responses/Problem'}, '422': {$ref: '#/components/responses/Problem'}, '429': {$ref: '#/components/responses/ProblemRetry'}, '500': {$ref: '#/components/responses/Problem'}, '503': {$ref: '#/components/responses/ProblemRetry'}, '504': {$ref: '#/components/responses/Problem'}}
+components:
+  securitySchemes: {BearerAuth: {$ref: components-v1.yaml#/components/securitySchemes/BearerAuth}}
+  responses:
+    Problem: {description: Safe problem, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}}, content: {application/problem+json: {schema: {$ref: components-v1.yaml#/components/schemas/Problem}}}}
+    ProblemRetry: {description: Safe transient problem, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}, Retry-After: {$ref: components-v1.yaml#/components/headers/Retry-After}}, content: {application/problem+json: {schema: {$ref: components-v1.yaml#/components/schemas/Problem}}}}
