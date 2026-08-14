@@ -24,12 +24,12 @@ SCHEMA_NAMES = (
     "processing.schema.json", "index.schema.json", "retrieval.schema.json",
     "chat.schema.json", "citation.schema.json", "provider-config-view.schema.json",
     "feedback.schema.json", "evaluation.schema.json", "error.schema.json",
-    "state-machine.schema.json",
+    "state-machine.schema.json", "source-connector-port.schema.json",
 )
 EXPECTED_CONCEPTS = (
     "Document", "Version", "Job", "Chunk", "IndexProjection", "RetrievalRun",
     "Chat", "GroundedAnswer", "Citation", "ProviderConfigView", "Feedback",
-    "GoldenAnswer", "Dataset", "Evaluation", "Candidate",
+    "GoldenAnswer", "Dataset", "Evaluation", "Candidate", "SourceSystem",
 )
 STATE_SOURCES = {
     "Document": ("document.schema.json", "Document", "status"),
@@ -47,6 +47,7 @@ STATE_SOURCES = {
     "Dataset": ("evaluation.schema.json", "Dataset", "status"),
     "Evaluation": ("evaluation.schema.json", "Evaluation", "status"),
     "Candidate": ("evaluation.schema.json", "Candidate", "status"),
+    "SourceSystem": ("source-connector-port.schema.json", "SourceSystem", "lifecycle_status"),
 }
 FORBIDDEN_PROVIDER_KEYS = (
     "secret", "api_key", "apikey", "token", "password", "credential",
@@ -56,6 +57,15 @@ FORBIDDEN_GROUNDED_TOKENS = (
     "url", "canonical", "official_title", "title", "document_number", "page",
     "locator", "excerpt", "provider", "citation", "source", "render",
 )
+FORBIDDEN_SOURCE_KEYS = (
+    "secret", "api_key", "apikey", "token", "password", "credential",
+    "private_key", "access_key", "refresh_key", "bearer", "authorization",
+)
+MUTATION_TOKENS = (
+    "create", "update", "remove", "delete", "write", "add", "insert", "save",
+    "set", "publish", "upsert", "patch", "post", "put",
+)
+VBQPPL_ENDPOINT = "https://ws.vbpl.vn/vbqppl.asmx"
 
 
 def load_json(path: Path) -> Any:
@@ -86,6 +96,16 @@ def walk_property_keys(value: object) -> Iterable[str]:
             yield from walk_property_keys(nested)
 
 
+def walk_instance_keys(value: object) -> Iterable[str]:
+    if isinstance(value, dict):
+        for key, nested in value.items():
+            yield key
+            yield from walk_instance_keys(nested)
+    elif isinstance(value, list):
+        for nested in value:
+            yield from walk_instance_keys(nested)
+
+
 def flatten_errors(errors: Iterable[Any]) -> Iterable[Any]:
     for error in errors:
         yield error
@@ -108,6 +128,28 @@ def add_error(errors: list[str], condition: bool, message: str) -> None:
 
 def has_required_not(branch: dict[str, Any], property_name: str) -> bool:
     return branch.get("not") == {"required": [property_name]}
+
+
+def fixed_source_catalog(instance: dict[str, Any]) -> bool:
+    systems = instance.get("systems", [])
+    if not isinstance(systems, list) or [system.get("source_system_id") for system in systems] != ["VBQPPL", "VNU", "UEB"]:
+        return False
+    expected = {
+        "VBQPPL": ("ACTIVE", "CORE", 1, "NOT_IMPLEMENTED", "SOAP_ASMX", VBQPPL_ENDPOINT),
+        "VNU": ("PLANNED", "LATER", 2, "NOT_IMPLEMENTED", "NOT_CONFIGURED", None),
+        "UEB": ("PLANNED", "LATER", 3, "NOT_IMPLEMENTED", "NOT_CONFIGURED", None),
+    }
+    for system in systems:
+        status, phase, priority, implementation, transport, endpoint = expected[system["source_system_id"]]
+        policy = system.get("operation_policy", {})
+        if (system.get("lifecycle_status"), system.get("rollout_phase"), system.get("rollout_priority"), system.get("connector_implementation_status"), system.get("transport_profile"), system.get("endpoint_url")) != (status, phase, priority, implementation, transport, endpoint):
+            return False
+        if policy.get("access_mode") != "READ_ONLY" or policy.get("enforcement") != "DENY_BY_DEFAULT" or policy.get("operation_allowlist_status") != "PENDING_VERIFICATION" or policy.get("allowed_operations") != [] or set(policy.get("denied_operation_classes", [])) != {"CREATE", "UPDATE", "REMOVE", "DELETE", "WRITE"}:
+            return False
+    return True
+
+
+SOURCE_SEMANTIC_CHECKS = {"fixed_source_catalog": fixed_source_catalog}
 
 
 def main() -> int:
@@ -137,7 +179,7 @@ def main() -> int:
             Draft202012Validator.check_schema(schema)
         except Exception as exc:
             errors.append(f"{name}: invalid metaschema: {exc}")
-    add_error(errors, len(schemas) == len(SCHEMA_NAMES), "must load exactly 13 schemas")
+    add_error(errors, len(schemas) == len(SCHEMA_NAMES), "must load exactly 14 schemas")
     add_error(errors, len(schema_ids) == len(set(schema_ids)), "schema $ids are not unique")
 
     registry = Registry()
@@ -182,7 +224,7 @@ def main() -> int:
 
     machines = catalog.get("machines", []) if isinstance(catalog, dict) else []
     concepts = [machine.get("concept") for machine in machines if isinstance(machine, dict)]
-    add_error(errors, len(machines) == 15, "catalog must have exactly 15 machines")
+    add_error(errors, len(machines) == 16, "catalog must have exactly 16 machines")
     add_error(errors, set(concepts) == set(EXPECTED_CONCEPTS) and len(concepts) == len(set(concepts)), "catalog concepts must occur exactly once")
     state_count = 0
     transition_count = 0
@@ -211,7 +253,6 @@ def main() -> int:
     fixtures = manifest.get("fixtures", [])
     declared_paths = {fixture.get("path") for fixture in fixtures if isinstance(fixture, dict)}
     actual_paths = {path.relative_to(EXAMPLES).as_posix() for path in EXAMPLES.rglob("*.json") if path.name != "manifest.json"}
-    add_error(errors, len(fixtures) == 24, "manifest must list exactly 24 fixtures")
     add_error(errors, declared_paths == actual_paths and len(declared_paths) == len(fixtures), "manifest fixture paths must exactly match fixture files")
     valid_fixture_count = 0
     invalid_fixture_count = 0
@@ -220,9 +261,16 @@ def main() -> int:
         schema = schemas[fixture["schema"]]
         validator = Draft202012Validator({"$ref": schema["$id"] + "#/$defs/" + fixture["definition"]}, registry=registry, format_checker=format_checker)
         fixture_errors = list(flatten_errors(validator.iter_errors(instance)))
-        if fixture["expected"] == "VALID":
+        expected = fixture["expected"]
+        add_error(errors, expected in {"VALID", "INVALID"}, f"fixture {fixture['path']} has unsupported expected value {expected}")
+        semantic_name = fixture.get("semantic_check")
+        if semantic_name is not None:
+            add_error(errors, semantic_name in SOURCE_SEMANTIC_CHECKS, f"fixture {fixture['path']} has unknown semantic check {semantic_name}")
+        semantic_result = SOURCE_SEMANTIC_CHECKS[semantic_name](instance) if semantic_name in SOURCE_SEMANTIC_CHECKS else semantic_name is None
+        if expected == "VALID":
             valid_fixture_count += 1
             add_error(errors, not fixture_errors, f"fixture {fixture['path']} expected VALID")
+            add_error(errors, semantic_result, f"fixture {fixture['path']} failed semantic check {semantic_name}")
         else:
             invalid_fixture_count += 1
             add_error(errors, bool(fixture_errors), f"fixture {fixture['path']} expected INVALID")
@@ -248,9 +296,44 @@ def main() -> int:
     sufficient_then, insufficient_then = (rule["then"] for rule in retrieval["allOf"])
     claim = schemas["chat.schema.json"]["$defs"]["GroundedClaim"]
     candidate = schemas["evaluation.schema.json"]["$defs"]["Candidate"]
+    source_schema = schemas["source-connector-port.schema.json"]
+    source_defs = source_schema["$defs"]
+    source_port_definitions = [
+        source_defs[name] for name in (
+            "SourceSystem", "SourceDocumentRef", "SourceDiscoveryRequest",
+            "SourceDiscoveryPage", "SourceFetchRequest", "FetchedSourceDocument",
+        )
+    ]
+    source_fixture_paths = [fixture["path"] for fixture in fixtures if "source-" in fixture["path"]]
+    source_fixture_keys = [key.lower() for path in source_fixture_paths for key in walk_instance_keys(load_json(EXAMPLES / path))]
+    source_fixture_instances = [load_json(EXAMPLES / path) for path in source_fixture_paths]
+    source_port_keys = [key.lower() for definition in source_port_definitions for key in walk_property_keys(definition)]
+    source_system_branches = source_defs["SourceSystem"].get("oneOf", [])
+    planned_fixture_urls_absent = all(
+        "endpoint_url" not in instance and "source_document_url" not in instance and instance.get("transport_profile") != "SOAP_ASMX" and instance.get("connector_implementation_status") != "IMPLEMENTED"
+        for instance in source_fixture_instances
+        if isinstance(instance, dict) and instance.get("source_system_id") in {"VNU", "UEB"}
+    )
     provider_machine = next((machine for machine in machines if machine.get("concept") == "ProviderConfigView"), {})
     provider_invariants = provider_machine.get("invariants", [])
     representation_invariant = next((invariant for invariant in provider_invariants if invariant.get("enforcement") == "HUMAN_GATE"), {})
+    source_system_validator = Draft202012Validator({"$ref": source_schema["$id"] + "#/$defs/SourceSystem"}, registry=registry, format_checker=format_checker)
+    source_ref_validator = Draft202012Validator({"$ref": source_schema["$id"] + "#/$defs/SourceDocumentRef"}, registry=registry, format_checker=format_checker)
+    policy = {"access_mode": "READ_ONLY", "enforcement": "DENY_BY_DEFAULT", "operation_allowlist_status": "PENDING_VERIFICATION", "allowed_operations": [], "denied_operation_classes": ["CREATE", "UPDATE", "REMOVE", "DELETE", "WRITE"]}
+    lifecycle_instances = []
+    for lifecycle_status in ("ACTIVE", "PLANNED", "DISABLED", "RETIRED"):
+        instance = {"source_system_id": "VBQPPL", "display_name": "Synthetic lifecycle validation", "lifecycle_status": lifecycle_status, "rollout_priority": 1, "connector_implementation_status": "NOT_IMPLEMENTED", "operation_policy": policy, "description": "In-memory schema reachability check."}
+        if lifecycle_status == "ACTIVE":
+            instance.update({"rollout_phase": "CORE", "transport_profile": "SOAP_ASMX", "endpoint_url": VBQPPL_ENDPOINT})
+        else:
+            instance.update({"rollout_phase": "LATER", "transport_profile": "NOT_CONFIGURED"})
+        lifecycle_instances.append(instance)
+    reachable_states = {instance["lifecycle_status"] for instance in lifecycle_instances if not list(source_system_validator.iter_errors(instance))}
+    source_machine = next((machine for machine in machines if machine.get("concept") == "SourceSystem"), {})
+    source_edges_reachable = all(edge.get("from") in reachable_states and edge.get("to") in reachable_states for edge in source_machine.get("transitions", []))
+    registry_endpoint_ref = {"source_system_id": "VBQPPL", "source_external_id": "vbqppl-synthetic-001", "source_document_url": VBQPPL_ENDPOINT, "source_updated_at": "2026-08-13T00:00:00Z", "fetched_at": "2026-08-13T00:01:00Z", "raw_payload_hash": "sha256:vbqppl-synthetic-0001", "mapping_version": "vbqppl-map-v1"}
+    registry_endpoint_errors = list(flatten_errors(source_ref_validator.iter_errors(registry_endpoint_ref)))
+    catalog_systems_schema = source_defs["SourceSystemCatalog"]["properties"]["systems"]
     security_checks = {
         "provider_no_forbidden_keys": not [key for key in provider_keys if any(token in key for token in FORBIDDEN_PROVIDER_KEYS)],
         "grounded_answer_metadata_excluded": not [item for item in [key.lower() for key in walk_property_keys(grounded)] + [ref.lower() for ref in walk_refs(grounded)] if any(token in item for token in FORBIDDEN_GROUNDED_TOKENS)],
@@ -263,6 +346,22 @@ def main() -> int:
         "candidate_no_activation": not set(candidate["properties"]["status"]["enum"]).intersection({"ACTIVE", "DEPLOYED", "RELEASED"}) and not any("activation" in key.lower() or "release" in key.lower() for key in walk_property_keys(candidate)),
         "representation_not_activation": "ACTIVE" in provider["properties"]["status"]["enum"] and representation_invariant.get("enforcement") == "HUMAN_GATE" and all(term in representation_invariant.get("description", "").lower() for term in ("later", "separate", "rollback")) and ("single" in representation_invariant.get("description", "").lower() or "one answer provider" in representation_invariant.get("description", "").lower()),
         "fake_provider_key_is_null": load_json(EXAMPLES / "invalid/provider-config-with-api-key.json").get("api_key") is None,
+        "source_property_keys_exclude_sensitive_material": not [key for key in source_port_keys + source_fixture_keys if any(token in key for token in FORBIDDEN_SOURCE_KEYS)],
+        "source_catalog_fixed_governance": fixed_source_catalog(load_json(EXAMPLES / "success/source-system-catalog.json")),
+        "source_catalog_structural_exact": catalog_systems_schema.get("minItems") == 3 and catalog_systems_schema.get("maxItems") == 3 and catalog_systems_schema.get("items") is False and [item.get("$ref") for item in catalog_systems_schema.get("prefixItems", [])] == ["#/$defs/VBQPPLCurrent", "#/$defs/VNUCurrent", "#/$defs/UEBCurrent"],
+        "source_lifecycle_states_schema_reachable": reachable_states == {"ACTIVE", "PLANNED", "DISABLED", "RETIRED"} and source_edges_reachable,
+        "source_connector_not_implemented": all(system.get("connector_implementation_status") == "NOT_IMPLEMENTED" for system in load_json(EXAMPLES / "success/source-system-catalog.json")["systems"]),
+        "source_operation_allowlist_empty_pending": all(system["operation_policy"].get("operation_allowlist_status") == "PENDING_VERIFICATION" and system["operation_policy"].get("allowed_operations") == [] for system in load_json(EXAMPLES / "success/source-system-catalog.json")["systems"]),
+        "source_port_active_id_only": source_defs["ActiveSourceSystemId"].get("const") == "VBQPPL" and all(source_defs[name]["properties"]["source_system_id"].get("$ref") == "#/$defs/ActiveSourceSystemId" for name in ("SourceDocumentRef", "SourceDiscoveryRequest", "SourceDiscoveryPage", "SourceFetchRequest")) and source_defs["FetchedSourceDocument"]["properties"]["source_ref"].get("$ref") == "#/$defs/SourceDocumentRef",
+        "source_ref_required_fields_declared": set(("source_system_id", "source_external_id", "source_document_url", "source_updated_at", "fetched_at", "raw_payload_hash", "mapping_version")).issubset(source_defs["SourceDocumentRef"].get("required", [])),
+        "source_ref_url_https_vbqppl_pattern": source_defs["SourceDocumentRef"]["properties"]["source_document_url"].get("format") == "uri" and source_defs["SourceDocumentRef"]["properties"]["source_document_url"].get("pattern") == "^https://ws\\.vbpl\\.vn(?:/|$)",
+        "source_ref_rejects_registry_endpoint": any(error.validator == "not" for error in registry_endpoint_errors),
+        "source_version_origin_exclusive": "ingestion_origin" in schemas["document.schema.json"]["$defs"]["Version"].get("required", []) and len(schemas["document.schema.json"]["$defs"]["Version"].get("allOf", [])) == 2,
+        "source_port_dtos_exclude_endpoint_operation": not any(key in {"endpoint_url", "allowed_operations", "operation", "operation_name"} for definition in source_port_definitions[2:] for key in walk_property_keys(definition)),
+        "source_sensitive_key_self_test": "credential" in set(walk_instance_keys({"nested": {"credential": None}})),
+        "planned_sources_have_no_url_fixture": planned_fixture_urls_absent,
+        "rollout_not_legal_authority": "legal" in source_defs["SourceSystem"].get("description", "").lower() and "ranking" in source_defs["SourceSystem"]["properties"]["rollout_priority"].get("description", "").lower(),
+        "fixture_expected_values_strict": all(fixture.get("expected") in {"VALID", "INVALID"} for fixture in fixtures),
     }
     for check_name, passed in security_checks.items():
         add_error(errors, passed, f"security/invariant check failed: {check_name}")

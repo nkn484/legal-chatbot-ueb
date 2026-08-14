@@ -6,6 +6,8 @@
 {"path":"success/provider-config-view.json","schema":"provider-config-view.schema.json","definition":"ProviderConfigView","expected":"VALID"},
 {"path":"success/dataset-frozen.json","schema":"evaluation.schema.json","definition":"Dataset","expected":"VALID"},
 {"path":"success/golden-answer-approved.json","schema":"feedback.schema.json","definition":"GoldenAnswer","expected":"VALID"},
+{"path":"success/source-system-catalog.json","schema":"source-connector-port.schema.json","definition":"SourceSystemCatalog","expected":"VALID","semantic_check":"fixed_source_catalog"},
+{"path":"success/version-upload.json","schema":"document.schema.json","definition":"Version","expected":"VALID"},
 {"path":"refusal/grounded-answer-insufficient.json","schema":"chat.schema.json","definition":"GroundedAnswer","expected":"VALID"},
 {"path":"refusal/citation-invalid.json","schema":"citation.schema.json","definition":"Citation","expected":"VALID"},
 {"path":"refusal/citation-revoked.json","schema":"citation.schema.json","definition":"Citation","expected":"VALID"},
@@ -22,5 +24,17 @@
 {"path":"invalid/dataset-frozen-missing-metadata.json","schema":"evaluation.schema.json","definition":"Dataset","expected":"INVALID","error_keyword":"required","error_path":""},
 {"path":"invalid/dataset-frozen-empty-members.json","schema":"evaluation.schema.json","definition":"Dataset","expected":"INVALID","error_keyword":"minItems","error_path":"members"},
 {"path":"invalid/retrieval-insufficient-missing-refusal.json","schema":"retrieval.schema.json","definition":"RetrievalRun","expected":"INVALID","error_keyword":"required","error_path":""},
-{"path":"invalid/candidate-active-status.json","schema":"evaluation.schema.json","definition":"Candidate","expected":"INVALID","error_keyword":"enum","error_path":"status"}
+{"path":"invalid/candidate-active-status.json","schema":"evaluation.schema.json","definition":"Candidate","expected":"INVALID","error_keyword":"enum","error_path":"status"},
+{"path":"invalid/source-system-vnu-wrong-priority.json","schema":"source-connector-port.schema.json","definition":"SourceSystem","expected":"INVALID","error_keyword":"oneOf","error_path":""},
+{"path":"invalid/source-system-ueb-wrong-priority.json","schema":"source-connector-port.schema.json","definition":"SourceSystem","expected":"INVALID","error_keyword":"oneOf","error_path":""},
+{"path":"invalid/source-system-vbqppl-write-operation.json","schema":"source-connector-port.schema.json","definition":"SourceSystem","expected":"INVALID","error_keyword":"maxItems","error_path":"operation_policy/allowed_operations"},
+{"path":"invalid/source-system-vbqppl-unverified-nonempty-allowlist.json","schema":"source-connector-port.schema.json","definition":"SourceSystem","expected":"INVALID","error_keyword":"maxItems","error_path":"operation_policy/allowed_operations"},
+{"path":"invalid/source-system-catalog-duplicate.json","schema":"source-connector-port.schema.json","definition":"SourceSystemCatalog","expected":"INVALID","error_keyword":"const","error_path":"systems/1/source_system_id"},
+{"path":"invalid/source-system-catalog-reordered.json","schema":"source-connector-port.schema.json","definition":"SourceSystemCatalog","expected":"INVALID","error_keyword":"const","error_path":"systems/0/source_system_id"},
+{"path":"invalid/source-document-ref-vnu.json","schema":"source-connector-port.schema.json","definition":"SourceDocumentRef","expected":"INVALID","error_keyword":"const","error_path":"source_system_id"},
+{"path":"invalid/source-document-ref-ueb.json","schema":"source-connector-port.schema.json","definition":"SourceDocumentRef","expected":"INVALID","error_keyword":"const","error_path":"source_system_id"},
+{"path":"invalid/source-document-ref-foreign-host.json","schema":"source-connector-port.schema.json","definition":"SourceDocumentRef","expected":"INVALID","error_keyword":"pattern","error_path":"source_document_url"},
+{"path":"invalid/source-document-ref-missing-mapping-version.json","schema":"source-connector-port.schema.json","definition":"SourceDocumentRef","expected":"INVALID","error_keyword":"required","error_path":""},
+{"path":"invalid/source-document-ref-registry-endpoint.json","schema":"source-connector-port.schema.json","definition":"SourceDocumentRef","expected":"INVALID","error_keyword":"not","error_path":""},
+{"path":"invalid/version-source-fetch-missing-ref.json","schema":"document.schema.json","definition":"Version","expected":"INVALID","error_keyword":"required","error_path":""}
 ]}
