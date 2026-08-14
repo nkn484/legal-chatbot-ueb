@@ -1,0 +1,845 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/legal-chatbot/events/v1/later-messages.schema.json",
+  "title": "Later, non-routable message components",
+  "$defs": {
+    "providerConfigurationValidated": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.provider.configuration.validated.v1"
+            },
+            "aggregate_type": {
+              "const": "ProviderConfiguration"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "configuration_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "configuration_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "configuration_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "validation_code": {
+                  "$ref": "common.schema.json#/$defs/ReasonCode"
+                }
+              },
+              "required": [
+                "configuration_id",
+                "configuration_revision",
+                "configuration_hash",
+                "validation_code"
+              ]
+            },
+            "producer_service": {
+              "const": "provider-service"
+            }
+          }
+        }
+      ]
+    },
+    "providerConfigurationActivated": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.provider.configuration.activated.v1"
+            },
+            "aggregate_type": {
+              "const": "ProviderConfiguration"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "configuration_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "configuration_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "configuration_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "validation_code": {
+                  "$ref": "common.schema.json#/$defs/ReasonCode"
+                }
+              },
+              "required": [
+                "configuration_id",
+                "configuration_revision",
+                "configuration_hash",
+                "validation_code"
+              ]
+            },
+            "producer_service": {
+              "const": "provider-service"
+            }
+          }
+        }
+      ]
+    },
+    "providerConfigurationDisabled": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.provider.configuration.disabled.v1"
+            },
+            "aggregate_type": {
+              "const": "ProviderConfiguration"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "configuration_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "configuration_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "reason_code": {
+                  "$ref": "common.schema.json#/$defs/ReasonCode"
+                },
+                "detail_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                }
+              },
+              "required": [
+                "configuration_id",
+                "configuration_revision",
+                "reason_code",
+                "detail_hash"
+              ]
+            },
+            "producer_service": {
+              "const": "provider-service"
+            }
+          }
+        }
+      ]
+    },
+    "providerConfigurationRetired": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.provider.configuration.retired.v1"
+            },
+            "aggregate_type": {
+              "const": "ProviderConfiguration"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "configuration_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "configuration_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "reason_code": {
+                  "$ref": "common.schema.json#/$defs/ReasonCode"
+                },
+                "detail_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                }
+              },
+              "required": [
+                "configuration_id",
+                "configuration_revision",
+                "reason_code",
+                "detail_hash"
+              ]
+            },
+            "producer_service": {
+              "const": "provider-service"
+            }
+          }
+        }
+      ]
+    },
+    "chatAnswerSnapshotAvailable": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.chat.answer.snapshot.available.v1"
+            },
+            "aggregate_type": {
+              "const": "ChatAnswer"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "answer_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "answer_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "snapshot_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "citation_set_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                }
+              },
+              "required": [
+                "answer_id",
+                "answer_revision",
+                "snapshot_hash",
+                "citation_set_hash"
+              ]
+            },
+            "producer_service": {
+              "const": "chat-service"
+            }
+          }
+        }
+      ]
+    },
+    "feedbackRecorded": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.feedback.recorded.v1"
+            },
+            "aggregate_type": {
+              "const": "Feedback"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "feedback_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "feedback_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "answer_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "category_code": {
+                  "$ref": "common.schema.json#/$defs/ReasonCode"
+                },
+                "status_code": {
+                  "$ref": "common.schema.json#/$defs/ReasonCode"
+                },
+                "detail_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                }
+              },
+              "required": [
+                "feedback_id",
+                "feedback_revision",
+                "answer_id",
+                "category_code",
+                "status_code",
+                "detail_hash"
+              ]
+            },
+            "producer_service": {
+              "const": "feedback-service"
+            }
+          }
+        }
+      ]
+    },
+    "feedbackAnnotationRequested": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.feedback.annotation.requested.v1"
+            },
+            "aggregate_type": {
+              "const": "Feedback"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "feedback_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "feedback_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "task_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "detail_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                }
+              },
+              "required": [
+                "feedback_id",
+                "feedback_revision",
+                "task_id",
+                "detail_hash"
+              ]
+            },
+            "producer_service": {
+              "const": "feedback-service"
+            }
+          }
+        }
+      ]
+    },
+    "goldenAnswerApproved": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.golden.answer.approved.v1"
+            },
+            "aggregate_type": {
+              "const": "GoldenAnswer"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "golden_answer_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "golden_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "approval_snapshot_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "approval_snapshot_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "citation_validation_ids": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "common.schema.json#/$defs/Id"
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                },
+                "approved_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "approver_ref": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "answer_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                }
+              },
+              "required": [
+                "golden_answer_id",
+                "golden_revision",
+                "approval_snapshot_id",
+                "approval_snapshot_hash",
+                "citation_validation_ids",
+                "approved_at",
+                "approver_ref",
+                "answer_hash"
+              ]
+            },
+            "producer_service": {
+              "const": "feedback-service"
+            }
+          }
+        }
+      ]
+    },
+    "goldenAnswerRevoked": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.golden.answer.revoked.v1"
+            },
+            "aggregate_type": {
+              "const": "GoldenAnswer"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "golden_answer_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "golden_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "prior_approval_snapshot_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "revocation_reason_code": {
+                  "$ref": "common.schema.json#/$defs/ReasonCode"
+                },
+                "revoked_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "golden_answer_id",
+                "golden_revision",
+                "prior_approval_snapshot_hash",
+                "revocation_reason_code",
+                "revoked_at"
+              ]
+            },
+            "producer_service": {
+              "const": "feedback-service"
+            }
+          }
+        }
+      ]
+    },
+    "datasetFrozen": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.dataset.frozen.v1"
+            },
+            "aggregate_type": {
+              "const": "Dataset"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "dataset_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "dataset_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "manifest_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "member_count": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "frozen_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "lineage_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "approved_golden_set_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                }
+              },
+              "required": [
+                "dataset_id",
+                "dataset_revision",
+                "manifest_hash",
+                "member_count",
+                "frozen_at",
+                "lineage_hash",
+                "approved_golden_set_hash"
+              ]
+            },
+            "producer_service": {
+              "const": "evaluation-service"
+            }
+          }
+        }
+      ]
+    },
+    "datasetRevoked": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.dataset.revoked.v1"
+            },
+            "aggregate_type": {
+              "const": "Dataset"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "dataset_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "dataset_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "prior_manifest_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "reason_code": {
+                  "$ref": "common.schema.json#/$defs/ReasonCode"
+                },
+                "revoked_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "dataset_id",
+                "dataset_revision",
+                "prior_manifest_hash",
+                "reason_code",
+                "revoked_at"
+              ]
+            },
+            "producer_service": {
+              "const": "evaluation-service"
+            }
+          }
+        }
+      ]
+    },
+    "evaluationCompleted": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.evaluation.completed.v1"
+            },
+            "aggregate_type": {
+              "const": "Evaluation"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "evaluation_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "evaluation_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "dataset_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "dataset_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "dataset_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "result_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                }
+              },
+              "required": [
+                "evaluation_id",
+                "evaluation_revision",
+                "dataset_id",
+                "dataset_revision",
+                "dataset_hash",
+                "result_hash"
+              ]
+            },
+            "producer_service": {
+              "const": "evaluation-service"
+            }
+          }
+        }
+      ]
+    },
+    "evaluationFailed": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.evaluation.failed.v1"
+            },
+            "aggregate_type": {
+              "const": "Evaluation"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "evaluation_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "evaluation_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "dataset_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "dataset_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "failure_code": {
+                  "$ref": "common.schema.json#/$defs/ReasonCode"
+                },
+                "detail_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                }
+              },
+              "required": [
+                "evaluation_id",
+                "evaluation_revision",
+                "dataset_id",
+                "dataset_revision",
+                "failure_code",
+                "detail_hash"
+              ]
+            },
+            "producer_service": {
+              "const": "evaluation-service"
+            }
+          }
+        }
+      ]
+    },
+    "candidateEvaluated": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.candidate.evaluated.v1"
+            },
+            "aggregate_type": {
+              "const": "Candidate"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "candidate_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "candidate_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "evaluation_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "evaluation_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "dataset_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "result_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                }
+              },
+              "required": [
+                "candidate_id",
+                "candidate_revision",
+                "evaluation_id",
+                "evaluation_revision",
+                "dataset_hash",
+                "result_hash"
+              ]
+            },
+            "producer_service": {
+              "const": "evaluation-service"
+            }
+          }
+        }
+      ]
+    },
+    "candidateEligible": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.candidate.eligible.v1"
+            },
+            "aggregate_type": {
+              "const": "Candidate"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "candidate_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "candidate_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "evaluation_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "evaluation_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "recommendation_code": {
+                  "const": "ELIGIBLE_FOR_HUMAN_REVIEW"
+                },
+                "result_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                }
+              },
+              "required": [
+                "candidate_id",
+                "candidate_revision",
+                "evaluation_id",
+                "evaluation_revision",
+                "recommendation_code",
+                "result_hash"
+              ]
+            },
+            "producer_service": {
+              "const": "evaluation-service"
+            }
+          }
+        }
+      ]
+    },
+    "candidateWithdrawn": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.candidate.withdrawn.v1"
+            },
+            "aggregate_type": {
+              "const": "Candidate"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "candidate_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "candidate_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "reason_code": {
+                  "$ref": "common.schema.json#/$defs/ReasonCode"
+                },
+                "detail_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                }
+              },
+              "required": [
+                "candidate_id",
+                "candidate_revision",
+                "reason_code",
+                "detail_hash"
+              ]
+            },
+            "producer_service": {
+              "const": "evaluation-service"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

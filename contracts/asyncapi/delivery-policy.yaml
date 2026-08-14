@@ -1,0 +1,60 @@
+delivery: AT_LEAST_ONCE
+exactly_once: false
+publisher:
+  outbox: local_transaction
+  confirms: required
+  mandatory: true
+  unroutable: record_and_alert
+consumer:
+  inbox_effect_outbox: local_commit_before_manual_ack
+  idempotency: (consumer_service,message_id)
+  prefetch: bounded_nonzero
+  immediate_requeue_loop: forbidden
+retry:
+  max_deliveries_including_initial: 5
+  delays_seconds:
+  - 30
+  - 120
+  - 600
+  - 1800
+  jitter: required
+  eligible: transient_idempotent_only
+  permanent_classes:
+  - schema
+  - auth
+  - validation
+  - forbidden_state
+  permanent_action: DLQ_IMMEDIATELY
+dlq:
+  route: per_consumer_family_logical
+  failure_metadata: sanitized
+  raw_body_duplication: forbidden
+  automatic_replay: false
+  replay: operator_authorized_rate_limited_audited_preserve_message_id
+retention:
+  main_retry_max_days: 7
+  dlq_max_days: 14
+  legal_retention_inferred: false
+  may_shorten_in: '02.6'
+  audit_demo_max_days: 30
+ordering:
+  scope: aggregate_metadata_only
+  global_or_fifo_guarantee: false
+  stale_action: no_op
+  gap_action: reconcile_via_owner_api
+  dominance: unpublish_revoke_over_stale_publish_activation
+  owner_live_check: safety_backstop
+payload_hash_canonicalization:
+  algorithm: SHA-256
+  scope: data
+  encoding: UTF-8
+  object_keys: recursively_sorted
+  separators: ',:'
+  arrays: preserve_order
+  allowed_json_values:
+  - string
+  - integer
+  - boolean
+  - 'null'
+  floats: forbidden
+  standard: project_canonical_json_not_RFC_JCS

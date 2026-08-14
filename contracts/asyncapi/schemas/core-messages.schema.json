@@ -1,0 +1,796 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/legal-chatbot/events/v1/core-messages.schema.json",
+  "title": "Core routable event messages",
+  "$defs": {
+    "processingRequested": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "COMMAND"
+            },
+            "message_type": {
+              "const": "legal.document.version.processing.requested.v1"
+            },
+            "aggregate_type": {
+              "const": "Version"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "document_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "version_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "version_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "content_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "input_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "original_manifest_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "original_manifest_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "job_type": {
+                  "const": "PROCESS_DOCUMENT_VERSION"
+                },
+                "expected_document_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                }
+              },
+              "required": [
+                "document_id",
+                "version_id",
+                "version_revision",
+                "content_hash",
+                "input_hash",
+                "original_manifest_id",
+                "original_manifest_hash",
+                "job_type",
+                "expected_document_revision"
+              ]
+            },
+            "producer_service": {
+              "const": "document-service"
+            }
+          }
+        }
+      ]
+    },
+    "processingJobSucceeded": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.processing.job.succeeded.v1"
+            },
+            "aggregate_type": {
+              "const": "Job"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "job_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "job_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "job_attempt": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "document_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "version_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "version_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "input_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "artifact_set_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "artifact_set_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "chunk_set_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "chunk_set_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                }
+              },
+              "required": [
+                "job_id",
+                "job_revision",
+                "job_attempt",
+                "document_id",
+                "version_id",
+                "version_revision",
+                "input_hash",
+                "artifact_set_id",
+                "artifact_set_hash",
+                "chunk_set_id",
+                "chunk_set_hash"
+              ]
+            },
+            "producer_service": {
+              "const": "processing-service"
+            }
+          }
+        }
+      ]
+    },
+    "processingJobFailed": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.processing.job.failed.v1"
+            },
+            "aggregate_type": {
+              "const": "Job"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "job_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "job_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "job_attempt": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "document_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "version_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "version_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "input_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "failure_code": {
+                  "$ref": "common.schema.json#/$defs/ReasonCode"
+                }
+              },
+              "required": [
+                "job_id",
+                "job_revision",
+                "job_attempt",
+                "document_id",
+                "version_id",
+                "version_revision",
+                "input_hash",
+                "failure_code"
+              ]
+            },
+            "producer_service": {
+              "const": "processing-service"
+            }
+          }
+        }
+      ]
+    },
+    "processingArtifactsReady": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.processing.artifacts.ready.v1"
+            },
+            "aggregate_type": {
+              "const": "ArtifactSet"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "artifact_set_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "artifact_set_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "artifact_set_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "job_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "job_attempt": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "document_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "version_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "version_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "input_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "chunk_set_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "chunk_set_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "processing_config_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                }
+              },
+              "required": [
+                "artifact_set_id",
+                "artifact_set_revision",
+                "artifact_set_hash",
+                "job_id",
+                "job_attempt",
+                "document_id",
+                "version_id",
+                "version_revision",
+                "input_hash",
+                "chunk_set_id",
+                "chunk_set_hash",
+                "processing_config_hash"
+              ]
+            },
+            "producer_service": {
+              "const": "processing-service"
+            }
+          }
+        }
+      ]
+    },
+    "documentEffect": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "document_id": {
+          "$ref": "common.schema.json#/$defs/Id"
+        },
+        "document_revision": {
+          "$ref": "common.schema.json#/$defs/Revision"
+        },
+        "version_id": {
+          "$ref": "common.schema.json#/$defs/Id"
+        },
+        "version_revision": {
+          "$ref": "common.schema.json#/$defs/Revision"
+        },
+        "content_hash": {
+          "$ref": "common.schema.json#/$defs/HashValue"
+        },
+        "metadata_hash": {
+          "$ref": "common.schema.json#/$defs/HashValue"
+        },
+        "effect_hash": {
+          "$ref": "common.schema.json#/$defs/HashValue"
+        }
+      },
+      "required": [
+        "document_id",
+        "document_revision",
+        "version_id",
+        "version_revision",
+        "content_hash",
+        "metadata_hash",
+        "effect_hash"
+      ]
+    },
+    "documentReason": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "document_id": {
+          "$ref": "common.schema.json#/$defs/Id"
+        },
+        "document_revision": {
+          "$ref": "common.schema.json#/$defs/Revision"
+        },
+        "version_id": {
+          "$ref": "common.schema.json#/$defs/Id"
+        },
+        "version_revision": {
+          "$ref": "common.schema.json#/$defs/Revision"
+        },
+        "reason_code": {
+          "$ref": "common.schema.json#/$defs/ReasonCode"
+        },
+        "effect_hash": {
+          "$ref": "common.schema.json#/$defs/HashValue"
+        },
+        "source_system_id": {
+          "$ref": "common.schema.json#/$defs/Id"
+        },
+        "source_reference_hash": {
+          "$ref": "common.schema.json#/$defs/HashValue"
+        }
+      },
+      "required": [
+        "document_id",
+        "document_revision",
+        "version_id",
+        "version_revision",
+        "reason_code",
+        "effect_hash"
+      ]
+    },
+    "documentPublished": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.document.published.v1"
+            },
+            "aggregate_type": {
+              "const": "Document"
+            },
+            "data": {
+              "$ref": "#/$defs/documentEffect"
+            },
+            "producer_service": {
+              "const": "document-service"
+            }
+          }
+        }
+      ]
+    },
+    "documentUnpublished": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.document.unpublished.v1"
+            },
+            "aggregate_type": {
+              "const": "Document"
+            },
+            "data": {
+              "$ref": "#/$defs/documentEffect"
+            },
+            "producer_service": {
+              "const": "document-service"
+            }
+          }
+        }
+      ]
+    },
+    "documentArchived": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.document.archived.v1"
+            },
+            "aggregate_type": {
+              "const": "Document"
+            },
+            "data": {
+              "$ref": "#/$defs/documentEffect"
+            },
+            "producer_service": {
+              "const": "document-service"
+            }
+          }
+        }
+      ]
+    },
+    "documentSourceInvalidated": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.document.source.invalidated.v1"
+            },
+            "aggregate_type": {
+              "const": "Document"
+            },
+            "data": {
+              "$ref": "#/$defs/documentReason"
+            },
+            "producer_service": {
+              "const": "document-service"
+            }
+          }
+        }
+      ]
+    },
+    "documentSourceRevoked": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.document.source.revoked.v1"
+            },
+            "aggregate_type": {
+              "const": "Document"
+            },
+            "data": {
+              "$ref": "#/$defs/documentReason"
+            },
+            "producer_service": {
+              "const": "document-service"
+            }
+          }
+        }
+      ]
+    },
+    "projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "index_id": {
+          "$ref": "common.schema.json#/$defs/Id"
+        },
+        "projection_revision": {
+          "$ref": "common.schema.json#/$defs/Revision"
+        },
+        "mode": {
+          "const": "FTS",
+          "description": "Core index mode; VECTOR and HYBRID are LATER."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "READY",
+            "ACTIVE",
+            "FAILED",
+            "RETIRED"
+          ]
+        },
+        "index_scope": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$"
+        },
+        "config_hash": {
+          "$ref": "common.schema.json#/$defs/HashValue"
+        },
+        "input_document_id": {
+          "$ref": "common.schema.json#/$defs/Id"
+        },
+        "document_revision": {
+          "$ref": "common.schema.json#/$defs/Revision"
+        },
+        "input_version_id": {
+          "$ref": "common.schema.json#/$defs/Id"
+        },
+        "version_revision": {
+          "$ref": "common.schema.json#/$defs/Revision"
+        },
+        "input_chunk_set_hash": {
+          "$ref": "common.schema.json#/$defs/HashValue"
+        },
+        "projection_hash": {
+          "$ref": "common.schema.json#/$defs/HashValue"
+        }
+      },
+      "required": [
+        "index_id",
+        "projection_revision",
+        "mode",
+        "status",
+        "index_scope",
+        "config_hash",
+        "input_document_id",
+        "document_revision",
+        "input_version_id",
+        "version_revision",
+        "input_chunk_set_hash",
+        "projection_hash"
+      ]
+    },
+    "indexProjectionReady": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.index.projection.ready.v1"
+            },
+            "aggregate_type": {
+              "const": "IndexProjection"
+            },
+            "data": {
+              "allOf": [
+                {"$ref": "#/$defs/projection"},
+                {"properties": {"status": {"const": "READY"}}}
+              ]
+            },
+            "producer_service": {
+              "const": "index-service"
+            }
+          }
+        }
+      ]
+    },
+    "indexProjectionActivated": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.index.projection.activated.v1"
+            },
+            "aggregate_type": {
+              "const": "IndexProjection"
+            },
+            "data": {
+              "allOf": [
+                {"$ref": "#/$defs/projection"},
+                {"properties": {"status": {"const": "ACTIVE"}}}
+              ]
+            },
+            "producer_service": {
+              "const": "index-service"
+            }
+          }
+        }
+      ]
+    },
+    "indexProjectionRetired": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.index.projection.retired.v1"
+            },
+            "aggregate_type": {
+              "const": "IndexProjection"
+            },
+            "data": {
+              "allOf": [
+                {"$ref": "#/$defs/projection"},
+                {"properties": {"status": {"const": "RETIRED"}}}
+              ]
+            },
+            "producer_service": {
+              "const": "index-service"
+            }
+          }
+        }
+      ]
+    },
+    "indexProjectionFailed": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.index.projection.failed.v1"
+            },
+            "aggregate_type": {
+              "const": "IndexProjection"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "index_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "projection_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "mode": {
+                  "const": "FTS"
+                },
+                "status": {
+                  "const": "FAILED"
+                },
+                "index_scope": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,63}$"
+                },
+                "config_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "input_document_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "document_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "input_version_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "version_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "input_chunk_set_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "failure_code": {
+                  "$ref": "common.schema.json#/$defs/ReasonCode"
+                }
+              },
+              "required": [
+                "index_id",
+                "projection_revision",
+                "mode",
+                "status",
+                "index_scope",
+                "config_hash",
+                "input_document_id",
+                "document_revision",
+                "input_version_id",
+                "version_revision",
+                "input_chunk_set_hash",
+                "failure_code"
+              ]
+            },
+            "producer_service": {
+              "const": "index-service"
+            }
+          }
+        }
+      ]
+    },
+    "auditFactObserved": {
+      "allOf": [
+        {
+          "$ref": "envelope.schema.json#/$defs/Envelope"
+        },
+        {
+          "properties": {
+            "message_kind": {
+              "const": "EVENT"
+            },
+            "message_type": {
+              "const": "legal.audit.fact.observed.v1"
+            },
+            "aggregate_type": {
+              "const": "AuditObservation"
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "observation_id": {
+                  "$ref": "common.schema.json#/$defs/Id"
+                },
+                "observation_revision": {
+                  "$ref": "common.schema.json#/$defs/Revision"
+                },
+                "fact_code": {
+                  "$ref": "common.schema.json#/$defs/ReasonCode"
+                },
+                "outcome_code": {
+                  "$ref": "common.schema.json#/$defs/ReasonCode"
+                },
+                "detail_hash": {
+                  "$ref": "common.schema.json#/$defs/HashValue"
+                },
+                "actor_ref": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "actor_id": {
+                      "$ref": "common.schema.json#/$defs/Id"
+                    },
+                    "actor_kind": {
+                      "type": "string",
+                      "pattern": "^[A-Z_]{2,64}$"
+                    }
+                  },
+                  "required": [
+                    "actor_id",
+                    "actor_kind"
+                  ]
+                }
+              },
+              "required": [
+                "observation_id",
+                "observation_revision",
+                "fact_code",
+                "outcome_code",
+                "detail_hash",
+                "actor_ref"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

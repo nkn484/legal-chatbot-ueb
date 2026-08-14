@@ -1,0 +1,997 @@
+asyncapi: 3.0.0
+info:
+  title: Legal chatbot event contract catalog
+  version: 1.0.0
+  description: Custom envelope v1 over AMQP 0-9-1; it does not claim CloudEvents AMQP
+    compliance.
+defaultContentType: application/json
+channels:
+  documentVersionProcessingRequested:
+    address: legal.document.version.processing.requested.v1
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+        is: routingKey
+        exchange:
+          name: legal.commands
+          type: topic
+          durable: true
+    x-ueb-directed-consumer: processing-service
+    messages:
+      DocumentVersionProcessingRequested:
+        $ref: '#/components/messages/DocumentVersionProcessingRequested'
+  processingJobSucceeded:
+    address: legal.processing.job.succeeded.v1
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+        is: routingKey
+        exchange:
+          name: legal.events
+          type: topic
+          durable: true
+    messages:
+      ProcessingJobSucceeded:
+        $ref: '#/components/messages/ProcessingJobSucceeded'
+  processingJobFailed:
+    address: legal.processing.job.failed.v1
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+        is: routingKey
+        exchange:
+          name: legal.events
+          type: topic
+          durable: true
+    messages:
+      ProcessingJobFailed:
+        $ref: '#/components/messages/ProcessingJobFailed'
+  processingArtifactsReady:
+    address: legal.processing.artifacts.ready.v1
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+        is: routingKey
+        exchange:
+          name: legal.events
+          type: topic
+          durable: true
+    messages:
+      ProcessingArtifactsReady:
+        $ref: '#/components/messages/ProcessingArtifactsReady'
+  documentPublished:
+    address: legal.document.published.v1
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+        is: routingKey
+        exchange:
+          name: legal.events
+          type: topic
+          durable: true
+    messages:
+      DocumentPublished:
+        $ref: '#/components/messages/DocumentPublished'
+  documentUnpublished:
+    address: legal.document.unpublished.v1
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+        is: routingKey
+        exchange:
+          name: legal.events
+          type: topic
+          durable: true
+    messages:
+      DocumentUnpublished:
+        $ref: '#/components/messages/DocumentUnpublished'
+  documentArchived:
+    address: legal.document.archived.v1
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+        is: routingKey
+        exchange:
+          name: legal.events
+          type: topic
+          durable: true
+    messages:
+      DocumentArchived:
+        $ref: '#/components/messages/DocumentArchived'
+  documentSourceInvalidated:
+    address: legal.document.source.invalidated.v1
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+        is: routingKey
+        exchange:
+          name: legal.events
+          type: topic
+          durable: true
+    messages:
+      DocumentSourceInvalidated:
+        $ref: '#/components/messages/DocumentSourceInvalidated'
+  documentSourceRevoked:
+    address: legal.document.source.revoked.v1
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+        is: routingKey
+        exchange:
+          name: legal.events
+          type: topic
+          durable: true
+    messages:
+      DocumentSourceRevoked:
+        $ref: '#/components/messages/DocumentSourceRevoked'
+  indexProjectionReady:
+    address: legal.index.projection.ready.v1
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+        is: routingKey
+        exchange:
+          name: legal.events
+          type: topic
+          durable: true
+    messages:
+      IndexProjectionReady:
+        $ref: '#/components/messages/IndexProjectionReady'
+  indexProjectionActivated:
+    address: legal.index.projection.activated.v1
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+        is: routingKey
+        exchange:
+          name: legal.events
+          type: topic
+          durable: true
+    messages:
+      IndexProjectionActivated:
+        $ref: '#/components/messages/IndexProjectionActivated'
+  indexProjectionFailed:
+    address: legal.index.projection.failed.v1
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+        is: routingKey
+        exchange:
+          name: legal.events
+          type: topic
+          durable: true
+    messages:
+      IndexProjectionFailed:
+        $ref: '#/components/messages/IndexProjectionFailed'
+  indexProjectionRetired:
+    address: legal.index.projection.retired.v1
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+        is: routingKey
+        exchange:
+          name: legal.events
+          type: topic
+          durable: true
+    messages:
+      IndexProjectionRetired:
+        $ref: '#/components/messages/IndexProjectionRetired'
+  auditFactObserved:
+    address: legal.audit.fact.observed.v1
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+        is: routingKey
+        exchange:
+          name: legal.events
+          type: topic
+          durable: true
+    messages:
+      AuditFactObserved:
+        $ref: '#/components/messages/AuditFactObserved'
+operations:
+  processingRequestedSend:
+    action: send
+    channel:
+      $ref: '#/channels/documentVersionProcessingRequested'
+    messages:
+    - $ref: '#/components/messages/DocumentVersionProcessingRequested'
+    x-ueb-service: document-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-producer-service: document-service
+  processingRequestedReceive:
+    action: receive
+    channel:
+      $ref: '#/channels/documentVersionProcessingRequested'
+    messages:
+    - $ref: '#/components/messages/DocumentVersionProcessingRequested'
+    x-ueb-service: processing-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-consumer-service: processing-service
+  jobSucceededSend:
+    action: send
+    channel:
+      $ref: '#/channels/processingJobSucceeded'
+    messages:
+    - $ref: '#/components/messages/ProcessingJobSucceeded'
+    x-ueb-service: processing-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-producer-service: processing-service
+  jobSucceededReceive:
+    action: receive
+    channel:
+      $ref: '#/channels/processingJobSucceeded'
+    messages:
+    - $ref: '#/components/messages/ProcessingJobSucceeded'
+    x-ueb-service: document-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-consumer-service: document-service
+  jobFailedSend:
+    action: send
+    channel:
+      $ref: '#/channels/processingJobFailed'
+    messages:
+    - $ref: '#/components/messages/ProcessingJobFailed'
+    x-ueb-service: processing-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-producer-service: processing-service
+  jobFailedReceive:
+    action: receive
+    channel:
+      $ref: '#/channels/processingJobFailed'
+    messages:
+    - $ref: '#/components/messages/ProcessingJobFailed'
+    x-ueb-service: document-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-consumer-service: document-service
+  artifactsReadySend:
+    action: send
+    channel:
+      $ref: '#/channels/processingArtifactsReady'
+    messages:
+    - $ref: '#/components/messages/ProcessingArtifactsReady'
+    x-ueb-service: processing-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-producer-service: processing-service
+  artifactsReadyReceive:
+    action: receive
+    channel:
+      $ref: '#/channels/processingArtifactsReady'
+    messages:
+    - $ref: '#/components/messages/ProcessingArtifactsReady'
+    x-ueb-service: index-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-consumer-service: index-service
+  documentPublishedSend:
+    action: send
+    channel:
+      $ref: '#/channels/documentPublished'
+    messages:
+    - $ref: '#/components/messages/DocumentPublished'
+    x-ueb-service: document-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-producer-service: document-service
+  documentPublishedReceive:
+    action: receive
+    channel:
+      $ref: '#/channels/documentPublished'
+    messages:
+    - $ref: '#/components/messages/DocumentPublished'
+    x-ueb-service: index-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-consumer-service: index-service
+  documentUnpublishedSend:
+    action: send
+    channel:
+      $ref: '#/channels/documentUnpublished'
+    messages:
+    - $ref: '#/components/messages/DocumentUnpublished'
+    x-ueb-service: document-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-producer-service: document-service
+  documentUnpublishedReceive:
+    action: receive
+    channel:
+      $ref: '#/channels/documentUnpublished'
+    messages:
+    - $ref: '#/components/messages/DocumentUnpublished'
+    x-ueb-service: index-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-consumer-service: index-service
+  documentArchivedSend:
+    action: send
+    channel:
+      $ref: '#/channels/documentArchived'
+    messages:
+    - $ref: '#/components/messages/DocumentArchived'
+    x-ueb-service: document-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-producer-service: document-service
+  documentArchivedReceive:
+    action: receive
+    channel:
+      $ref: '#/channels/documentArchived'
+    messages:
+    - $ref: '#/components/messages/DocumentArchived'
+    x-ueb-service: index-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-consumer-service: index-service
+  sourceInvalidatedSend:
+    action: send
+    channel:
+      $ref: '#/channels/documentSourceInvalidated'
+    messages:
+    - $ref: '#/components/messages/DocumentSourceInvalidated'
+    x-ueb-service: document-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-producer-service: document-service
+  sourceInvalidatedReceive:
+    action: receive
+    channel:
+      $ref: '#/channels/documentSourceInvalidated'
+    messages:
+    - $ref: '#/components/messages/DocumentSourceInvalidated'
+    x-ueb-service: citation-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-consumer-service: citation-service
+  sourceRevokedSend:
+    action: send
+    channel:
+      $ref: '#/channels/documentSourceRevoked'
+    messages:
+    - $ref: '#/components/messages/DocumentSourceRevoked'
+    x-ueb-service: document-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-producer-service: document-service
+  sourceRevokedReceive:
+    action: receive
+    channel:
+      $ref: '#/channels/documentSourceRevoked'
+    messages:
+    - $ref: '#/components/messages/DocumentSourceRevoked'
+    x-ueb-service: citation-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-consumer-service: citation-service
+  projectionReadySend:
+    action: send
+    channel:
+      $ref: '#/channels/indexProjectionReady'
+    messages:
+    - $ref: '#/components/messages/IndexProjectionReady'
+    x-ueb-service: index-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-producer-service: index-service
+  projectionReadyReceive:
+    action: receive
+    channel:
+      $ref: '#/channels/indexProjectionReady'
+    messages:
+    - $ref: '#/components/messages/IndexProjectionReady'
+    x-ueb-service: document-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-consumer-service: document-service
+  projectionActivatedSend:
+    action: send
+    channel:
+      $ref: '#/channels/indexProjectionActivated'
+    messages:
+    - $ref: '#/components/messages/IndexProjectionActivated'
+    x-ueb-service: index-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-producer-service: index-service
+  projectionActivatedReceive:
+    action: receive
+    channel:
+      $ref: '#/channels/indexProjectionActivated'
+    messages:
+    - $ref: '#/components/messages/IndexProjectionActivated'
+    x-ueb-service: document-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-consumer-service: document-service
+  projectionFailedSend:
+    action: send
+    channel:
+      $ref: '#/channels/indexProjectionFailed'
+    messages:
+    - $ref: '#/components/messages/IndexProjectionFailed'
+    x-ueb-service: index-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-producer-service: index-service
+  projectionFailedReceive:
+    action: receive
+    channel:
+      $ref: '#/channels/indexProjectionFailed'
+    messages:
+    - $ref: '#/components/messages/IndexProjectionFailed'
+    x-ueb-service: document-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-consumer-service: document-service
+  projectionRetiredSend:
+    action: send
+    channel:
+      $ref: '#/channels/indexProjectionRetired'
+    messages:
+    - $ref: '#/components/messages/IndexProjectionRetired'
+    x-ueb-service: index-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-producer-service: index-service
+  projectionRetiredReceive:
+    action: receive
+    channel:
+      $ref: '#/channels/indexProjectionRetired'
+    messages:
+    - $ref: '#/components/messages/IndexProjectionRetired'
+    x-ueb-service: document-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-consumer-service: document-service
+  auditFactSend:
+    action: send
+    channel:
+      $ref: '#/channels/auditFactObserved'
+    messages:
+    - $ref: '#/components/messages/AuditFactObserved'
+    x-ueb-producer-services:
+    - identity-service
+    - document-service
+    - processing-service
+    - index-service
+    - retrieval-service
+    - citation-service
+    - chat-service
+    - feedback-service
+    - evaluation-service
+    - provider-service
+    x-ueb-multi-producer-exception: AuditFact
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+  auditFactReceive:
+    action: receive
+    channel:
+      $ref: '#/channels/auditFactObserved'
+    messages:
+    - $ref: '#/components/messages/AuditFactObserved'
+    x-ueb-service: audit-service
+    bindings:
+      amqp:
+        bindingVersion: 0.3.0
+    x-ueb-consumer-service: audit-service
+components:
+  messages:
+    DocumentVersionProcessingRequested:
+      name: DocumentVersionProcessingRequested
+      contentType: application/json
+      payload:
+        $ref: ./schemas/core-messages.schema.json#/$defs/processingRequested
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: CORE
+      x-ueb-routable: true
+      x-ueb-example: examples/valid/document-version-processing-requested.json
+      x-ueb-acl:
+        publish:
+        - document-service
+        consume:
+        - processing-service
+    ProcessingJobSucceeded:
+      name: ProcessingJobSucceeded
+      contentType: application/json
+      payload:
+        $ref: ./schemas/core-messages.schema.json#/$defs/processingJobSucceeded
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: CORE
+      x-ueb-routable: true
+      x-ueb-example: examples/valid/processing-job-succeeded.json
+      x-ueb-acl:
+        publish:
+        - processing-service
+        consume:
+        - document-service
+    ProcessingJobFailed:
+      name: ProcessingJobFailed
+      contentType: application/json
+      payload:
+        $ref: ./schemas/core-messages.schema.json#/$defs/processingJobFailed
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: CORE
+      x-ueb-routable: true
+      x-ueb-example: examples/valid/processing-job-failed.json
+      x-ueb-acl:
+        publish:
+        - processing-service
+        consume:
+        - document-service
+    ProcessingArtifactsReady:
+      name: ProcessingArtifactsReady
+      contentType: application/json
+      payload:
+        $ref: ./schemas/core-messages.schema.json#/$defs/processingArtifactsReady
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: CORE
+      x-ueb-routable: true
+      x-ueb-example: examples/valid/processing-artifacts-ready.json
+      x-ueb-acl:
+        publish:
+        - processing-service
+        consume:
+        - index-service
+    DocumentPublished:
+      name: DocumentPublished
+      contentType: application/json
+      payload:
+        $ref: ./schemas/core-messages.schema.json#/$defs/documentPublished
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: CORE
+      x-ueb-routable: true
+      x-ueb-example: examples/valid/document-published.json
+      x-ueb-acl:
+        publish:
+        - document-service
+        consume:
+        - index-service
+    DocumentUnpublished:
+      name: DocumentUnpublished
+      contentType: application/json
+      payload:
+        $ref: ./schemas/core-messages.schema.json#/$defs/documentUnpublished
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: CORE
+      x-ueb-routable: true
+      x-ueb-example: examples/valid/document-unpublished.json
+      x-ueb-acl:
+        publish:
+        - document-service
+        consume:
+        - index-service
+    DocumentArchived:
+      name: DocumentArchived
+      contentType: application/json
+      payload:
+        $ref: ./schemas/core-messages.schema.json#/$defs/documentArchived
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: CORE
+      x-ueb-routable: true
+      x-ueb-example: examples/valid/document-archived.json
+      x-ueb-acl:
+        publish:
+        - document-service
+        consume:
+        - index-service
+    DocumentSourceInvalidated:
+      name: DocumentSourceInvalidated
+      contentType: application/json
+      payload:
+        $ref: ./schemas/core-messages.schema.json#/$defs/documentSourceInvalidated
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: CORE
+      x-ueb-routable: true
+      x-ueb-example: examples/valid/document-source-invalidated.json
+      x-ueb-planned-consumers:
+      - feedback-service
+      - evaluation-service
+      x-ueb-acl:
+        publish:
+        - document-service
+        consume:
+        - citation-service
+    DocumentSourceRevoked:
+      name: DocumentSourceRevoked
+      contentType: application/json
+      payload:
+        $ref: ./schemas/core-messages.schema.json#/$defs/documentSourceRevoked
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: CORE
+      x-ueb-routable: true
+      x-ueb-example: examples/valid/document-source-revoked.json
+      x-ueb-planned-consumers:
+      - feedback-service
+      - evaluation-service
+      x-ueb-acl:
+        publish:
+        - document-service
+        consume:
+        - citation-service
+    IndexProjectionReady:
+      name: IndexProjectionReady
+      contentType: application/json
+      payload:
+        $ref: ./schemas/core-messages.schema.json#/$defs/indexProjectionReady
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: CORE
+      x-ueb-routable: true
+      x-ueb-example: examples/valid/index-projection-ready.json
+      x-ueb-acl:
+        publish:
+        - index-service
+        consume:
+        - document-service
+    IndexProjectionActivated:
+      name: IndexProjectionActivated
+      contentType: application/json
+      payload:
+        $ref: ./schemas/core-messages.schema.json#/$defs/indexProjectionActivated
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: CORE
+      x-ueb-routable: true
+      x-ueb-example: examples/valid/index-projection-activated.json
+      x-ueb-acl:
+        publish:
+        - index-service
+        consume:
+        - document-service
+    IndexProjectionFailed:
+      name: IndexProjectionFailed
+      contentType: application/json
+      payload:
+        $ref: ./schemas/core-messages.schema.json#/$defs/indexProjectionFailed
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: CORE
+      x-ueb-routable: true
+      x-ueb-example: examples/valid/index-projection-failed.json
+      x-ueb-acl:
+        publish:
+        - index-service
+        consume:
+        - document-service
+    IndexProjectionRetired:
+      name: IndexProjectionRetired
+      contentType: application/json
+      payload:
+        $ref: ./schemas/core-messages.schema.json#/$defs/indexProjectionRetired
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: CORE
+      x-ueb-routable: true
+      x-ueb-example: examples/valid/index-projection-retired.json
+      x-ueb-acl:
+        publish:
+        - index-service
+        consume:
+        - document-service
+    AuditFactObserved:
+      name: AuditFactObserved
+      contentType: application/json
+      payload:
+        $ref: ./schemas/audit-message.schema.json
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: CORE
+      x-ueb-routable: true
+      x-ueb-example: examples/valid/audit-fact-observed.json
+      x-ueb-acl:
+        publish:
+        - identity-service
+        - document-service
+        - processing-service
+        - index-service
+        - retrieval-service
+        - citation-service
+        - chat-service
+        - feedback-service
+        - evaluation-service
+        - provider-service
+        consume:
+        - audit-service
+    ProviderConfigurationValidated:
+      name: ProviderConfigurationValidated
+      contentType: application/json
+      payload:
+        $ref: ./schemas/later-messages.schema.json#/$defs/providerConfigurationValidated
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: LATER
+      x-ueb-routable: false
+      x-ueb-example: examples/valid/provider-configuration-validated.json
+      x-ueb-acl:
+        publish:
+        - provider-service
+        consume: []
+    ProviderConfigurationActivated:
+      name: ProviderConfigurationActivated
+      contentType: application/json
+      payload:
+        $ref: ./schemas/later-messages.schema.json#/$defs/providerConfigurationActivated
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: LATER
+      x-ueb-routable: false
+      x-ueb-example: examples/valid/provider-configuration-activated.json
+      x-ueb-acl:
+        publish:
+        - provider-service
+        consume: []
+    ProviderConfigurationDisabled:
+      name: ProviderConfigurationDisabled
+      contentType: application/json
+      payload:
+        $ref: ./schemas/later-messages.schema.json#/$defs/providerConfigurationDisabled
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: LATER
+      x-ueb-routable: false
+      x-ueb-example: examples/valid/provider-configuration-disabled.json
+      x-ueb-acl:
+        publish:
+        - provider-service
+        consume: []
+    ProviderConfigurationRetired:
+      name: ProviderConfigurationRetired
+      contentType: application/json
+      payload:
+        $ref: ./schemas/later-messages.schema.json#/$defs/providerConfigurationRetired
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: LATER
+      x-ueb-routable: false
+      x-ueb-example: examples/valid/provider-configuration-retired.json
+      x-ueb-acl:
+        publish:
+        - provider-service
+        consume: []
+    ChatAnswerSnapshotAvailable:
+      name: ChatAnswerSnapshotAvailable
+      contentType: application/json
+      payload:
+        $ref: ./schemas/later-messages.schema.json#/$defs/chatAnswerSnapshotAvailable
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: LATER
+      x-ueb-routable: false
+      x-ueb-example: examples/valid/chat-answer-snapshot-available.json
+      x-ueb-planned-consumers:
+      - feedback-service
+      x-ueb-acl:
+        publish:
+        - chat-service
+        consume: []
+    FeedbackRecorded:
+      name: FeedbackRecorded
+      contentType: application/json
+      payload:
+        $ref: ./schemas/later-messages.schema.json#/$defs/feedbackRecorded
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: LATER
+      x-ueb-routable: false
+      x-ueb-example: examples/valid/feedback-recorded.json
+      x-ueb-acl:
+        publish:
+        - feedback-service
+        consume: []
+    FeedbackAnnotationRequested:
+      name: FeedbackAnnotationRequested
+      contentType: application/json
+      payload:
+        $ref: ./schemas/later-messages.schema.json#/$defs/feedbackAnnotationRequested
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: LATER
+      x-ueb-routable: false
+      x-ueb-example: examples/valid/feedback-annotation-requested.json
+      x-ueb-acl:
+        publish:
+        - feedback-service
+        consume: []
+    GoldenAnswerApproved:
+      name: GoldenAnswerApproved
+      contentType: application/json
+      payload:
+        $ref: ./schemas/later-messages.schema.json#/$defs/goldenAnswerApproved
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: LATER
+      x-ueb-routable: false
+      x-ueb-example: examples/valid/golden-answer-approved.json
+      x-ueb-planned-consumers:
+      - evaluation-service
+      x-ueb-acl:
+        publish:
+        - feedback-service
+        consume: []
+    GoldenAnswerRevoked:
+      name: GoldenAnswerRevoked
+      contentType: application/json
+      payload:
+        $ref: ./schemas/later-messages.schema.json#/$defs/goldenAnswerRevoked
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: LATER
+      x-ueb-routable: false
+      x-ueb-example: examples/valid/golden-answer-revoked.json
+      x-ueb-planned-consumers:
+      - evaluation-service
+      x-ueb-acl:
+        publish:
+        - feedback-service
+        consume: []
+    DatasetFrozen:
+      name: DatasetFrozen
+      contentType: application/json
+      payload:
+        $ref: ./schemas/later-messages.schema.json#/$defs/datasetFrozen
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: LATER
+      x-ueb-routable: false
+      x-ueb-example: examples/valid/dataset-frozen.json
+      x-ueb-acl:
+        publish:
+        - evaluation-service
+        consume: []
+    DatasetRevoked:
+      name: DatasetRevoked
+      contentType: application/json
+      payload:
+        $ref: ./schemas/later-messages.schema.json#/$defs/datasetRevoked
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: LATER
+      x-ueb-routable: false
+      x-ueb-example: examples/valid/dataset-revoked.json
+      x-ueb-acl:
+        publish:
+        - evaluation-service
+        consume: []
+    EvaluationCompleted:
+      name: EvaluationCompleted
+      contentType: application/json
+      payload:
+        $ref: ./schemas/later-messages.schema.json#/$defs/evaluationCompleted
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: LATER
+      x-ueb-routable: false
+      x-ueb-example: examples/valid/evaluation-completed.json
+      x-ueb-acl:
+        publish:
+        - evaluation-service
+        consume: []
+    EvaluationFailed:
+      name: EvaluationFailed
+      contentType: application/json
+      payload:
+        $ref: ./schemas/later-messages.schema.json#/$defs/evaluationFailed
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: LATER
+      x-ueb-routable: false
+      x-ueb-example: examples/valid/evaluation-failed.json
+      x-ueb-acl:
+        publish:
+        - evaluation-service
+        consume: []
+    CandidateEvaluated:
+      name: CandidateEvaluated
+      contentType: application/json
+      payload:
+        $ref: ./schemas/later-messages.schema.json#/$defs/candidateEvaluated
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: LATER
+      x-ueb-routable: false
+      x-ueb-example: examples/valid/candidate-evaluated.json
+      x-ueb-acl:
+        publish:
+        - evaluation-service
+        consume: []
+    CandidateEligible:
+      name: CandidateEligible
+      contentType: application/json
+      payload:
+        $ref: ./schemas/later-messages.schema.json#/$defs/candidateEligible
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: LATER
+      x-ueb-routable: false
+      x-ueb-example: examples/valid/candidate-eligible.json
+      x-ueb-acl:
+        publish:
+        - evaluation-service
+        consume: []
+    CandidateWithdrawn:
+      name: CandidateWithdrawn
+      contentType: application/json
+      payload:
+        $ref: ./schemas/later-messages.schema.json#/$defs/candidateWithdrawn
+      bindings:
+        amqp:
+          bindingVersion: 0.3.0
+      x-ueb-activation: LATER
+      x-ueb-routable: false
+      x-ueb-example: examples/valid/candidate-withdrawn.json
+      x-ueb-acl:
+        publish:
+        - evaluation-service
+        consume: []

@@ -1,0 +1,5 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.example.invalid/legal-chatbot/events/v1/audit-message.schema.json",
+  "$ref": "core-messages.schema.json#/$defs/auditFactObserved"
+}

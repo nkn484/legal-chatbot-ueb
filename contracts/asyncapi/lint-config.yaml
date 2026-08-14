@@ -1,0 +1,553 @@
+version: 1
+schema_version: 1.0.0
+idempotency: (consumer_service,message_id)
+ordering_fencing: aggregate_revision
+main_retention_days: 7
+dlq_retention_days: 14
+deny_property_tokens:
+- secret
+- password
+- credential
+- api_key
+- token
+- authorization
+- cookie
+- storage_key
+- object_key
+- bucket
+- presign
+- signed_url
+- url
+- body
+- content_text
+- full_text
+- prompt
+- question
+- excerpt
+- feedback_comment
+- raw_payload
+- model_output
+- current_state
+- full_snapshot
+safe_property_exceptions:
+- content_hash
+- payload_hash
+- detail_hash
+audit_allowed_producers:
+- identity-service
+- document-service
+- processing-service
+- index-service
+- retrieval-service
+- citation-service
+- chat-service
+- feedback-service
+- evaluation-service
+- provider-service
+messages:
+  legal.document.version.processing.requested.v1:
+    component: DocumentVersionProcessingRequested
+    kind: COMMAND
+    producer: document-service
+    consumers:
+    - processing-service
+    aggregate_type: Version
+    ordering_key_field: aggregate_id
+    activation: CORE
+    routable: true
+    retry_class: transient_idempotent
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: version_id
+    aggregate_revision_field: version_revision
+  legal.processing.job.succeeded.v1:
+    component: ProcessingJobSucceeded
+    kind: EVENT
+    producer: processing-service
+    consumers:
+    - document-service
+    aggregate_type: Job
+    ordering_key_field: aggregate_id
+    activation: CORE
+    routable: true
+    retry_class: transient_idempotent
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: job_id
+    aggregate_revision_field: job_revision
+  legal.processing.job.failed.v1:
+    component: ProcessingJobFailed
+    kind: EVENT
+    producer: processing-service
+    consumers:
+    - document-service
+    aggregate_type: Job
+    ordering_key_field: aggregate_id
+    activation: CORE
+    routable: true
+    retry_class: permanent_or_transient
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: job_id
+    aggregate_revision_field: job_revision
+  legal.processing.artifacts.ready.v1:
+    component: ProcessingArtifactsReady
+    kind: EVENT
+    producer: processing-service
+    consumers:
+    - index-service
+    aggregate_type: ArtifactSet
+    ordering_key_field: aggregate_id
+    activation: CORE
+    routable: true
+    retry_class: transient_idempotent
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: artifact_set_id
+    aggregate_revision_field: artifact_set_revision
+  legal.document.published.v1:
+    component: DocumentPublished
+    kind: EVENT
+    producer: document-service
+    consumers:
+    - index-service
+    aggregate_type: Document
+    ordering_key_field: aggregate_id
+    activation: CORE
+    routable: true
+    retry_class: transient_idempotent
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: document_id
+    aggregate_revision_field: document_revision
+  legal.document.unpublished.v1:
+    component: DocumentUnpublished
+    kind: EVENT
+    producer: document-service
+    consumers:
+    - index-service
+    aggregate_type: Document
+    ordering_key_field: aggregate_id
+    activation: CORE
+    routable: true
+    retry_class: transient_idempotent
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: document_id
+    aggregate_revision_field: document_revision
+  legal.document.archived.v1:
+    component: DocumentArchived
+    kind: EVENT
+    producer: document-service
+    consumers:
+    - index-service
+    aggregate_type: Document
+    ordering_key_field: aggregate_id
+    activation: CORE
+    routable: true
+    retry_class: transient_idempotent
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: document_id
+    aggregate_revision_field: document_revision
+  legal.document.source.invalidated.v1:
+    component: DocumentSourceInvalidated
+    kind: EVENT
+    producer: document-service
+    consumers:
+    - citation-service
+    planned_consumers:
+    - feedback-service
+    - evaluation-service
+    aggregate_type: Document
+    ordering_key_field: aggregate_id
+    activation: CORE
+    routable: true
+    retry_class: transient_idempotent
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: document_id
+    aggregate_revision_field: document_revision
+  legal.document.source.revoked.v1:
+    component: DocumentSourceRevoked
+    kind: EVENT
+    producer: document-service
+    consumers:
+    - citation-service
+    planned_consumers:
+    - feedback-service
+    - evaluation-service
+    aggregate_type: Document
+    ordering_key_field: aggregate_id
+    activation: CORE
+    routable: true
+    retry_class: transient_idempotent
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: document_id
+    aggregate_revision_field: document_revision
+  legal.index.projection.ready.v1:
+    component: IndexProjectionReady
+    kind: EVENT
+    producer: index-service
+    consumers:
+    - document-service
+    aggregate_type: IndexProjection
+    ordering_key_field: aggregate_id
+    activation: CORE
+    routable: true
+    retry_class: transient_idempotent
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: index_id
+    aggregate_revision_field: projection_revision
+  legal.index.projection.activated.v1:
+    component: IndexProjectionActivated
+    kind: EVENT
+    producer: index-service
+    consumers:
+    - document-service
+    aggregate_type: IndexProjection
+    ordering_key_field: aggregate_id
+    activation: CORE
+    routable: true
+    retry_class: transient_idempotent
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: index_id
+    aggregate_revision_field: projection_revision
+  legal.index.projection.failed.v1:
+    component: IndexProjectionFailed
+    kind: EVENT
+    producer: index-service
+    consumers:
+    - document-service
+    aggregate_type: IndexProjection
+    ordering_key_field: aggregate_id
+    activation: CORE
+    routable: true
+    retry_class: permanent_or_transient
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: index_id
+    aggregate_revision_field: projection_revision
+  legal.index.projection.retired.v1:
+    component: IndexProjectionRetired
+    kind: EVENT
+    producer: index-service
+    consumers:
+    - document-service
+    aggregate_type: IndexProjection
+    ordering_key_field: aggregate_id
+    activation: CORE
+    routable: true
+    retry_class: transient_idempotent
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: index_id
+    aggregate_revision_field: projection_revision
+  legal.audit.fact.observed.v1:
+    component: AuditFactObserved
+    kind: EVENT
+    producer: MULTI_PRODUCER_EXCEPTION
+    consumers:
+    - audit-service
+    aggregate_type: AuditObservation
+    ordering_key_field: aggregate_id
+    activation: CORE
+    routable: true
+    retry_class: transient_idempotent
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: observation_id
+    aggregate_revision_field: observation_revision
+  legal.provider.configuration.validated.v1:
+    component: ProviderConfigurationValidated
+    kind: EVENT
+    producer: provider-service
+    consumers: []
+    aggregate_type: ProviderConfiguration
+    ordering_key_field: aggregate_id
+    activation: LATER
+    routable: false
+    retry_class: not_implemented
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: configuration_id
+    aggregate_revision_field: configuration_revision
+  legal.provider.configuration.activated.v1:
+    component: ProviderConfigurationActivated
+    kind: EVENT
+    producer: provider-service
+    consumers: []
+    aggregate_type: ProviderConfiguration
+    ordering_key_field: aggregate_id
+    activation: LATER
+    routable: false
+    retry_class: not_implemented
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: configuration_id
+    aggregate_revision_field: configuration_revision
+  legal.provider.configuration.disabled.v1:
+    component: ProviderConfigurationDisabled
+    kind: EVENT
+    producer: provider-service
+    consumers: []
+    aggregate_type: ProviderConfiguration
+    ordering_key_field: aggregate_id
+    activation: LATER
+    routable: false
+    retry_class: not_implemented
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: configuration_id
+    aggregate_revision_field: configuration_revision
+  legal.provider.configuration.retired.v1:
+    component: ProviderConfigurationRetired
+    kind: EVENT
+    producer: provider-service
+    consumers: []
+    aggregate_type: ProviderConfiguration
+    ordering_key_field: aggregate_id
+    activation: LATER
+    routable: false
+    retry_class: not_implemented
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: configuration_id
+    aggregate_revision_field: configuration_revision
+  legal.chat.answer.snapshot.available.v1:
+    component: ChatAnswerSnapshotAvailable
+    kind: EVENT
+    producer: chat-service
+    consumers: []
+    planned_consumers:
+    - feedback-service
+    aggregate_type: ChatAnswer
+    ordering_key_field: aggregate_id
+    activation: LATER
+    routable: false
+    retry_class: not_implemented
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: answer_id
+    aggregate_revision_field: answer_revision
+  legal.feedback.recorded.v1:
+    component: FeedbackRecorded
+    kind: EVENT
+    producer: feedback-service
+    consumers: []
+    aggregate_type: Feedback
+    ordering_key_field: aggregate_id
+    activation: LATER
+    routable: false
+    retry_class: not_implemented
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: feedback_id
+    aggregate_revision_field: feedback_revision
+  legal.feedback.annotation.requested.v1:
+    component: FeedbackAnnotationRequested
+    kind: EVENT
+    producer: feedback-service
+    consumers: []
+    aggregate_type: Feedback
+    ordering_key_field: aggregate_id
+    activation: LATER
+    routable: false
+    retry_class: not_implemented
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: feedback_id
+    aggregate_revision_field: feedback_revision
+  legal.golden.answer.approved.v1:
+    component: GoldenAnswerApproved
+    kind: EVENT
+    producer: feedback-service
+    consumers: []
+    planned_consumers:
+    - evaluation-service
+    aggregate_type: GoldenAnswer
+    ordering_key_field: aggregate_id
+    activation: LATER
+    routable: false
+    retry_class: not_implemented
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: golden_answer_id
+    aggregate_revision_field: golden_revision
+  legal.golden.answer.revoked.v1:
+    component: GoldenAnswerRevoked
+    kind: EVENT
+    producer: feedback-service
+    consumers: []
+    planned_consumers:
+    - evaluation-service
+    aggregate_type: GoldenAnswer
+    ordering_key_field: aggregate_id
+    activation: LATER
+    routable: false
+    retry_class: not_implemented
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: golden_answer_id
+    aggregate_revision_field: golden_revision
+  legal.dataset.frozen.v1:
+    component: DatasetFrozen
+    kind: EVENT
+    producer: evaluation-service
+    consumers: []
+    aggregate_type: Dataset
+    ordering_key_field: aggregate_id
+    activation: LATER
+    routable: false
+    retry_class: not_implemented
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: dataset_id
+    aggregate_revision_field: dataset_revision
+  legal.dataset.revoked.v1:
+    component: DatasetRevoked
+    kind: EVENT
+    producer: evaluation-service
+    consumers: []
+    aggregate_type: Dataset
+    ordering_key_field: aggregate_id
+    activation: LATER
+    routable: false
+    retry_class: not_implemented
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: dataset_id
+    aggregate_revision_field: dataset_revision
+  legal.evaluation.completed.v1:
+    component: EvaluationCompleted
+    kind: EVENT
+    producer: evaluation-service
+    consumers: []
+    aggregate_type: Evaluation
+    ordering_key_field: aggregate_id
+    activation: LATER
+    routable: false
+    retry_class: not_implemented
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: evaluation_id
+    aggregate_revision_field: evaluation_revision
+  legal.evaluation.failed.v1:
+    component: EvaluationFailed
+    kind: EVENT
+    producer: evaluation-service
+    consumers: []
+    aggregate_type: Evaluation
+    ordering_key_field: aggregate_id
+    activation: LATER
+    routable: false
+    retry_class: not_implemented
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: evaluation_id
+    aggregate_revision_field: evaluation_revision
+  legal.candidate.evaluated.v1:
+    component: CandidateEvaluated
+    kind: EVENT
+    producer: evaluation-service
+    consumers: []
+    aggregate_type: Candidate
+    ordering_key_field: aggregate_id
+    activation: LATER
+    routable: false
+    retry_class: not_implemented
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: candidate_id
+    aggregate_revision_field: candidate_revision
+  legal.candidate.eligible.v1:
+    component: CandidateEligible
+    kind: EVENT
+    producer: evaluation-service
+    consumers: []
+    aggregate_type: Candidate
+    ordering_key_field: aggregate_id
+    activation: LATER
+    routable: false
+    retry_class: not_implemented
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: candidate_id
+    aggregate_revision_field: candidate_revision
+  legal.candidate.withdrawn.v1:
+    component: CandidateWithdrawn
+    kind: EVENT
+    producer: evaluation-service
+    consumers: []
+    aggregate_type: Candidate
+    ordering_key_field: aggregate_id
+    activation: LATER
+    routable: false
+    retry_class: not_implemented
+    main_retention_days: 7
+    dlq_retention_days: 14
+    idempotency: (consumer_service,message_id)
+    ordering_fencing: aggregate_revision
+    aggregate_id_field: candidate_id
+    aggregate_revision_field: candidate_revision
