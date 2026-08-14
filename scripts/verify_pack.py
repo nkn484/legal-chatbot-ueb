@@ -18,13 +18,10 @@ def fail(message: str) -> None:
 
 
 required = [
-    ROOT / "AGENTS.md",
-    ROOT / "opencode.jsonc",
-    ROOT / ".opencode" / "oh-my-opencode-slim.jsonc",
-    ROOT / "prompts" / "00_HARD_RULES.md",
-    ROOT / "prompts" / "manifest.json",
-    ROOT / ".agent-run" / "prompt-state.json",
-    ROOT / "scripts" / "prompt_gate.py",
+    ROOT / "AGENTS.md", ROOT / "opencode.jsonc", ROOT / ".opencode" / "oh-my-opencode-slim.jsonc",
+    ROOT / "prompts" / "00_HARD_RULES.md", ROOT / "prompts" / "manifest.json",
+    ROOT / ".agent-run" / "prompt-state.json", ROOT / "scripts" / "prompt_gate.py",
+    ROOT / "docs" / "prompt-transition-rules.md", ROOT / "tests" / "test_prompt_gate_lifecycle.py",
 ]
 for path in required:
     if not path.is_file():
@@ -37,7 +34,6 @@ if len(commands) != 72:
     fail(f"expected 72 prompt commands, got {len(commands)}")
 if len(manifest["prompts"]) != 72 or len(state["prompts"]) != 72:
     fail("manifest/state prompt count is not 72")
-
 for path in commands:
     text = path.read_text(encoding="utf-8")
     if not text.startswith("---\n"):
@@ -45,67 +41,70 @@ for path in commands:
     match = re.search(r"Prompt ID: `(\d{2}\.\d+)`", text)
     if not match:
         fail(f"missing Prompt ID in {path.name}")
-    prompt_id = match.group(1)
     for marker in ("agent: orchestrator", "prompt_gate.py start", "prompt_gate.py submit", "AWAITING_APPROVAL"):
         if marker not in text:
             fail(f"{path.name} missing marker {marker}")
-    if prompt_id not in manifest["prompts"]:
-        fail(f"{path.name} has unknown ID {prompt_id}")
-
+    if match.group(1) not in manifest["prompts"]:
+        fail(f"{path.name} has unknown ID {match.group(1)}")
 for config in (ROOT / "opencode.jsonc", ROOT / ".opencode" / "oh-my-opencode-slim.jsonc"):
     json.loads(config.read_text(encoding="utf-8"))
 
-result = subprocess.run(
-    [sys.executable, str(ROOT / "scripts" / "prompt_gate.py"), "check", "01.1"],
-    cwd=ROOT,
-    text=True,
-    capture_output=True,
-    check=False,
-)
-if result.returncode != 0 or "ELIGIBLE 01.1" not in result.stdout:
-    fail("initial gate 01.1 is not eligible")
+help_result = subprocess.run([sys.executable, str(ROOT / "scripts" / "prompt_gate.py"), "--help"], cwd=ROOT,
+                             text=True, capture_output=True, check=False)
+if help_result.returncode != 0 or "cancel-start" not in help_result.stdout or "reopen" not in help_result.stdout:
+    fail("prompt gate help does not expose revision governance commands")
+rules = (ROOT / "docs" / "prompt-transition-rules.md").read_text(encoding="utf-8")
+for marker in ("cancel-start", "reopen", "approved_revision", "start_snapshot"):
+    if marker not in rules:
+        fail(f"transition rules missing governance marker {marker}")
 
-with tempfile.TemporaryDirectory(prefix="chatbot-prompt-gate-") as temporary:
+# The unittest fixture copies the gate into a new temporary repository, initializes Git there,
+# and creates fresh NOT_STARTED state. It never invokes governance commands against ROOT.
+result = subprocess.run([sys.executable, "-m", "unittest", "tests.test_prompt_gate_lifecycle", "-v"], cwd=ROOT,
+                        text=True, capture_output=True, check=False)
+if result.returncode != 0:
+    fail("governance lifecycle tests failed:\n" + result.stdout + result.stderr)
+
+with tempfile.TemporaryDirectory(prefix="prompt-gate-verify-") as temporary:
     test_root = Path(temporary) / "repo"
-    shutil.copytree(ROOT, test_root)
-    gate = test_root / "scripts" / "prompt_gate.py"
+    (test_root / "scripts").mkdir(parents=True)
+    (test_root / "prompts").mkdir()
+    (test_root / ".agent-run").mkdir()
+    (test_root / "work").mkdir()
+    (test_root / "docs").mkdir()
+    shutil.copy2(ROOT / "scripts" / "prompt_gate.py", test_root / "scripts" / "prompt_gate.py")
+    compact_manifest = {"schema_version": 1, "prompts": {
+        "01.1": {"dependencies": [], "group": "01", "write_roots": ["work/"],
+                   "preferred_agents": [], "required_report": "docs/report.md"},
+        "01.2": {"dependencies": ["01.1"], "group": "01", "write_roots": ["work/"],
+                   "preferred_agents": [], "required_report": "docs/report.md"},
+    }}
+    fresh_state = {"schema_version": 1, "prompts": {
+        prompt_id: {"status": "NOT_STARTED", "started_at": None, "submitted_at": None,
+                    "human_approved_at": None, "human_approved_by": None, "approval_note": None,
+                    "report": None, "evidence": []}
+        for prompt_id in compact_manifest["prompts"]
+    }}
+    (test_root / "prompts" / "manifest.json").write_text(json.dumps(compact_manifest), encoding="utf-8")
+    (test_root / ".agent-run" / "prompt-state.json").write_text(json.dumps(fresh_state), encoding="utf-8")
 
-    def run_gate(*arguments: str) -> subprocess.CompletedProcess[str]:
-        return subprocess.run(
-            [sys.executable, str(gate), *arguments],
-            cwd=test_root,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
+    def gate(*arguments: str) -> subprocess.CompletedProcess[str]:
+        return subprocess.run([sys.executable, str(test_root / "scripts" / "prompt_gate.py"), *arguments],
+                              cwd=test_root, text=True, capture_output=True, check=False)
 
-    if run_gate("start", "01.1").returncode != 0:
-        fail("lifecycle: cannot start 01.1")
-    report = test_root / "docs" / "progress" / "01.1.md"
-    report.parent.mkdir(parents=True, exist_ok=True)
-    report.write_text(
-        "# Test\n\n## Trạng thái\nPASS_CANDIDATE\n\n## Đã thay đổi\nfixture\n\n"
-        "## Bằng chứng\nfixture\n\n## Sai lệch\nnone\n\n## Đề xuất prompt tiếp theo\n01.2\n",
-        encoding="utf-8",
-    )
-    evidence = test_root / "docs" / "repository-inventory.md"
+    if gate("start", "01.1").returncode != 0:
+        fail("isolated lifecycle: cannot start predecessor")
+    report = test_root / "docs" / "report.md"
+    evidence = test_root / "docs" / "evidence.txt"
+    report.write_text("Trạng thái\nĐã thay đổi\nBằng chứng\nSai lệch\nĐề xuất prompt tiếp theo\n", encoding="utf-8")
     evidence.write_text("fixture\n", encoding="utf-8")
-    submitted = run_gate(
-        "submit",
-        "01.1",
-        "--report",
-        "docs/progress/01.1.md",
-        "--evidence",
-        "docs/repository-inventory.md",
-    )
-    if submitted.returncode != 0 or "AWAITING_APPROVAL" not in submitted.stdout:
-        fail("lifecycle: cannot submit 01.1")
-    if run_gate("check", "01.2").returncode == 0:
-        fail("lifecycle: 01.2 opened before human approval")
-    approved = run_gate("approve", "01.1", "--by", "TEST_USER", "--note", "test approval")
-    if approved.returncode != 0 or "PASS 01.1" not in approved.stdout:
-        fail("lifecycle: cannot approve 01.1")
-    if run_gate("check", "01.2").returncode != 0:
-        fail("lifecycle: 01.2 did not open after approval")
+    if gate("submit", "01.1", "--report", "docs/report.md", "--evidence", "docs/evidence.txt").returncode != 0:
+        fail("isolated lifecycle: cannot submit predecessor")
+    if gate("check", "01.2").returncode == 0:
+        fail("isolated lifecycle: successor opened before approval")
+    if gate("approve", "01.1", "--by", "TEST_USER", "--note", "fixture approval").returncode != 0:
+        fail("isolated lifecycle: cannot approve predecessor")
+    if gate("check", "01.2").returncode != 0:
+        fail("isolated lifecycle: successor remained blocked after approval")
 
-print("PASS: 72 commands, configs, manifest, state and full gate lifecycle are valid")
+print("PASS: 72 commands, configs, manifest/state structure, and revision governance lifecycle are valid")

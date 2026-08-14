@@ -1,57 +1,54 @@
 # Quy tắc chuyển tiếp prompt
 
-Tài liệu này là diễn giải coordination, không phải máy trạng thái và không có quyền ghi `.agent-run/prompt-state.json`.
+Tài liệu này diễn giải runtime executable; không có quyền ghi `.agent-run/prompt-state.json`.
 
-## A. Đồ thị runtime thực thi
+## A. Nguồn thẩm quyền và compatibility
 
-Nguồn hành vi duy nhất là `scripts/prompt_gate.py`; dependency tĩnh là `prompts/manifest.json`; state mutable duy nhất là `.agent-run/prompt-state.json`.
+1. `scripts/prompt_gate.py` là máy trạng thái executable.
+2. `prompts/manifest.json` cung cấp dependency và `write_roots` tĩnh.
+3. `.agent-run/prompt-state.json` là state mutable duy nhất.
 
-`start` chỉ chấp nhận prompt eligible ở `NOT_STARTED`, `BLOCKED` hoặc `IN_PROGRESS`; dependency phải là `PASS` hoặc `DEFERRED` và có `human_approved_at` truthy. Nó ghi `IN_PROGRESS` (trừ khi đã `IN_PROGRESS`). `submit` chỉ nhận `IN_PROGRESS`, report/evidence tồn tại trong repository, ít nhất một evidence, và năm marker; sau đó ghi `AWAITING_APPROVAL`. Người dùng `approve` từ `AWAITING_APPROVAL` ghi `PASS`; `reject` ghi `FAIL`. `defer-group` ghi `DEFERRED` chỉ cho toàn bộ item `NOT_STARTED` của group.
+State legacy được đọc tương thích: thiếu `revision` nghĩa là `1`; thiếu `history` và `approval_history` nghĩa là danh sách rỗng; thiếu `approved_revision` chỉ có hiệu lực là `1` khi entry legacy là `PASS`/`DEFERRED` và có `human_approved_at`. Đọc không mass-migrate hoặc sửa state; mutation chỉ bổ sung field cho target thích hợp.
 
-Runtime literals là `NOT_STARTED`, `IN_PROGRESS`, `AWAITING_APPROVAL`, `PASS`, `FAIL`, `DEFERRED`. `AWAITING_APPROVAL` và `DEFERRED` phải được tính đến dù mô hình wording cấp cao không nêu chúng.
+## B. Đồ thị runtime và revision-bound approval
 
-## B. Mô hình outcome tài liệu được yêu cầu
+`start` từ `NOT_STARTED`/`BLOCKED` chuyển sang `IN_PROGRESS`; resume `IN_PROGRESS` không tạo snapshot legacy. `submit` chuyển `IN_PROGRESS` sang `AWAITING_APPROVAL`; `approve` chuyển sang `PASS`; `reject` sang `FAIL`; `defer-group` chuyển các target hợp lệ sang `DEFERRED`.
 
-Mô hình diễn giải cấp cao là `NOT_STARTED -> IN_PROGRESS -> PASS/PASS_WITH_CONDITIONS/FAIL/BLOCKED`. Đây không thay thế runtime: `PASS_WITH_CONDITIONS` và `BLOCKED` là outcome tài liệu, không là normal persisted transition. Candidate report dùng `PASS_CANDIDATE`, `PASS_WITH_CONDITIONS_CANDIDATE`, `BLOCKED`, hoặc `FAIL`.
+Dependency chỉ accepted khi predecessor có status `PASS` hoặc `DEFERRED`, `human_approved_at` truthy, và `approved_revision == revision` theo effective legacy/current value. Vì vậy `submit` không mở successor; `approve` hoặc `defer-group` mới mở. Khi parent được `reopen`, parent là `IN_PROGRESS` revision mới nên direct successor bị derived blocking; successor xa cũng bị block vì predecessor trực tiếp không thể advance. Không persist state `BLOCKED` cho successor.
 
-Qualified pass chỉ map sang runtime `PASS` sau human approval theo thủ tục, với điều kiện được ghi rõ trong approval note và liên kết decision log. `BLOCKED` trong tài liệu không đổi runtime.
+`approve` và `defer-group` ghi `approved_revision` bằng revision hiện tại, giữ current compatibility fields và append immutable `approval_history` gồm revision, at/by/note và snapshot report/evidence/submitted. `--by` là procedural identity/audit metadata; cryptographic authentication nằm ngoài gate hiện tại.
 
-## C. Thứ bậc thẩm quyền
+## C. Snapshot artifact và controlled cancellation
 
-1. `scripts/prompt_gate.py`: hành vi executable.
-2. `prompts/manifest.json`: ID, dependency và metadata tĩnh.
-3. `.agent-run/prompt-state.json`: runtime mutable authoritative duy nhất.
-4. `docs/prompt-state.yaml`, tài liệu này và decision log: registry/giải thích không có quyền runtime.
+Lần chuyển thực sự đầu tiên từ `NOT_STARTED`/`BLOCKED` sang `IN_PROGRESS`, gate lưu `start_snapshot`: version, `started_at`, và map path repo-relative của regular file tới SHA-256 trong `write_roots`. Snapshot chỉ có hash, không có file contents/secret; bỏ `.git` ở mọi depth, `__pycache__`, `*.pyc`, `.DS_Store`, và không follow symlink. Overlapping root được union/dedupe theo path nên hash mỗi file một lần.
 
-## D. Bảng command và tiền điều kiện
+Mọi `write_roots` được validate trước snapshot/Git fallback: phải là relative nonempty path (hoặc `.`), không absolute/traversal/escape/symlink root hay symlink ancestor, và không được declared `.git` path segment. Lexical check Windows-normalize từng segment bằng `rstrip(' .').casefold()`, nên `.git`, `.GIT`, `.git.`, `.git ` và nested variants đều bị từ chối trước filesystem access; whole path `.` vẫn hợp lệ. Root missing chỉ hợp lệ nếu nearest existing ancestor an toàn bên trong repo; nó là empty prefix lúc start và creation sau đó là artifact delta. Symlink xuất hiện dưới root hoặc thay root missing cũng fail closed. Root invalid làm `start`, `cancel-start` và `reopen` từ chối không mutation.
 
-| Command | Tiền điều kiện | Kết quả runtime |
+`cancel-start PROMPT_ID --by USER --note NOTE` là **human/governance-only**. Nó chỉ chấp nhận `IN_PROGRESS` chưa submit (`submitted_at=null`, `report=null`, evidence rỗng, không current approval). Gate so snapshot hiện tại với `start_snapshot`; created/modified/deleted file trong root đều block. Snapshot legacy không được backfill khi start/resume: no-snapshot hoặc snapshot v1 files-only không có `roots` không được tin để clean; cancellation chỉ được phép bằng `git status --porcelain=v1 --untracked-files=all -- <write_roots>` sạch, recorded với fallback mode riêng. Git unavailable/error hoặc output đều fail closed.
+
+Cancellation không xóa hoặc rollback filesystem, không giảm revision, và không attribution thay đổi cho một người/prompt. Thay đổi bởi bất kỳ ai trong `write_roots` block cancellation; thay đổi ngoài root không bị gate gán cho prompt và cũng không bị xóa. Thành công append `history` event `CANCEL_START` chứa prior `started_at`, revision và `snapshot_mode`, rồi reset runtime submission/start fields thành `NOT_STARTED`.
+
+## D. Reopen có kiểm soát và descendants
+
+`reopen PROMPT_ID --by USER --note NOTE` là **human/governance-only**, chỉ cho `PASS` có current human approval ở current revision. Gate xây reverse dependency graph và fail closed nếu reference unknown hoặc cycle. Nó kiểm deterministic tất cả direct/indirect descendants: chỉ `NOT_STARTED` pristine (`submitted_at/report=null`, evidence rỗng, không approval) được phép. `IN_PROGRESS` bị từ chối rõ ràng và phải `cancel-start` trước; `AWAITING_APPROVAL`, `PASS`, `DEFERRED`, `FAIL`, `BLOCKED` hay descendant có artifact/approval đều bị từ chối.
+
+Trước transition, current approval được archive append-only trong `approval_history` với approval snapshot và metadata archive. Gate append `REOPENED` history với old/new revision, prior approval và descendant IDs checked; tăng revision, clear submission/current approval, ghi reopen metadata, chuyển target `IN_PROGRESS`, và capture baseline snapshot mới. Không mutate successor thành `BLOCKED`. Sau submit + approve revision mới, `approved_revision` mới khớp và successor lại eligible.
+
+## E. Bảng command và ownership
+
+| Command | Tiền điều kiện chính | Kết quả |
 |---|---|---|
-| `context` / `check` | eligible theo dependency và current state | chỉ xuất context/eligibility; không ghi |
-| `start` | eligible; current `NOT_STARTED`, `BLOCKED`, hoặc `IN_PROGRESS` | `IN_PROGRESS` |
-| `submit` | `IN_PROGRESS`, report/evidence in-repo tồn tại, >=1 evidence, 5 marker | `AWAITING_APPROVAL` |
-| `approve` | `AWAITING_APPROVAL`, `--by`/`--note` không rỗng | `PASS` |
-| `reject` | `AWAITING_APPROVAL`, `--by`/`--note` không rỗng | `FAIL` |
-| `defer-group` | group tồn tại, điều kiện dependency của item đầu tiên đạt, mọi item `NOT_STARTED` | `DEFERRED` cho group |
+| `context` / `check` | dependency current-revision approved; graph hợp lệ | chỉ đọc eligibility |
+| `start` | eligible; `NOT_STARTED`/`BLOCKED`/`IN_PROGRESS` | `IN_PROGRESS`; capture snapshot chỉ khi actual transition |
+| `submit` | `IN_PROGRESS`, report/evidence in-repo, >=1 evidence, 5 marker | `AWAITING_APPROVAL` |
+| `approve` | `AWAITING_APPROVAL`, nonempty metadata | `PASS`, revision-bound approval history |
+| `reject` | `AWAITING_APPROVAL`, nonempty metadata | `FAIL` |
+| `defer-group` | mỗi dependency current-revision approved; targets `NOT_STARTED` | `DEFERRED`, approval history |
+| `cancel-start` | human-only; pristine `IN_PROGRESS`; clean snapshot/fallback | `NOT_STARTED`, no rollback |
+| `reopen` | human-only; current approved `PASS`; all descendants pristine | target `IN_PROGRESS` revision +1 |
 
-## E. Cổng report/evidence và giới hạn chất lượng
+Agent chỉ chạy `check`/`start`/`submit` khi prompt command yêu cầu. Agent bị cấm direct state edit và tất cả `approve`, `reject`, `defer-group`, `cancel-start`, `reopen`; những governance command này chỉ human thực hiện. Documentation không authorize transition.
 
-Không có `PASS` nếu chưa có submitted report + nonempty evidence và human approval theo thủ tục. Gate chỉ kiểm tra tồn tại cấu trúc: report/evidence, repository boundary, và marker `Trạng thái`, `Đã thay đổi`, `Bằng chứng`, `Sai lệch`, `Đề xuất prompt tiếp theo`.
+## F. Giới hạn gate
 
-Gate không kiểm evidence quality, relevance, hash, binding tới `required_report`, hay test thực sự pass. Documentation không thể bảo đảm quality; Orchestrator/human verification vẫn bắt buộc.
-
-## F. Dependency, human approval và successor lock
-
-Mỗi dependency phải persisted `PASS` hoặc `DEFERRED` **và** `human_approved_at` truthy. Vì vậy submit không mở successor; chỉ approval/defer hợp lệ mới mở. Human approval là procedural/audit metadata, script không xác thực danh tính bằng mật mã.
-
-## G. Ownership và hành động cấm
-
-Orchestrator chịu trách nhiệm coordination, reread, validation độc lập và submit. Agent chỉ có thể chạy `check`/`start`/`submit` khi prompt command yêu cầu. Agent bị cấm `approve`, `reject`, `defer-group`, direct state edit, hoặc quản lý `.agent-run/`; chỉ human thực hiện approval/rejection/deferral. Docs không authorize, transition hay unlock prompt.
-
-## H. Recovery, reject, defer và discrepancy
-
-`FAIL` sau reject không nằm trong tập `start` cho phép; recovery không được script tự định nghĩa. `BLOCKED` được `start` chấp nhận nhưng không có command ghi `BLOCKED`. Không có command persist `PASS_WITH_CONDITIONS`. `defer-group` kiểm dependency của **item đầu tiên** trong group, không kiểm từng item trước khi defer; approval fields cũng được tái sử dụng cho reject/defer. `required_report` trong manifest được context hiển thị nhưng submit không bắt buộc report path trùng field đó. Các sai khác được đăng ký tại DEC-007.
-
-## I. Carry-forward điều kiện 01.2
-
-DEC-005 vẫn OPEN: REQ-RET-003 citation là Core MUST, nhưng manifest xếp `05.8` sau `05.7 -> 05.6 -> 05.5`; 05.6 cần real minimal Provider request, mâu thuẫn Core không Provider/credential/cost. Chỉ governance/manifest resolution tương lai được phê duyệt riêng mới có thể cho phép claim feasible downstream path. Prompt 01.3 không giải quyết điều kiện này.
+Gate kiểm structural report/evidence, không chứng minh quality/relevance/hash/binding hay test success. `PASS_WITH_CONDITIONS` và `BLOCKED` là outcome tài liệu, không normal persisted transition. `FAIL` recovery ngoài `reopen` không tự định nghĩa. `required_report` được context hiển thị nhưng submit không buộc path trùng field đó.

@@ -82,3 +82,80 @@ Không sửa hoặc xóa entry đã ghi. Mỗi entry mới có: `ID`, `date`, `p
 - owner: orchestrator
 - closure evidence: Future script/governance change only; none requested in 01.3.
 - supersedes: none
+
+### DEC-008
+- date: 2026-08-13
+- prompt: governance checkpoint
+- decision-or-condition: `cancel-start` là controlled reset chỉ cho IN_PROGRESS pristine, có metadata human và evidence artifact clean.
+- basis: user-approved gate governance checkpoint.
+- authority: user governance decision; executable runtime pending verification.
+- status: ACCEPTED_BY_USER_PENDING_IMPLEMENTATION_VERIFICATION
+- owner: governance/human
+- closure evidence: `scripts/prompt_gate.py`; lifecycle tests; transition rules section C.
+- supersedes: recovery undefined wording in DEC-007 only for controlled cancellation.
+
+### DEC-009
+- date: 2026-08-13
+- prompt: governance checkpoint
+- decision-or-condition: `reopen` tạo revision mới, archive approval append-only, và chỉ cho khi toàn bộ descendants pristine NOT_STARTED; IN_PROGRESS phải cancel-start trước.
+- basis: user-approved gate governance checkpoint.
+- authority: user governance decision; executable runtime pending verification.
+- status: ACCEPTED_BY_USER_PENDING_IMPLEMENTATION_VERIFICATION
+- owner: governance/human
+- closure evidence: `scripts/prompt_gate.py`; lifecycle tests; transition rules section D.
+- supersedes: none
+
+### DEC-010
+- date: 2026-08-13
+- prompt: governance checkpoint
+- decision-or-condition: Start snapshot hash detects artifacts under write_roots; legacy cancellation uses fail-closed clean Git fallback; cancellation never deletes/restores files.
+- basis: user-approved gate governance checkpoint.
+- authority: user governance decision; executable runtime pending verification.
+- status: ACCEPTED_BY_USER_PENDING_IMPLEMENTATION_VERIFICATION
+- owner: governance/human
+- closure evidence: `scripts/prompt_gate.py`; lifecycle tests; transition rules section C.
+- supersedes: none
+
+### DEC-011
+- date: 2026-08-13
+- prompt: governance checkpoint
+- decision-or-condition: Human approval is bound to current revision; reopening derives successor blocking until new revision submit and approval complete.
+- basis: user-approved gate governance checkpoint.
+- authority: user governance decision; executable runtime pending verification.
+- status: ACCEPTED_BY_USER_PENDING_IMPLEMENTATION_VERIFICATION
+- owner: governance/human
+- closure evidence: `scripts/prompt_gate.py`; lifecycle tests; transition rules section B/D.
+- supersedes: none
+
+### DEC-012
+- date: 2026-08-13
+- prompt: governance checkpoint
+- decision-or-condition: Artifact root paths phải validate fail-closed; snapshot excludes `.git` ở mọi depth, rejects symlink/escape, và deduplicates overlapping roots.
+- basis: user-approved governance checkpoint follow-up.
+- authority: user governance decision; executable runtime pending verification.
+- status: ACCEPTED_BY_USER_PENDING_IMPLEMENTATION_VERIFICATION
+- owner: governance/human
+- closure evidence: `scripts/prompt_gate.py`; lifecycle tests; transition rules section C.
+- supersedes: none
+
+### DEC-013
+- date: 2026-08-13
+- prompt: governance checkpoint
+- decision-or-condition: Declared `.git` roots are forbidden; legacy files-only snapshots use fail-closed validated Git fallback instead of ambiguous snapshot comparison.
+- basis: user-approved governance checkpoint final follow-up.
+- authority: user governance decision; executable runtime pending verification.
+- status: ACCEPTED_BY_USER_PENDING_IMPLEMENTATION_VERIFICATION
+- owner: governance/human
+- closure evidence: `scripts/prompt_gate.py`; lifecycle tests; transition rules section C.
+- supersedes: none
+
+### DEC-014
+- date: 2026-08-13
+- prompt: governance checkpoint
+- decision-or-condition: `.git` write-root rejection applies Windows lexical alias normalization using trailing-dot/space removal and case folding per path segment.
+- basis: user-approved governance checkpoint final narrow follow-up.
+- authority: user governance decision; executable runtime pending verification.
+- status: ACCEPTED_BY_USER_PENDING_IMPLEMENTATION_VERIFICATION
+- owner: governance/human
+- closure evidence: `scripts/prompt_gate.py`; lifecycle tests; transition rules section C.
+- supersedes: none
