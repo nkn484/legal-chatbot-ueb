@@ -1,0 +1,103 @@
+{
+  "counts": {
+    "boundaries": 13,
+    "classes": 18,
+    "controls": 30,
+    "critical_high_coverage": 41,
+    "encryption": 15,
+    "external_flows": 8,
+    "flows": 38,
+    "later_denied_families": {
+      "backup_dr": 2,
+      "feedback_evaluation": 2,
+      "provider": 3,
+      "source": 3
+    },
+    "later_denied_flows": 10,
+    "owasp_api": [
+      "API1",
+      "API10",
+      "API2",
+      "API3",
+      "API4",
+      "API5",
+      "API6",
+      "API7",
+      "API8",
+      "API9"
+    ],
+    "owasp_llm": [
+      "LLM01",
+      "LLM02",
+      "LLM03",
+      "LLM04",
+      "LLM05",
+      "LLM06",
+      "LLM07",
+      "LLM08",
+      "LLM09",
+      "LLM10"
+    ],
+    "phase": {
+      "BOTH": 1,
+      "CORE": 27,
+      "LATER": 13
+    },
+    "pii_flows": 26,
+    "retention": 18,
+    "risks": 41,
+    "secret_flows": 9,
+    "severity": {
+      "Critical": 10,
+      "High": 31,
+      "Low": 0,
+      "Medium": 0
+    },
+    "stride": [
+      "D",
+      "E",
+      "I",
+      "R",
+      "S",
+      "T"
+    ],
+    "tests": 70
+  },
+  "errors": [],
+  "input_sha256": {
+    "contracts/security/privacy-data-map.yaml": "b7e27cbe004ba64f6fa455948fb031f06683e1a0bb558f7f028dc6431394b4a4",
+    "contracts/security/risk-register.yaml": "cbe61b1dc4e0a7c43426f6c08f0e0c1e83bd05ea3a1604c7710c8eff67814350",
+    "contracts/security/security-controls.yaml": "1cd934e91bfabf4b13abc5682bc340a3ada410b84da7f5f6de7c6cdae85add9a",
+    "contracts/security/security-tests.yaml": "2f18bef6382e8da75cf5fdf09df5604346f9baf0a04ce44bca49a75b804a1fb0",
+    "docs/architecture/privacy-model.md": "41183ea62c6f9f44065beefd5c0d4796abeda28e079cd7e6cc361e142fb2e0c0",
+    "docs/architecture/threat-data-flow.md": "32d5f35cfe00bc7c1664e6828b2414773cad6fc5d277d39efb269ecc89643dbb",
+    "docs/architecture/threat-model.md": "632102b181b5ac99f97e88762827ad7feabe4c81016a8f3f606f65c5266b9d42"
+  },
+  "mutation_checks": {
+    "backup_flow_active": true,
+    "backup_test_core": true,
+    "broker_to_retrieval": true,
+    "core_control_later_test": true,
+    "core_privacy_provider_test": true,
+    "core_retention_later_test": true,
+    "core_risk_later_test": true,
+    "critical_accepted": true,
+    "evaluation_flow_active": true,
+    "feedback_flow_active": true,
+    "hold_missing_authority": true,
+    "missing_key_owner": true,
+    "missing_llm_category": true,
+    "missing_risk_control": true,
+    "missing_risk_owner": true,
+    "missing_risk_test": true,
+    "pii_flow_missing_retention": true,
+    "provider_flow_active": true,
+    "retention_above_max": true,
+    "retrieval_to_citation": true,
+    "source_flow_active": true,
+    "test_pass": true,
+    "vague_encryption": true,
+    "wrong_score_severity": true
+  },
+  "status": "PASS"
+}

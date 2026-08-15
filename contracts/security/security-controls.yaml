@@ -1,0 +1,243 @@
+version: "1.0"
+status: DESIGN_ONLY
+controls:
+  - id: CTRL-AUTH-001
+    objective: Prevent unauthorized production publication and conflicting duties.
+    owner: document-service
+    applies_to: [admin-publish]
+    implementation_requirement: "Require MFA plus step-up authentication and enforce distinct uploader, reviewer, and publisher principals before any production publish transition; local demo roles are isolated and are not production-equivalent."
+    verification_test_ids: [SEC-AUTH-001, SEC-AUTH-002, SEC-AUTH-003]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-AUTH-002
+    objective: Enforce object, property, and function authorization at the owner.
+    owner: document-service
+    applies_to: [document, version, admin-action]
+    implementation_requirement: "Authorize every resource and function at the owning service using server-side subject, tenant, role, and ownership facts; deny absent, stale, or foreign object identifiers."
+    verification_test_ids: [SEC-AUTH-004, SEC-AUTH-005]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-AUTH-003
+    objective: Bind an authenticated request to an untampered context.
+    owner: identity-service
+    applies_to: [gateway-context, session, idempotency]
+    implementation_requirement: "Issue short-lived, audience-bound signed contexts with subject, authorization revision, request ID, nonce, expiry, and idempotency binding; recipients verify signature, audience, expiry, nonce, and replay state."
+    verification_test_ids: [SEC-AUTH-006, SEC-AUTH-007]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-AUTH-004
+    objective: Protect isolated local/demo credentials and workload identity without ambient trust.
+    owner: identity-service
+    applies_to: [local-demo-credential, verified-context, workload]
+    implementation_requirement: "Core accepts only an isolated local/demo credential from secret/config, never hardcoded, logged, or browser-exposed, and disables it outside the explicitly isolated demo boundary. It issues and verifies signed audience-bound downstream context and requires mTLS workload identities with per-service audiences and ACLs; this is not production-equivalent live SSO/OIDC."
+    verification_test_ids: [SEC-AUTH-010]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-UPLOAD-001
+    objective: Quarantine and authenticate uploads before parsing.
+    owner: document-service
+    applies_to: [upload, original-object]
+    implementation_requirement: "Store uploads in a quarantine prefix, verify declared and detected MIME, extension, signature and anti-malware result before granting a content-addressed immutable processing read grant; reject polyglots and unknown types."
+    verification_test_ids: [SEC-PDF-001, SEC-PDF-002, SEC-PDF-003]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-UPLOAD-002
+    objective: Contain hostile document processing.
+    owner: processing-service
+    applies_to: [parser, ocr, sandbox]
+    implementation_requirement: "Run parser and OCR as non-root in a no-network sandbox with read-only filesystem, no host mounts, CPU, RAM, wall-time, page-count, expansion-ratio and output-size bounds; terminate and quarantine failures."
+    verification_test_ids: [SEC-PDF-004, SEC-PDF-005, SEC-RES-001]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-UPLOAD-003
+    objective: Preserve immutable original and artifact provenance.
+    owner: document-service
+    applies_to: [object-store, hash, review]
+    implementation_requirement: "Use content hashes, version revisions, immutable object references, write-once prefixes and compare reviewed hash to publish hash; reject overwrite or hash change after review."
+    verification_test_ids: [SEC-PDF-006, SEC-AUTH-003]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-RAG-001
+    objective: Keep untrusted corpus instructions from controlling the system.
+    owner: processing-service
+    applies_to: [ocr, chunks, labels]
+    implementation_requirement: "Classify corpus and OCR text as untrusted data, preserve provenance, prevent instruction execution, quarantine malicious labels, and require human review metadata separate from extracted content."
+    verification_test_ids: [SEC-RAG-001, SEC-RAG-002]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-RAG-002
+    objective: Enforce final retrieval eligibility atomically enough to fail closed.
+    owner: retrieval-service
+    applies_to: [retrieval, revocation, eligibility]
+    implementation_requirement: "Before returning evidence, obtain Document owner confirmation of PUBLISHED and active bound to a monotonic eligibility or revocation epoch in the request context; owner unavailability, mismatch, unpublish, or revoke returns refusal."
+    verification_test_ids: [SEC-RAG-003, SEC-RAG-004, SEC-RAG-005]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-RAG-003
+    objective: Preserve request and chunk lineage.
+    owner: retrieval-service
+    applies_to: [context, chunk, evidence]
+    implementation_requirement: "Bind short-lived retrieval context to authenticated request ID, subject scope, index revision, document version, chunk hash, eligibility epoch and expiry; verify every opaque reference and reject forged or replayed lineage."
+    verification_test_ids: [SEC-RAG-006, SEC-RAG-007]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-CITE-001
+    objective: Render citations only from canonical owners.
+    owner: citation-service
+    applies_to: [citation, response]
+    implementation_requirement: "Accept only opaque validated context references, independently recheck Index membership and Document PUBLISHED plus active state, and obtain title, number, URL, page and excerpt from canonical Document and Processing owner APIs; never accept model or caller metadata."
+    verification_test_ids: [SEC-CITE-001, SEC-CITE-002, SEC-CITE-003]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-CITE-002
+    objective: Refuse when evidence is insufficient.
+    owner: chat-service
+    applies_to: [answer, insufficiency]
+    implementation_requirement: "Treat retrieval insufficiency, conflicting evidence, citation validation failure, owner error, or epoch mismatch as a structured refusal and prohibit any override or substantive answer assembly."
+    verification_test_ids: [SEC-CITE-004, SEC-RAG-005]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-OUTPUT-001
+    objective: Prevent unsafe rendering or execution of answer content.
+    owner: chat-service
+    applies_to: [markdown, url, tool-arguments]
+    implementation_requirement: "Emit a strict response schema and plaintext-safe citation fields; context-encode at the client, enforce CSP, disallow unsafe HTML, script URLs, automatic link navigation, tool invocation, and executable arguments."
+    verification_test_ids: [SEC-OUT-001, SEC-OUT-002, SEC-OUT-003]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-PROVIDER-001
+    objective: Constrain future provider network access.
+    owner: provider-service
+    applies_to: [provider-url, dns, egress]
+    implementation_requirement: "Use approved fixed endpoint profiles only; resolve and validate every IPv4 and IPv6 result at connect time, reject loopback, private, link-local, multicast, unspecified and metadata ranges, reject CNAME escape and redirects, use an egress proxy and firewall, and provide no ambient credentials."
+    verification_test_ids: [SEC-SSRF-001, SEC-SSRF-002, SEC-SSRF-003, SEC-SSRF-004, SEC-SSRF-005]
+    phase: LATER
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-PROVIDER-002
+    objective: Keep provider secrets write-only and configuration singular.
+    owner: provider-service
+    applies_to: [provider-secret, active-config]
+    implementation_requirement: "Accept provider keys only for create or rotate into a write-only secret manager reference, never return or log plaintext, validate configuration before a locked single-active transaction, require dual control, and retain rollback overlap no longer than 24 hours."
+    verification_test_ids: [SEC-SSRF-006, SEC-SSRF-007, SEC-REL-001]
+    phase: LATER
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-PRIV-001
+    objective: Minimize and redact sensitive data on Core paths.
+    owner: privacy-owner
+    applies_to: [pii, chat, upload, telemetry, audit, event, DLQ]
+    implementation_requirement: "Collect only declared Core purpose fields and redact PII and secret canaries before telemetry, audit, events, and DLQ; enforce Core data minimization and redacted observability while prohibiting sensitive-body transmission."
+    verification_test_ids: [SEC-PRIV-001, SEC-PRIV-002, SEC-PRIV-004]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-PRIV-002
+    objective: Make Core deletion survive derived copies and delivery paths.
+    owner: privacy-owner
+    applies_to: [retention, tombstone, projection, cache, event, DLQ]
+    implementation_requirement: "Create owner-authorized tombstones and deletion ledger entries, then propagate to owner stores, projections, caches, events, and DLQ so deleted data cannot be served; legal holds require named authorized authority."
+    verification_test_ids: [SEC-PRIV-005]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-PRIV-003
+    objective: Protect future backup and restore from disclosure or resurrection.
+    owner: platform-security
+    applies_to: [backup, restore, deletion-ledger, legal-hold]
+    implementation_requirement: "LATER only: use encrypted owner-scoped backups with a separate backup key, maximum 30-day retention, authorized restore, and deletion/legal-hold ledger application before restored data can be served."
+    verification_test_ids: [SEC-PRIV-006]
+    phase: LATER
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-PRIV-004
+    objective: Govern future Provider privacy egress.
+    owner: privacy-owner
+    applies_to: [provider-content-egress, provider-privacy-evidence]
+    implementation_requirement: "LATER only: deny Provider content egress by default; require minimization and redaction plus approved DPA, training-use, retention, residency, subprocessor, and lawful-basis evidence before any content can be sent."
+    verification_test_ids: [SEC-PRIV-003]
+    phase: LATER
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-EVENT-001
+    objective: Authenticate and order broker facts safely.
+    owner: platform-security
+    applies_to: [broker, outbox, inbox]
+    implementation_requirement: "Require broker TLS and mTLS service identities with publisher and consumer ACLs; authenticate the producer from the broker mTLS connection and ACL, then validate schema, message type, message ID, aggregate revision and payload hash. Payload hash provides integrity only and is not producer authentication; use local outbox and inbox idempotency with gap reconciliation."
+    verification_test_ids: [SEC-EVT-001, SEC-EVT-002, SEC-EVT-003, SEC-EVT-004]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-EVENT-002
+    objective: Contain poison messages and replay.
+    owner: platform-security
+    applies_to: [retry, dlq, replay]
+    implementation_requirement: "Bound retries to transient idempotent failures, sanitize DLQ metadata, prohibit automatic replay, and require authorized rate-limited audited replay preserving message ID."
+    verification_test_ids: [SEC-EVT-005, SEC-EVT-006]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-STORAGE-001
+    objective: Isolate service data planes.
+    owner: platform-security
+    applies_to: [database, object-store]
+    implementation_requirement: "Assign per-service database and object-prefix credentials, network policies and least-privilege service principals; deny cross-service SQL, object-prefix listing or reads, and shared credentials. Future backup access and deletion are outside Core and governed by separate LATER backup controls."
+    verification_test_ids: [SEC-DB-001, SEC-DB-002, SEC-DB-003]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-AUDIT-001
+    objective: Make security audit evidence append-only and separated.
+    owner: audit-service
+    applies_to: [audit, checkpoint, read]
+    implementation_requirement: "Write append-only sanitized audit records with hash chain and signed checkpoints using a key in a separate trust domain; restrict privileged query access and alert on verification gaps."
+    verification_test_ids: [SEC-AUD-001, SEC-AUD-002, SEC-AUD-003]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-SUPPLY-001
+    objective: Admit only traceable, scanned supply-chain artifacts.
+    owner: platform-security
+    applies_to: [dependencies, images, ci, parser, model]
+    implementation_requirement: "Pin lockfiles and image digests, generate SBOM and provenance, verify signatures for dependencies, CI actions, parser and model artifacts, and block unremediated Critical or High scanner findings."
+    verification_test_ids: [SEC-SC-001, SEC-SC-002, SEC-SC-003]
+    phase: BOTH
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-RESOURCE-001
+    objective: Bound cost and availability abuse.
+    owner: api-gateway
+    applies_to: [request, token, retrieval, queue, storage]
+    implementation_requirement: "Apply authenticated rate, concurrency, payload, token, retrieval-result, queue-depth, storage and cost budgets with timeouts, bounded retry and fail-closed overload refusal."
+    verification_test_ids: [SEC-RES-001, SEC-RES-002, SEC-RES-003]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-RELEASE-001
+    objective: Prevent automatic candidate or configuration activation.
+    owner: release-owner
+    applies_to: [candidate, deployment, provider]
+    implementation_requirement: "Require separate deploy identity, human Security and Privacy approval where applicable, admission evidence for linked Critical and High tests, explicit activation transaction, kill switch, rollback and append-only approval record; no automatic release."
+    verification_test_ids: [SEC-REL-001, SEC-REL-002, SEC-REL-003]
+    phase: BOTH
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-CACHE-001
+    objective: Prevent cache data crossing user or tenant scope.
+    owner: chat-service
+    applies_to: [cache, retrieval-context]
+    implementation_requirement: "Key caches by authenticated subject or tenant, authorization revision, request purpose and short expiry; never cache raw secret material and invalidate on logout, revocation or deletion tombstone."
+    verification_test_ids: [SEC-CACHE-001, SEC-CACHE-002]
+    phase: CORE
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-SOURCE-001
+    objective: Keep future source connectors default-denied.
+    owner: document-service
+    applies_to: [source-connector, third-party-api]
+    implementation_requirement: "Keep source connectors non-routable until approved endpoint profile, read-only operation allowlist, credential reference, DNS and redirect SSRF controls, rate limits, provenance validation and human activation evidence exist."
+    verification_test_ids: [SEC-SOURCE-001, SEC-SOURCE-002, SEC-SOURCE-003]
+    phase: LATER
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-KEY-001
+    objective: Assign concrete encryption and key responsibilities.
+    owner: platform-security
+    applies_to: [kms, encryption, keys]
+    implementation_requirement: "Use the exact encryption registry algorithms, aliases, principals, rotation and recovery restrictions; platform-security owns KMS and HSM root operations while each service owns scoped classification and alias use, with no raw key export."
+    verification_test_ids: [SEC-PRIV-007, SEC-DB-003, SEC-AUD-003]
+    phase: BOTH
+    status: PLANNED_NOT_IMPLEMENTED
+  - id: CTRL-AUTH-005
+    objective: Validate future live OIDC/SSO and remote JWKS without SSRF.
+    owner: identity-service
+    applies_to: [live-oidc, live-sso, remote-jwks]
+    implementation_requirement: "LATER only: pin issuer, audience, permitted algorithms, key use, and JWKS origin; reject unsigned or confused tokens; resolve fixed JWKS profiles through approved egress with connect-time IPv4/IPv6, redirect, CNAME, metadata, and private-range denial. No live OIDC/SSO or remote JWKS resolution is enabled in Core."
+    verification_test_ids: [SEC-AUTH-008, SEC-AUTH-009]
+    phase: LATER
+    status: PLANNED_NOT_IMPLEMENTED
