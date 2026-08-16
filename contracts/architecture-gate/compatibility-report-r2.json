@@ -1,0 +1,51 @@
+{
+  "baseline_hashes": {
+    "final": "568917dd34f82cb92c184d88879c7cfee17243ae0cffe613b09b1d4bde27bdde",
+    "original": "e8f54287af30b003447e67be2d9442686170d05b1bce1670ba987922813354fd",
+    "preliminary_draft": "92ac994b474a31f9fb23ec1eb00c25473630fbf417e792a0cbdfa99f719617a6"
+  },
+  "baseline_paths": {
+    "final": "contracts/architecture-gate/contract-baseline-r2-final.json",
+    "original": "contracts/architecture-gate/contract-baseline.json",
+    "preliminary_draft": "contracts/architecture-gate/contract-baseline-r2.json"
+  },
+  "classifications": [
+    {
+      "artifact": "contracts/openapi/internal-identity-v1.yaml",
+      "classification": "candidate additive eighth specification/identity operation"
+    },
+    {
+      "artifact": "prompts/manifest.json",
+      "classification": "intentional breaking governance dependency change pending human approval"
+    },
+    {
+      "artifact": "contracts/asyncapi/asyncapi.yaml",
+      "classification": "candidate active AuditFact ACL narrows only never-active LATER entitlements"
+    },
+    {
+      "artifact": "contracts/security/privacy-data-map.yaml",
+      "classification": "candidate additive broker-mediated security flows"
+    },
+    {
+      "artifact": "docs/architecture/adr",
+      "classification": "historical metadata/status lineage reconciliation"
+    }
+  ],
+  "final": "create-once candidate effective only on current human approval",
+  "not_measured": [
+    "official parsers",
+    "generated clients",
+    "broker runtime"
+  ],
+  "preliminary_draft": "non-effective evidence only",
+  "runtime_predecessor": "no deployed predecessor runtime",
+  "validation_commands": [
+    "python contracts/validate_schemas.py",
+    "python contracts/openapi/validate_openapi.py",
+    "python contracts/asyncapi/validate_asyncapi.py",
+    "python contracts/security/validate_security_model.py --output contracts/security/validation-report.json",
+    "python contracts/governance/validate_decision_revisions.py",
+    "python -m unittest tests/test_prompt_gate_lifecycle.py",
+    "python scripts/verify_pack.py"
+  ]
+}

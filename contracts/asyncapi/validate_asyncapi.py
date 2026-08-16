@@ -230,7 +230,7 @@ def hash_schema_ok(schema: Any) -> bool:
     return schema.get("$ref") == "common.schema.json#/$defs/HashValue" or schema.get("pattern") == "^sha256:[0-9a-f]{64}$"
 
 
-def ownership_model_ok(spec: dict[str, Any], inventory: dict[str, Any], audit_producers: list[str]) -> bool:
+def ownership_model_ok(spec: dict[str, Any], inventory: dict[str, Any], audit_active: list[str], audit_planned: list[str]) -> bool:
     """Pure ownership/ACL check also used by mutation probes."""
     components = spec.get("components", {}).get("messages", {})
     channels = spec.get("channels", {})
@@ -270,18 +270,22 @@ def ownership_model_ok(spec: dict[str, Any], inventory: dict[str, Any], audit_pr
         if {op.get("x-ueb-consumer-service") for op in receives} != set(item["consumers"]):
             return False
         acl = components[component].get("x-ueb-acl", {})
-        expected_publish = audit_producers if item["producer"] == "MULTI_PRODUCER_EXCEPTION" else [item["producer"]]
+        expected_publish = audit_active if item["producer"] == "MULTI_PRODUCER_EXCEPTION" else [item["producer"]]
         if acl.get("publish") != expected_publish or acl.get("consume") != item["consumers"]:
             return False
         if item["producer"] == "MULTI_PRODUCER_EXCEPTION":
-            if sends[0].get("x-ueb-producer-services") != audit_producers or "audit-service" in audit_producers:
+            if (sends[0].get("x-ueb-producer-services") != audit_active
+                    or sends[0].get("x-ueb-planned-producer-services") != audit_planned
+                    or components[component].get("x-ueb-planned-producer-services") != audit_planned
+                    or "audit-service" in audit_active or "audit-service" in audit_planned
+                    or set(audit_active) & set(audit_planned)):
                 return False
         elif sends[0].get("x-ueb-producer-service") != item["producer"]:
             return False
     return True
 
 
-def run_scenario_checks(valid_payloads: dict[str, dict[str, Any]], policy: dict[str, Any], spec: dict[str, Any], inventory: dict[str, Any], audit_producers: list[str]) -> dict[str, bool]:
+def run_scenario_checks(valid_payloads: dict[str, dict[str, Any]], policy: dict[str, Any], spec: dict[str, Any], inventory: dict[str, Any], audit_active: list[str], audit_planned: list[str]) -> dict[str, bool]:
     """Deterministic state probes backing delivery-scenarios.yaml, never labels alone."""
     published = copy.deepcopy(valid_payloads["legal.document.published.v1"])
     artifacts = copy.deepcopy(valid_payloads["legal.processing.artifacts.ready.v1"])
@@ -319,6 +323,10 @@ def run_scenario_checks(valid_payloads: dict[str, dict[str, Any]], policy: dict[
     revoked_members = {"gld-0001"}
     provider_allowed = {"configuration_id", "configuration_revision", "configuration_hash", "validation_code"}
     document_allowed = {"document_id", "document_revision", "version_id", "version_revision", "content_hash", "metadata_hash", "effect_hash"}
+    planned_producer = copy.deepcopy(spec)
+    planned_producer["operations"]["auditFactSend"]["x-ueb-producer-services"].append("provider-service")
+    audit_self_publish = copy.deepcopy(spec)
+    audit_self_publish["components"]["messages"]["AuditFactObserved"]["x-ueb-acl"]["publish"].append("audit-service")
     return {
         "duplicate_same_hash": first == "applied" and duplicate == "no_op",
         "duplicate_changed_hash": receive(altered) == "integrity_reject",
@@ -328,18 +336,20 @@ def run_scenario_checks(valid_payloads: dict[str, dict[str, Any]], policy: dict[
         "revoked_activation_refused": activation == "refused",
         "artifacts_relation_mismatch": artifact_matches and artifacts_bad["data"]["input_hash"] != request["data"]["input_hash"],
         "unknown_type_rejected": unknown["message_type"] not in inventory and not unknown["message_type"].endswith(".v1"),
-        "unauthorized_producer_rejected": not ownership_model_ok(mutations, inventory, audit_producers),
+        "unauthorized_producer_rejected": not ownership_model_ok(mutations, inventory, audit_active, audit_planned),
         "permanent_direct_dlq": policy["retry"]["permanent_action"] == "DLQ_IMMEDIATELY",
         "transient_retry_schedule": policy["retry"]["max_deliveries_including_initial"] == 5 and policy["retry"]["delays_seconds"] == [30, 120, 600, 1800],
         "replay_duplicate_noop": duplicate == "no_op" and published["message_id"] == copy.deepcopy(published)["message_id"],
-        "audit_terminal": "audit-service" not in audit_producers,
+        "audit_terminal": "audit-service" not in audit_active and "audit-service" not in audit_planned,
         "feedback_no_ground_truth": not feedback_effect["golden_created"] and not feedback_effect["dataset_created"],
         "golden_evidence_required": not {"approval_snapshot_id", "citation_validation_ids"} <= set(golden_without_evidence),
         "revocation_tombstone": bool(frozen_members & revoked_members),
         "candidate_recommendation_only": set(candidate["data"]) <= allowed_actions and candidate["data"]["recommendation_code"] == "ELIGIBLE_FOR_HUMAN_REVIEW",
         "provider_secret_rejected": "secret" not in provider_allowed and "endpoint" not in provider_allowed,
         "forbidden_text_rejected": "full_text" not in document_allowed and "storage_key" not in document_allowed,
-        "later_injection_rejected": not ownership_model_ok(later_mutation, inventory, audit_producers),
+        "later_injection_rejected": not ownership_model_ok(later_mutation, inventory, audit_active, audit_planned),
+        "planned_audit_producer_rejected": not ownership_model_ok(planned_producer, inventory, audit_active, audit_planned),
+        "audit_self_publish_rejected": not ownership_model_ok(audit_self_publish, inventory, audit_active, audit_planned),
     }
 
 
@@ -568,7 +578,12 @@ def main() -> int:
             if got_consumers != set(item["consumers"]):
                 fail(f"consumer ownership mismatch: {message_type}")
             if message_type == "legal.audit.fact.observed.v1":
-                if set(sends[0].get("x-ueb-producer-services", [])) != set(config["audit_allowed_producers"]) or "audit-service" in sends[0].get("x-ueb-producer-services", []):
+                if (sends[0].get("x-ueb-producer-services") != config["audit_active_producers"]
+                        or sends[0].get("x-ueb-planned-producer-services") != config["audit_planned_producers"]
+                        or component.get("x-ueb-acl", {}).get("publish") != config["audit_active_producers"]
+                        or component.get("x-ueb-planned-producer-services") != config["audit_planned_producers"]
+                        or set(config["audit_active_producers"]) & set(config["audit_planned_producers"])
+                        or "audit-service" in config["audit_active_producers"] + config["audit_planned_producers"]):
                     fail("audit producer exception is invalid")
             elif sends[0].get("x-ueb-service") != item["producer"]:
                 fail(f"producer ownership mismatch: {message_type}")
@@ -623,7 +638,13 @@ def main() -> int:
         fail("payload hash canonicalization policy is incomplete")
     scenario_ids = {scenario.get("id") for scenario in scenarios.get("scenarios", [])}
     required_scenarios = {"duplicate-idempotent", "duplicate-altered-hash", "stale-revision", "revision-gap", "unpublish-dominates-publish", "revoke-dominates-activation", "artifacts-hash-mismatch", "unknown-type-version", "unauthorized-producer", "permanent-validation", "transient-bounded-retry", "dlq-replay-duplicate", "audit-outage-terminal", "feedback-not-golden", "golden-missing-approval", "revoke-after-freeze", "eligible-no-activation", "provider-secret-field", "forbidden-text-field", "later-injection"}
-    scenario_checks = run_scenario_checks(valid_payloads, policy, spec, inventory, config["audit_allowed_producers"])
+    audit_active = config.get("audit_active_producers")
+    audit_planned = config.get("audit_planned_producers")
+    expected_active = ["identity-service", "document-service", "processing-service", "index-service", "retrieval-service", "citation-service", "chat-service"]
+    expected_planned = ["provider-service", "feedback-service", "evaluation-service"]
+    if audit_active != expected_active or audit_planned != expected_planned or set(audit_active or []) & set(audit_planned or []):
+        fail("AuditFact active/planned producer sets must be exact and disjoint")
+    scenario_checks = run_scenario_checks(valid_payloads, policy, spec, inventory, audit_active or [], audit_planned or [])
     scenario_check_names = {scenario.get("validator_check") for scenario in scenarios.get("scenarios", [])}
     if len(scenarios.get("scenarios", [])) < 15 or not required_scenarios <= scenario_ids:
         fail("delivery scenario coverage is incomplete")
@@ -639,9 +660,9 @@ def main() -> int:
         fail("undocumented active producer-consumer graph edge")
     if any(target == "audit-service" for _, target in edges):
         fail("audit must be terminal multi-producer exception")
-    if not {"identity-service", "retrieval-service"} <= set(config["audit_allowed_producers"]):
+    if set(audit_active or []) != set(expected_active):
         fail("audit allowlist is missing required producers")
-    if not ownership_model_ok(spec, inventory, config["audit_allowed_producers"]):
+    if not ownership_model_ok(spec, inventory, audit_active or [], audit_planned or []):
         fail("directed exchange, ACL, or ownership model is invalid")
 
     # Deterministic in-memory mutation probes for non-schema delivery invariants.

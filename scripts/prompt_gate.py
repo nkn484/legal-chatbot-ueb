@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import os
@@ -52,9 +53,12 @@ def entry_revision(entry: dict[str, Any]) -> int:
 
 
 def effective_approved_revision(entry: dict[str, Any]) -> int | None:
+    """Return an approval only when its status is an effective approval state."""
+    if entry.get("status") not in {"PASS", "DEFERRED"}:
+        return None
     if "approved_revision" in entry:
         return entry["approved_revision"]
-    if entry.get("status") in {"PASS", "DEFERRED"} and entry.get("human_approved_at"):
+    if entry.get("human_approved_at"):
         return 1
     return None
 
@@ -65,6 +69,10 @@ def history(entry: dict[str, Any]) -> list[dict[str, Any]]:
 
 def approval_history(entry: dict[str, Any]) -> list[dict[str, Any]]:
     return list(entry.get("approval_history", []))
+
+
+def rejection_history(entry: dict[str, Any]) -> list[dict[str, Any]]:
+    return list(entry.get("rejection_history", []))
 
 
 def has_current_approval(entry: dict[str, Any]) -> bool:
@@ -272,6 +280,47 @@ def current_approval_snapshot(entry: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def current_rejection_record(entry: dict[str, Any]) -> dict[str, Any] | None:
+    """Find the append-only rejection record for the entry's current revision."""
+    revision = entry_revision(entry)
+    for record in reversed(rejection_history(entry)):
+        if record.get("revision") == revision:
+            return copy.deepcopy(record)
+    return None
+
+
+def rejection_snapshot(entry: dict[str, Any], action: str, integrity: str) -> dict[str, Any]:
+    return {
+        "action": action,
+        "revision": entry_revision(entry),
+        "rejected_at": entry.get("human_approved_at"),
+        "rejected_by": entry.get("human_approved_by"),
+        "rejection_note": entry.get("approval_note"),
+        "submitted_at": entry.get("submitted_at"),
+        "report": entry.get("report"),
+        "evidence": list(entry.get("evidence", [])),
+        "prior_start_snapshot": copy.deepcopy(entry.get("start_snapshot")),
+        "integrity": integrity,
+    }
+
+
+def complete_rejection_disposition(entry: dict[str, Any]) -> bool:
+    """Validate the legacy-named fields which record a human rejection."""
+    return (
+        bool(entry.get("human_approved_at"))
+        and isinstance(entry.get("human_approved_by"), str)
+        and bool(entry["human_approved_by"].strip())
+        and isinstance(entry.get("approval_note"), str)
+        and bool(entry["approval_note"].strip())
+        and bool(entry.get("submitted_at"))
+        and isinstance(entry.get("report"), str)
+        and bool(entry["report"].strip())
+        and bool(entry.get("evidence"))
+        and entry.get("approved_revision") is None
+        and effective_approved_revision(entry) is None
+    )
+
+
 def append_approval(entry: dict[str, Any], action: str, stamp: str, by: str, note: str) -> None:
     records = approval_history(entry)
     records.append({
@@ -427,8 +476,12 @@ def command_reject(args: argparse.Namespace) -> int:
     if entry["status"] != "AWAITING_APPROVAL":
         print(f"Prompt must be AWAITING_APPROVAL, got {entry['status']}", file=sys.stderr)
         return 2
-    entry.update({"status": "FAIL", "human_approved_at": now(), "human_approved_by": args.by,
-                  "approval_note": args.note})
+    stamp = now()
+    entry.update({"status": "FAIL", "human_approved_at": stamp, "human_approved_by": args.by,
+                  "approval_note": args.note, "approved_revision": None})
+    rejections = rejection_history(entry)
+    rejections.append(rejection_snapshot(entry, "REJECTED", "PATHS_CAPTURED_AT_REJECTION"))
+    entry["rejection_history"] = rejections
     save_state(state)
     print(f"FAIL {args.prompt_id}")
     return 0
@@ -524,12 +577,20 @@ def command_reopen(args: argparse.Namespace) -> int:
     except (WriteRootError, ValueError) as exc:
         print(f"Cannot reopen: {exc}", file=sys.stderr)
         return 2
-    entry = state["prompts"][args.prompt_id]
-    if entry.get("status") != "PASS":
-        print(f"Prompt must be PASS, got {entry.get('status')}", file=sys.stderr)
+    entry = state.get("prompts", {}).get(args.prompt_id)
+    if not isinstance(entry, dict):
+        print(f"Cannot reopen: target {args.prompt_id} has no state entry", file=sys.stderr)
         return 2
-    if not entry.get("human_approved_at") or effective_approved_revision(entry) != entry_revision(entry):
-        print("Cannot reopen: current human approval does not match current revision", file=sys.stderr)
+    source_status = entry.get("status")
+    if source_status not in {"PASS", "FAIL"}:
+        print(f"Prompt must be PASS or FAIL, got {source_status}", file=sys.stderr)
+        return 2
+    if source_status == "PASS":
+        if not entry.get("human_approved_at") or effective_approved_revision(entry) != entry_revision(entry):
+            print("Cannot reopen: current human approval does not match current revision", file=sys.stderr)
+            return 2
+    elif not complete_rejection_disposition(entry):
+        print("Cannot reopen: FAIL requires a complete current-revision human rejection disposition", file=sys.stderr)
         return 2
     for child_id in children:
         child = state["prompts"].get(child_id)
@@ -549,22 +610,40 @@ def command_reopen(args: argparse.Namespace) -> int:
         print(f"Cannot reopen: {exc}", file=sys.stderr)
         return 2
     stamp = now()
-    prior = current_approval_snapshot(entry)
-    approvals = approval_history(entry)
-    approvals.append({"action": "APPROVAL_ARCHIVED", **prior, "archived_at": stamp,
-                      "archived_by": args.by, "archive_reason": args.note})
-    events = history(entry)
     old_revision = entry_revision(entry)
-    events.append({"action": "REOPENED", "from_revision": old_revision, "to_revision": old_revision + 1,
-                   "at": stamp, "by": args.by, "note": args.note, "prior_approval": prior,
-                   "descendants_checked": children})
+    prior_start_snapshot = copy.deepcopy(entry.get("start_snapshot"))
+    events = history(entry)
+    updates: dict[str, Any] = {}
+    event: dict[str, Any] = {
+        "action": "REOPENED", "from_revision": old_revision, "to_revision": old_revision + 1,
+        "at": stamp, "by": args.by, "note": args.note, "source_status": source_status,
+        "prior_start_snapshot": prior_start_snapshot, "descendants_checked": children,
+    }
+    if source_status == "PASS":
+        prior_approval = current_approval_snapshot(entry)
+        approvals = approval_history(entry)
+        approvals.append({"action": "APPROVAL_ARCHIVED", **prior_approval,
+                          "prior_start_snapshot": prior_start_snapshot, "archived_at": stamp,
+                          "archived_by": args.by, "archive_reason": args.note})
+        updates["approval_history"] = approvals
+        event["prior_approval"] = prior_approval
+    else:
+        prior_rejection = current_rejection_record(entry)
+        rejections = rejection_history(entry)
+        if prior_rejection is None:
+            prior_rejection = rejection_snapshot(entry, "REJECTION_ARCHIVED_LEGACY",
+                                                 "NOT_CAPTURED_AT_SUBMIT_LEGACY")
+            rejections.append(prior_rejection)
+        updates["rejection_history"] = rejections
+        event["prior_rejection"] = prior_rejection
+    events.append(event)
     entry.update({"status": "IN_PROGRESS", "revision": old_revision + 1, "started_at": stamp,
-                  "submitted_at": None, "report": None, "evidence": [], "human_approved_at": None,
-                  "human_approved_by": None, "approval_note": None, "approved_revision": None,
-                  "reopened_at": stamp, "reopened_by": args.by, "reopen_reason": args.note,
-                  "approval_history": approvals, "history": events, "start_snapshot": snapshot})
+                   "submitted_at": None, "report": None, "evidence": [], "human_approved_at": None,
+                   "human_approved_by": None, "approval_note": None, "approved_revision": None,
+                   "reopened_at": stamp, "reopened_by": args.by, "reopen_reason": args.note,
+                   "history": events, "start_snapshot": snapshot, **updates})
     save_state(state)
-    print(f"IN_PROGRESS {args.prompt_id} revision {old_revision + 1} (reopened)")
+    print(f"IN_PROGRESS {args.prompt_id} revision {old_revision + 1} (reopened from {source_status})")
     return 0
 
 

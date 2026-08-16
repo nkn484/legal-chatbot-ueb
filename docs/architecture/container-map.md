@@ -48,6 +48,7 @@ Event family trong bảng này là provisional; tên, schema và protocol cuối
 | api-gateway | document-service | Route capability tài liệu | Core |
 | api-gateway | chat-service | Route capability hỏi đáp | Core |
 | api-gateway | audit-service | Route truy vấn audit, không phải business write path | Core |
+| api-gateway | processing-service | Route bounded processing-job query; không business orchestration | Core |
 | processing-service | document-service | Controlled original-read grant và immutable metadata view | Core |
 | index-service | processing-service | Đọc artifact bất biến | Core |
 | index-service | document-service | Kiểm tra publish/active cuối trước index activation, fail closed | Core |
@@ -84,7 +85,7 @@ Chat gọi Retrieval. Retrieval tìm Index rồi thực hiện kiểm tra eligib
 
 Provider, Feedback và Evaluation đã có ownership nhưng runtime capability là LATER, không được gộp data vào service Core. Việc co-host/đóng gói/deploy vật lý **NOT_DECIDED** trong 02.1 và cần ADR đã duyệt; ownership logic vẫn bắt buộc dù sau này cùng host. Không có standalone training-service: feedback-service sở hữu Golden workflow, evaluation-service sở hữu dataset/evaluation/candidate và metadata export fine-tuning tùy chọn; không auto-training/release.
 
-`DEC-005` vẫn **OPEN**: Citation không phụ thuộc Provider, nhưng 02.1 không được sửa manifest sequence `05.5 -> 05.6 -> 05.7 -> 05.8`. Cần quyết định governance/manifest tương lai được phê duyệt trước khi tuyên bố executable Core path. Không thêm Provider vào Core và không defer Citation.
+`DEC-005@2` là candidate pending human approval: Citation không phụ thuộc Provider, Provider vẫn LATER, và candidate manifest sequence là `05.4 -> 05.8 -> 05.9`. Chưa có quyết định currently effective hoặc executable Core path được tuyên bố cho đến khi Prompt 02.7 current revision được người dùng phê duyệt. Không thêm Provider vào Core và không defer Citation.
 
 ## Phụ thuộc bị cấm
 

@@ -42,6 +42,13 @@ components:
       required: true
       description: Absolute caller deadline. A malformed or expired deadline is 400 and no service extends it.
       schema: {type: string, format: date-time}
+    X-Identity-Presentation:
+      name: X-Identity-Presentation
+      in: header
+      required: true
+      x-ueb-sensitive: true
+      description: Separate sensitive identity presentation, distinct from the authenticated workload BearerAuth credential. The owner service never logs or returns it.
+      schema: {type: string, minLength: 1, maxLength: 8192}
     Cursor:
       name: cursor
       in: query
@@ -366,6 +373,28 @@ components:
                     properties:
                       chunk_ids: {maxItems: 100}
       required: [request_binding_id, context_id, grounded_answer]
+    IdentityContextVerificationResult:
+      oneOf:
+        - type: object
+          additionalProperties: false
+          properties:
+            active: {const: false}
+          required: [active]
+        - type: object
+          additionalProperties: false
+          properties:
+            active: {const: true}
+            principal_ref: {$ref: '#/components/schemas/OpaqueId'}
+            principal_kind: {type: string, enum: [USER, SERVICE]}
+            grants:
+              type: array
+              minItems: 1
+              maxItems: 50
+              uniqueItems: true
+              items: {type: string, pattern: '^[a-z][a-z0-9._:-]{0,127}$'}
+            expires_at: {type: string, format: date-time}
+            auth_context_version: {type: integer, minimum: 1, maximum: 2147483647}
+          required: [active, principal_ref, principal_kind, grants, expires_at, auth_context_version]
     CitationValidationResult:
       oneOf:
         - type: object

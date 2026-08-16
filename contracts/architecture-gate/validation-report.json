@@ -1,0 +1,128 @@
+{
+  "baselines": {
+    "final": {
+      "files": 177,
+      "id": "group2-v1-r2-final-candidate",
+      "sha256": "568917dd34f82cb92c184d88879c7cfee17243ae0cffe613b09b1d4bde27bdde"
+    },
+    "original": {
+      "id": "group2-v1-initial",
+      "sha256": "e8f54287af30b003447e67be2d9442686170d05b1bce1670ba987922813354fd"
+    },
+    "preliminary": {
+      "path": "contracts/architecture-gate/contract-baseline-r2.json",
+      "sha256": "92ac994b474a31f9fb23ec1eb00c25473630fbf417e792a0cbdfa99f719617a6"
+    }
+  },
+  "blocker_count": 0,
+  "blockers": [],
+  "checks": {
+    "B-001/B-002 decision candidates": true,
+    "B-003 sync DAG": true,
+    "B-004 identity contract": true,
+    "B-005 ADR lineage": true,
+    "B-006 DFD/security/AsyncAPI": true,
+    "B-007 AuditFact split": true,
+    "B-008 open fields": true
+  },
+  "compatibility_report": "contracts/architecture-gate/compatibility-report-r2.json",
+  "conditions": [
+    "Human approval is required before candidate decisions are effective.",
+    "Official parsers, generated clients, and broker runtime are NOT_MEASURED.",
+    "Critical/High activation remains blocked until measured evidence."
+  ],
+  "decision_candidates": {
+    "approval_binds": "current_revision_artifacts",
+    "effective_if_current_prompt_approved": true,
+    "effective_now": false
+  },
+  "delta_set_difference": {
+    "declared_not_observed": [],
+    "unexpected_or_unmapped": []
+  },
+  "errors": [],
+  "evaluation_status": "PASS_WITH_CONDITIONS_CANDIDATE",
+  "mutation_checks": {
+    "adr_evidence_mutation_detected": true,
+    "adr_proposed_mutation_detected": true,
+    "adr_timestamp_mutation_detected": true,
+    "identity_header_removed_detected": true,
+    "identity_oidc_url_detected": true,
+    "identity_owner_wrong_detected": true,
+    "identity_raw_token_response_detected": true,
+    "omitted_phase_a_file_detected": true,
+    "open_fields_approved_candidate_detected": true,
+    "open_fields_fake_evidence_detected": true,
+    "open_fields_stale_deadline_detected": true,
+    "open_fields_wrong_owner_detected": true,
+    "open_fields_wrong_status_detected": true,
+    "original_baseline_change_detected": true,
+    "second_finalize_temp_refusal_preserves_file": true,
+    "unexpected_file_detected": true,
+    "wildcard_rejected": true,
+    "wrong_before_hash_detected": true
+  },
+  "revision_delta": {
+    "changes": 42,
+    "generated_evidence": 5,
+    "path": "contracts/architecture-gate/revision-delta-r2.json",
+    "valid": true
+  },
+  "summary": {
+    "blockers": 0,
+    "channel_count": 14,
+    "controls": 30,
+    "errors": 0,
+    "flows": 42,
+    "message_count": 30,
+    "operation_count": 28,
+    "risks": 41,
+    "sync_edges": 22,
+    "sync_nodes": 12,
+    "tests": 70
+  },
+  "tool_results": {
+    "asyncapi": {
+      "command": "D:\\Python\\python.exe contracts/asyncapi/validate_asyncapi.py",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "{\"aggregate_relation_checks\":30,\"asyncapi_version\":\"3.0.0\",\"channel_count\":14,\"core_count\":14,\"delivery_checks\":\"passed\",\"errors\":[],\"index_projection_checks\":6,\"invalid_schema_examples\":8,\"invalid_semantic_examples\":5,\"later_count\":16,\"message_count\":30,\"operation_count\":28,\"ownership_checks\":\"passed\",\"payload_hash_checks\":30,\"planned_consumer_links\":7,\"refs\":300,\"scenario_checks\":{\"artifacts_relation_mismatch\":true,\"audit_self_publish_rejected\":true,\"audit_terminal\":true,\"candidate_recommendation_only\":true,\"duplicate_changed_hash\":true,\"duplicate_same_hash\":true,\"feedback_no_ground_truth\":true,\"forbidden_text_rejected\":true,\"golden_evidence_required\":true,\"later_injection_rejected\":true,\"permanent_direct_dlq\":true,\"planned_audit_producer_rejected\":true,\"provider_secret_rejected\":true,\"replay_duplicate_noop\":true,\"revision_gap\":true,\"revocation_tombstone\":true,\"revoked_activation_refused\":true,\"stale_revision\":true,\"transient_retry_schedule\":true,\"unauthorized_producer_rejected\":true,\"unknown_type_rejected\":true,\"unpublish_dominates\":true},\"scenario_count\":22,\"schema_count\":5,\"security_checks\":\"passed\",\"valid_examples\":30}"
+    },
+    "governance": {
+      "command": "D:\\Python\\python.exe contracts/governance/validate_decision_revisions.py",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "{\"chains\": 2, \"effective_if_current_prompt_approved\": true, \"effective_now\": false, \"errors\": [], \"negative_mutation_checks\": {\"approval_binding_changed\": true, \"candidate_marked_effective_now\": true, \"fail_treated_as_approval\": true, \"historical_decision_log_mutated\": true, \"historical_digest_mutated\": true, \"missing_evidence\": true, \"missing_supersedes\": true, \"provider_dependency_restored\": true, \"root_candidate_marked_effective_now\": true}}"
+    },
+    "lifecycle": {
+      "command": "D:\\Python\\python.exe -m unittest tests/test_prompt_gate_lifecycle.py",
+      "returncode": 0,
+      "stderr": "..........................\n----------------------------------------------------------------------\nRan 26 tests in 19.632s\n\nOK",
+      "stdout": ""
+    },
+    "openapi": {
+      "command": "D:\\Python\\python.exe contracts/openapi/validate_openapi.py",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "{\"errors\": [], \"invalid_example_count\": 19, \"lint_security_checks\": {\"broken_ref\": true, \"citation_claim_complete\": true, \"citation_claim_mutation\": true, \"external_ref_escape\": true, \"extra_public_path\": true, \"forbidden_path\": true, \"forbidden_property\": true, \"idempotency_missing\": true, \"identity_header_required\": true, \"identity_inactive_minimal\": true, \"identity_owner_required\": true, \"identity_raw_role_rejected\": true, \"missing_response_header\": true, \"owner_mismatch\": true, \"request_binding_chain\": true, \"request_binding_mismatch\": true, \"semantic_citation_dangling\": true}, \"operation_count\": 20, \"operation_error_coverage\": 20, \"operations_covered\": 20, \"refs_checked\": 442, \"refs_resolved\": 442, \"spec_count\": 8, \"valid_example_count\": 30}"
+    },
+    "schemas": {
+      "command": "D:\\Python\\python.exe contracts/validate_schemas.py",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "jsonschema=4.23.0\nreferencing=0.36.2\n{\"broken_ref_self_test\":true,\"errors\":[],\"invalid_fixture_count\":25,\"ref_fragments_resolved\":184,\"refs_checked\":184,\"schema_count\":14,\"schema_ids\":[\"https://schemas.example.invalid/legal-chatbot/v1/chat.schema.json\",\"https://schemas.example.invalid/legal-chatbot/v1/citation.schema.json\",\"https://schemas.example.invalid/legal-chatbot/v1/common.schema.json\",\"https://schemas.example.invalid/legal-chatbot/v1/document.schema.json\",\"https://schemas.example.invalid/legal-chatbot/v1/error.schema.json\",\"https://schemas.example.invalid/legal-chatbot/v1/evaluation.schema.json\",\"https://schemas.example.invalid/legal-chatbot/v1/feedback.schema.json\",\"https://schemas.example.invalid/legal-chatbot/v1/index.schema.json\",\"https://schemas.example.invalid/legal-chatbot/v1/processing.schema.json\",\"https://schemas.example.invalid/legal-chatbot/v1/provider-config-view.schema.json\",\"https://schemas.example.invalid/legal-chatbot/v1/retrieval.schema.json\",\"https://schemas.example.invalid/legal-chatbot/v1/source-connector-port.schema.json\",\"https://schemas.example.invalid/legal-chatbot/v1/state-machine.schema.json\",\"https://schemas.example.invalid/legal-chatbot/v1/status.schema.json\"],\"security_checks\":{\"candidate_no_activation\":true,\"citation_exclusive_authority\":true,\"dataset_frozen_requires_manifest_time_members\":true,\"fake_provider_key_is_null\":true,\"fixture_expected_values_strict\":true,\"golden_approved_requires_human_citations\":true,\"grounded_answer_exclusive_branches\":true,\"grounded_answer_metadata_excluded\":true,\"grounded_claim_requires_chunk_ids\":true,\"planned_sources_have_no_url_fixture\":true,\"provider_no_forbidden_keys\":true,\"representation_not_activation\":true,\"retrieval_outcomes_exclusive\":true,\"rollout_not_legal_authority\":true,\"source_catalog_fixed_governance\":true,\"source_catalog_structural_exact\":true,\"source_connector_not_implemented\":true,\"source_lifecycle_states_schema_reachable\":true,\"source_operation_allowlist_empty_pending\":true,\"source_port_active_id_only\":true,\"source_port_dtos_exclude_endpoint_operation\":true,\"source_property_keys_exclude_sensitive_material\":true,\"source_ref_rejects_registry_endpoint\":true,\"source_ref_required_fields_declared\":true,\"source_ref_url_https_vbqppl_pattern\":true,\"source_sensitive_key_self_test\":true,\"source_version_origin_exclusive\":true},\"state_count\":70,\"state_machine_count\":16,\"transition_count\":78,\"valid_fixture_count\":13}"
+    },
+    "security": {
+      "command": "D:\\Python\\python.exe contracts/security/validate_security_model.py --output contracts/security/validation-report.json",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    "verify_pack": {
+      "command": "D:\\Python\\python.exe scripts/verify_pack.py",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "PASS: 72 commands, configs, manifest/state structure, and revision governance lifecycle are valid"
+    }
+  }
+}

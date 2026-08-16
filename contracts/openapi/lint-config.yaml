@@ -7,6 +7,7 @@ specs:
   - internal-index-v1.yaml
   - internal-retrieval-v1.yaml
   - internal-citation-v1.yaml
+  - internal-identity-v1.yaml
 operation_inventory:
   askQuestion: {spec: public-v1.yaml, audience: PUBLIC, owner: chat-service, scopes: [], max_bytes: 16384, timeout_ms: 25000}
   createDocumentUpload: {spec: admin-v1.yaml, audience: ADMIN, owner: document-service, scopes: [documents:write], max_bytes: 26214400, timeout_ms: 5000}
@@ -27,10 +28,11 @@ operation_inventory:
   validateIndexRetrievalContext: {spec: internal-index-v1.yaml, audience: INTERNAL, owner: index-service, scopes: [index.context:validate], max_bytes: 16384, timeout_ms: 1000}
   runRetrieval: {spec: internal-retrieval-v1.yaml, audience: INTERNAL, owner: retrieval-service, scopes: [retrieval.run], max_bytes: 8192, timeout_ms: 8000}
   validateCitations: {spec: internal-citation-v1.yaml, audience: INTERNAL, owner: citation-service, scopes: [citation.validate], max_bytes: 262144, timeout_ms: 8000}
+  verifyIdentityContext: {spec: internal-identity-v1.yaml, audience: INTERNAL, owner: identity-service, scopes: [identity:context:verify], max_bytes: 0, timeout_ms: 1000}
 forbidden_path_tokens: [provider, source-systems, connector, feedback, evaluation, training]
 forbidden_property_tokens: [secret, password, credential, api_key, apikey, authorization, access_token, refresh_token, private_key, storage_key, object_key, bucket, presign, signed_url, manifest_uri]
 required_extensions: [x-ueb-owner-service, x-ueb-data-access, x-ueb-request-max-bytes, x-ueb-timeout-ms]
-defined_headers: [Idempotency-Key, If-Match, X-Request-Id, X-Request-Deadline-At, Retry-After, Idempotency-Replayed, Location]
+defined_headers: [Idempotency-Key, If-Match, X-Request-Id, X-Request-Deadline-At, X-Identity-Presentation, Retry-After, Idempotency-Replayed, Location]
 success_required_headers: [Cache-Control, X-Request-Id]
 problem_required_headers: [Cache-Control, X-Request-Id]
 public_allowed_paths: [/v1/questions]

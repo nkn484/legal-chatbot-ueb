@@ -1,0 +1,17 @@
+{
+  "chains": 2,
+  "effective_if_current_prompt_approved": true,
+  "effective_now": false,
+  "errors": [],
+  "negative_mutation_checks": {
+    "approval_binding_changed": true,
+    "candidate_marked_effective_now": true,
+    "fail_treated_as_approval": true,
+    "historical_decision_log_mutated": true,
+    "historical_digest_mutated": true,
+    "missing_evidence": true,
+    "missing_supersedes": true,
+    "provider_dependency_restored": true,
+    "root_candidate_marked_effective_now": true
+  }
+}

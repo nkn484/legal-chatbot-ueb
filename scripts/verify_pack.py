@@ -8,11 +8,12 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from typing import NoReturn
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def fail(message: str) -> None:
+def fail(message: str) -> NoReturn:
     print(f"FAIL: {message}", file=sys.stderr)
     raise SystemExit(1)
 
@@ -53,8 +54,13 @@ help_result = subprocess.run([sys.executable, str(ROOT / "scripts" / "prompt_gat
                              text=True, capture_output=True, check=False)
 if help_result.returncode != 0 or "cancel-start" not in help_result.stdout or "reopen" not in help_result.stdout:
     fail("prompt gate help does not expose revision governance commands")
+gate_source = (ROOT / "scripts" / "prompt_gate.py").read_text(encoding="utf-8")
+for marker in ("rejection_history", "REJECTION_ARCHIVED_LEGACY"):
+    if marker not in gate_source:
+        fail(f"prompt gate missing rejection governance marker {marker}")
 rules = (ROOT / "docs" / "prompt-transition-rules.md").read_text(encoding="utf-8")
-for marker in ("cancel-start", "reopen", "approved_revision", "start_snapshot"):
+for marker in ("cancel-start", "reopen", "approved_revision", "start_snapshot", "rejection_history",
+               "REJECTION_ARCHIVED_LEGACY", "Reopen từ PASS", "Reopen từ FAIL"):
     if marker not in rules:
         fail(f"transition rules missing governance marker {marker}")
 

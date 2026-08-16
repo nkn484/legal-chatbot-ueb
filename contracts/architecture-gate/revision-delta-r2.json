@@ -1,0 +1,566 @@
+{
+  "changes": [
+    {
+      "after_sha256": "7575211f2069786f68839ba798de90d8c9fadc817977fb34ae1a5f9774a94090",
+      "before_sha256": null,
+      "blocker_ids": [
+        "B-001",
+        "B-002",
+        "B-003",
+        "B-004",
+        "B-005",
+        "B-006",
+        "B-007",
+        "B-008"
+      ],
+      "change": "created",
+      "path": "contracts/architecture-gate/compatibility-report-r2.json",
+      "rationale": "integration compatibility evidence"
+    },
+    {
+      "after_sha256": "568917dd34f82cb92c184d88879c7cfee17243ae0cffe613b09b1d4bde27bdde",
+      "before_sha256": null,
+      "blocker_ids": [
+        "B-001",
+        "B-002",
+        "B-003",
+        "B-004",
+        "B-005",
+        "B-006",
+        "B-007",
+        "B-008"
+      ],
+      "change": "created",
+      "path": "contracts/architecture-gate/contract-baseline-r2-final.json",
+      "rationale": "final create-once candidate baseline"
+    },
+    {
+      "after_sha256": "92ac994b474a31f9fb23ec1eb00c25473630fbf417e792a0cbdfa99f719617a6",
+      "before_sha256": null,
+      "blocker_ids": [
+        "B-001",
+        "B-002",
+        "B-003",
+        "B-004",
+        "B-005",
+        "B-006",
+        "B-007",
+        "B-008"
+      ],
+      "change": "created",
+      "path": "contracts/architecture-gate/contract-baseline-r2.json",
+      "rationale": "preliminary draft baseline evidence"
+    },
+    {
+      "after_sha256": null,
+      "after_sha256_status": "VOLATILE_OR_SELF_REFERENTIAL_NOT_ASSERTED",
+      "before_sha256": null,
+      "blocker_ids": [
+        "B-001",
+        "B-002",
+        "B-003",
+        "B-004",
+        "B-005",
+        "B-006",
+        "B-007",
+        "B-008"
+      ],
+      "change": "created",
+      "path": "contracts/architecture-gate/revision-delta-r2.json",
+      "rationale": "self-referential revision evidence"
+    },
+    {
+      "after_sha256": "ca07c30b3807d34b60c9f2323e8b1b1a37a986d99c3330b6bd0a7c18d9abded3",
+      "before_sha256": "0c562f0076f0009c14ccfaef3502f753ffaeb454202b16a499553049469d4456",
+      "blocker_ids": [
+        "B-001"
+      ],
+      "change": "modified",
+      "path": "contracts/architecture-gate/traceability.yaml",
+      "rationale": "candidate decision traceability"
+    },
+    {
+      "after_sha256": "d37633648be32ed90aa7df3b3b44483d6f6b98461cecdd794f2676c47503f33b",
+      "before_sha256": "a8c69c315f3cbd0790bf2c1fabaed51e182cdc549b4ab89ce5b673c09ea1cf8d",
+      "blocker_ids": [
+        "B-001",
+        "B-002",
+        "B-003",
+        "B-004",
+        "B-005",
+        "B-006",
+        "B-007",
+        "B-008"
+      ],
+      "change": "modified",
+      "path": "contracts/architecture-gate/validate_architecture_gate.py",
+      "rationale": "architecture integration validator"
+    },
+    {
+      "after_sha256": null,
+      "after_sha256_status": "VOLATILE_OR_SELF_REFERENTIAL_NOT_ASSERTED",
+      "before_sha256": "d5ad83fd22a93ed73696a7b27fceb3ab98f624eb6bda8cfa5e9414ca73e5ec51",
+      "blocker_ids": [
+        "B-001",
+        "B-002",
+        "B-003",
+        "B-004",
+        "B-005",
+        "B-006",
+        "B-007",
+        "B-008"
+      ],
+      "change": "modified",
+      "path": "contracts/architecture-gate/validation-report.json",
+      "rationale": "volatile gate validation evidence"
+    },
+    {
+      "after_sha256": "c3f82aea730f8a42793430a6ebfc028a9f3b6005e887ac8aad556439ccba2f4a",
+      "before_sha256": "b4cb694acfa526ab3ba7efc14f32de265e2c283a5759bcf49d497bb2dd3f3232",
+      "blocker_ids": [
+        "B-007"
+      ],
+      "change": "modified",
+      "path": "contracts/asyncapi/asyncapi.yaml",
+      "rationale": "AuditFact active/planned operation and ACL split"
+    },
+    {
+      "after_sha256": "84af728f979035f799c952471c19c26ddf3223522aed91c9579371a21ef60385",
+      "before_sha256": "aec416524ac4d433d28bf6287c2315d03f644f69caf3e3cd5eef81fd4ca97e4e",
+      "blocker_ids": [
+        "B-007"
+      ],
+      "change": "modified",
+      "path": "contracts/asyncapi/delivery-scenarios.yaml",
+      "rationale": "AuditFact mutation scenarios"
+    },
+    {
+      "after_sha256": "8ea4f3703607ebab3ccb729d89edbce4eb96438620bb7f883a879ac88e9f775e",
+      "before_sha256": "7afb210408c2bc022449c78cd88cbccae6b91c2c0abd5ba502eae99953b47218",
+      "blocker_ids": [
+        "B-007"
+      ],
+      "change": "modified",
+      "path": "contracts/asyncapi/lint-config.yaml",
+      "rationale": "exact AuditFact producer inventories"
+    },
+    {
+      "after_sha256": "9566bc55c1227f6f9fd4d711732ee87e078a0d2212f1ddc9067cd795824565c9",
+      "before_sha256": "7daa8ef57034f10c036b7cb6f907d5e6e9f792c5df5f58e1abffa4c9b4a82068",
+      "blocker_ids": [
+        "B-007"
+      ],
+      "change": "modified",
+      "path": "contracts/asyncapi/validate_asyncapi.py",
+      "rationale": "AuditFact split enforcement"
+    },
+    {
+      "after_sha256": null,
+      "after_sha256_status": "VOLATILE_OR_SELF_REFERENTIAL_NOT_ASSERTED",
+      "before_sha256": "39c57d749e9ced9d74f0f02966f7524fcdfa7863de280c86d32e18860e1519ec",
+      "blocker_ids": [
+        "B-007"
+      ],
+      "change": "modified",
+      "path": "contracts/asyncapi/validation-report.json",
+      "rationale": "volatile AsyncAPI validation evidence"
+    },
+    {
+      "after_sha256": "c80255e84ec405bc555cb9043815c1c8ced3f8f2cc1a566f24ca51f79c352f19",
+      "before_sha256": null,
+      "blocker_ids": [
+        "B-001",
+        "B-002"
+      ],
+      "change": "created",
+      "path": "contracts/governance/decision-revisions.yaml",
+      "rationale": "candidate governance registry"
+    },
+    {
+      "after_sha256": "1b451225147831d1d09912d61098394526de65413c6331775e4fc1b3ef9d2124",
+      "before_sha256": null,
+      "blocker_ids": [
+        "B-001",
+        "B-002"
+      ],
+      "change": "created",
+      "path": "contracts/governance/validate_decision_revisions.py",
+      "rationale": "candidate/history governance enforcement"
+    },
+    {
+      "after_sha256": null,
+      "after_sha256_status": "VOLATILE_OR_SELF_REFERENTIAL_NOT_ASSERTED",
+      "before_sha256": null,
+      "blocker_ids": [
+        "B-001",
+        "B-002"
+      ],
+      "change": "created",
+      "path": "contracts/governance/validation-report.json",
+      "rationale": "volatile governance validation evidence"
+    },
+    {
+      "after_sha256": "c22903cc4157329fc2b2e549693b8fa8bec87e102a1fe1b6d8a7de3be65b2906",
+      "before_sha256": "dfb07a0fac9982c207821eb4a210e0c6c9f959152bee8bfc5b2415c0fdd81692",
+      "blocker_ids": [
+        "B-004"
+      ],
+      "change": "modified",
+      "path": "contracts/openapi/components-v1.yaml",
+      "rationale": "Identity response schema"
+    },
+    {
+      "after_sha256": "140fa05fd44520a9acee9d1fdbde92e6b32be269361f011633b0d308d7bdd1c0",
+      "before_sha256": null,
+      "blocker_ids": [
+        "B-004"
+      ],
+      "change": "created",
+      "path": "contracts/openapi/examples/invalid/identity-context-active-with-token.json",
+      "rationale": "Identity raw-token rejection fixture"
+    },
+    {
+      "after_sha256": "9d819e48ff6dcfce463d97b375df37effaaff040ced3c269ed4f93b8aaf178d8",
+      "before_sha256": "9bf5cacae656c624e7a2c6de88b0feb78dfe3f4e262c708118df42ef67870810",
+      "blocker_ids": [
+        "B-004"
+      ],
+      "change": "modified",
+      "path": "contracts/openapi/examples/manifest.yaml",
+      "rationale": "Identity fixture manifest"
+    },
+    {
+      "after_sha256": "5684dc07689dc68f202dc2cfa5bfb80fa8db1d484138371a7638ca64bef4af68",
+      "before_sha256": null,
+      "blocker_ids": [
+        "B-004"
+      ],
+      "change": "created",
+      "path": "contracts/openapi/examples/success/identity-context-active.json",
+      "rationale": "Identity active fixture"
+    },
+    {
+      "after_sha256": "595219792dd54a38a8ace80a6a7fc33b928ea74f0dd1bdfac6a2b708dbe0dd1e",
+      "before_sha256": null,
+      "blocker_ids": [
+        "B-004"
+      ],
+      "change": "created",
+      "path": "contracts/openapi/examples/success/identity-context-inactive.json",
+      "rationale": "Identity inactive fixture"
+    },
+    {
+      "after_sha256": "c045a1b4ac34d947c740a8a6af0dc7af087a54f4dbc390b733d363c02e7aea5d",
+      "before_sha256": null,
+      "blocker_ids": [
+        "B-004"
+      ],
+      "change": "created",
+      "path": "contracts/openapi/internal-identity-v1.yaml",
+      "rationale": "Identity internal specification"
+    },
+    {
+      "after_sha256": "dfee5284eff9ee502f60d0f90c0147ff4ab61b66c09c711b5c8bc8e20eb6b85e",
+      "before_sha256": "5221ad53acf7bf1f77436ab1f5dd1cc7f4b82e7530cae1e120c88692614fd403",
+      "blocker_ids": [
+        "B-004"
+      ],
+      "change": "modified",
+      "path": "contracts/openapi/lint-config.yaml",
+      "rationale": "Identity operation inventory"
+    },
+    {
+      "after_sha256": "bf171cb415cc1b840a7b4dedd0f5239c591b89f877eead1a12a2383422221262",
+      "before_sha256": "0e3c662b944fe1c793d43a4eea2998dae274d47304fd39be6e835b392eb051f3",
+      "blocker_ids": [
+        "B-004"
+      ],
+      "change": "modified",
+      "path": "contracts/openapi/validate_openapi.py",
+      "rationale": "Identity validator"
+    },
+    {
+      "after_sha256": "ff6d06109923a98569b862337caa5982b2eebb07d874bed8416fe8313bc1e420",
+      "before_sha256": "b7e27cbe004ba64f6fa455948fb031f06683e1a0bb558f7f028dc6431394b4a4",
+      "blocker_ids": [
+        "B-006"
+      ],
+      "change": "modified",
+      "path": "contracts/security/privacy-data-map.yaml",
+      "rationale": "FLOW-39..FLOW-42 registry"
+    },
+    {
+      "after_sha256": "bfe36bde4a86bb63d29654bb02277ced4714e7660a0ca0b4af5f844a4ea9fcf7",
+      "before_sha256": "c9b173c6e5fc95d3dee6031114f185f6eba9c2dcd473e1a25fd521ae77bccfe7",
+      "blocker_ids": [
+        "B-006"
+      ],
+      "change": "modified",
+      "path": "contracts/security/validate_security_model.py",
+      "rationale": "event-flow and DFD enforcement"
+    },
+    {
+      "after_sha256": null,
+      "after_sha256_status": "VOLATILE_OR_SELF_REFERENTIAL_NOT_ASSERTED",
+      "before_sha256": "ea155f5609877f987f7e26ff1b4010b6aaeb8990b1ca920de417b0feda71d3e7",
+      "blocker_ids": [
+        "B-006"
+      ],
+      "change": "modified",
+      "path": "contracts/security/validation-report.json",
+      "rationale": "volatile security validation evidence"
+    },
+    {
+      "after_sha256": "3d7e188cde5a197fe16c0d4c6940c01bbb77ae5366562714b07f5d1be4e0b24b",
+      "before_sha256": "62e2950c965790519d445283782306b61e35e86b1126d3e141a6215a54b38f32",
+      "blocker_ids": [
+        "B-005"
+      ],
+      "change": "modified",
+      "path": "docs/architecture/adr/ADR-001-communication.md",
+      "rationale": "ADR-001 acceptance lineage"
+    },
+    {
+      "after_sha256": "b025a7a5935566bfded179ff691d68bdf11f2069c9f1881645ee9b2da15ca3ab",
+      "before_sha256": "a42b746d506b29129fc821d2c067575759a8e332232f3d7013a0b3c47f4fee7b",
+      "blocker_ids": [
+        "B-005"
+      ],
+      "change": "modified",
+      "path": "docs/architecture/adr/ADR-002-persistence-storage-cache.md",
+      "rationale": "ADR-002 acceptance lineage"
+    },
+    {
+      "after_sha256": "baa8e0ded7e3baafd6cac751cad3c5fa7d101666fa2d8a9ca71af1ec4b4268e9",
+      "before_sha256": "8c69a8b22f5c6030bf9abfbf031ec163a384930e4e740869a99b5ee4c3f28b2c",
+      "blocker_ids": [
+        "B-005"
+      ],
+      "change": "modified",
+      "path": "docs/architecture/adr/ADR-003-monorepo-runtimes.md",
+      "rationale": "ADR-003 acceptance lineage"
+    },
+    {
+      "after_sha256": "869d856c210e5ee0ee98195b1e9aed645cf641cbd814221495e2004910e99405",
+      "before_sha256": "36576a008db66903843aff2215959cfbf34fb296c2f8a9b59f125058d61e1a40",
+      "blocker_ids": [
+        "B-005"
+      ],
+      "change": "modified",
+      "path": "docs/architecture/adr/ADR-004-observability.md",
+      "rationale": "ADR-004 acceptance lineage"
+    },
+    {
+      "after_sha256": "318dc605c3eaab6f2928a0a78358831e42c93063065c1946f5e096e3bd99dc9a",
+      "before_sha256": "887fb065f9c81fa5803f44d630a85be5a62f261d9fef960933301c6da467c152",
+      "blocker_ids": [
+        "B-005"
+      ],
+      "change": "modified",
+      "path": "docs/architecture/adr/ADR-005-identity-integration.md",
+      "rationale": "ADR-005 acceptance lineage"
+    },
+    {
+      "after_sha256": "4c5f0defd1274c16bdb89281ecbdf7e6643f18a16fd6b4449c4a274f699d9430",
+      "before_sha256": "5f6696baab196fb8f2a9d02f525487fae51dd78b2243e0fc4b9e9815d56608e3",
+      "blocker_ids": [
+        "B-003"
+      ],
+      "change": "modified",
+      "path": "docs/architecture/container-map.md",
+      "rationale": "Gateway-to-Processing topology"
+    },
+    {
+      "after_sha256": "dbeeeb00db91b4974023496c4cdc8a027f440fa456d650ee55451ab6c094a840",
+      "before_sha256": "041c78b97f815fe6bebe58e684a000a5fc3bda56b4e32b7bbc916671021f36d8",
+      "blocker_ids": [
+        "B-007"
+      ],
+      "change": "modified",
+      "path": "docs/architecture/event-delivery-semantics.md",
+      "rationale": "AuditFact delivery semantics"
+    },
+    {
+      "after_sha256": "4bc8b8d7fb46f45a63125c768e3ed3eacbca86f34c4596d7b4ca9bb1243cb87c",
+      "before_sha256": "8493ca3d88bbbe2e0197380de34fe9cc0662b33d7ebca141ee09c5492c5dae6f",
+      "blocker_ids": [
+        "B-007"
+      ],
+      "change": "modified",
+      "path": "docs/architecture/event-ownership-matrix.md",
+      "rationale": "AuditFact ownership matrix"
+    },
+    {
+      "after_sha256": "2b5477b41a8b193914a47cbd6aad8e3fd3595964f4e43f3ab725584bd51c5f43",
+      "before_sha256": "a38977a1136272ac0e5c6144a86d5d0089ed37c197c7e8da1d0f88751376f451",
+      "blocker_ids": [
+        "B-004"
+      ],
+      "change": "modified",
+      "path": "docs/architecture/http-api-v1.md",
+      "rationale": "Identity HTTP contract evidence"
+    },
+    {
+      "after_sha256": "ce9f1e93464f28032661302882648705bef3a34ff336b03eea17c3a6597083ee",
+      "before_sha256": "41183ea62c6f9f44065beefd5c0d4796abeda28e079cd7e6cc361e142fb2e0c0",
+      "blocker_ids": [
+        "B-006"
+      ],
+      "change": "modified",
+      "path": "docs/architecture/privacy-model.md",
+      "rationale": "event privacy notes"
+    },
+    {
+      "after_sha256": "22e77b8579fb73d3c73fe56f7a1c84debbdbd7c386a06406b608714566b9dc26",
+      "before_sha256": "c4f2df284c90d8f927249ed3a8a4719fef79ee6f3fcb92d5f9760f964711b86b",
+      "blocker_ids": [
+        "B-008"
+      ],
+      "change": "modified",
+      "path": "docs/architecture/schema-open-fields.md",
+      "rationale": "open-field disposition catalog"
+    },
+    {
+      "after_sha256": "6b3bf0d3df380fade994a9ac08ce8b9bda9f7cbca1e991f9778cb24bae716360",
+      "before_sha256": "32d5f35cfe00bc7c1664e6828b2414773cad6fc5d277d39efb269ecc89643dbb",
+      "blocker_ids": [
+        "B-006"
+      ],
+      "change": "modified",
+      "path": "docs/architecture/threat-data-flow.md",
+      "rationale": "broker-mediated DFD"
+    },
+    {
+      "after_sha256": "23014a17091047d4082866d3710a514c6a77a2c7a06f6169d9c4eb9ea50a3645",
+      "before_sha256": "6dd0eb8ea0026bfb0fcb9e98b548732f023cea9e86164c15c5cef21afb1908a5",
+      "blocker_ids": [
+        "B-001",
+        "B-002"
+      ],
+      "change": "modified",
+      "path": "docs/decision-log.md",
+      "rationale": "append-only decision candidates"
+    },
+    {
+      "after_sha256": "03ed0afec92836d087de066f06c098a5c391b69bf54eee15b83b89f2feba887f",
+      "before_sha256": "83971ad5a1629255d7a05ac287b415c14c833208bf5f4548bb42a95a93a9abef",
+      "blocker_ids": [
+        "B-001",
+        "B-002",
+        "B-003",
+        "B-004",
+        "B-005",
+        "B-006",
+        "B-007",
+        "B-008"
+      ],
+      "change": "modified",
+      "path": "docs/progress/02-architecture-gate.md",
+      "rationale": "gate candidate report"
+    },
+    {
+      "after_sha256": "7f6ffe9cf9bdff226f7f5f3c542c5f356d057869cff31b5e4765e1d42e20e542",
+      "before_sha256": "1887832a0270639a42ea4cd84b47bc27f19e0ae56ceb3cfedde41b6acbfe7eab",
+      "blocker_ids": [
+        "B-001",
+        "B-002",
+        "B-003",
+        "B-004",
+        "B-005",
+        "B-006",
+        "B-007",
+        "B-008"
+      ],
+      "change": "modified",
+      "path": "docs/progress/02.7.md",
+      "rationale": "Prompt 02.7 evidence report"
+    },
+    {
+      "after_sha256": "d905450f1f03ba66d4f3eff09347c744e938dc2e04a75630da0d6ecfd809692d",
+      "before_sha256": "29e48c8a619678e91140a7ad3aca9f5e80c049765e2fb9d439c4a1bd4fde5aef",
+      "blocker_ids": [
+        "B-001"
+      ],
+      "change": "modified",
+      "path": "prompts/manifest.json",
+      "rationale": "governance dependency candidate"
+    }
+  ],
+  "deleted_expected": [],
+  "exact_declared_paths": [
+    "contracts/architecture-gate/compatibility-report-r2.json",
+    "contracts/architecture-gate/contract-baseline-r2-final.json",
+    "contracts/architecture-gate/contract-baseline-r2.json",
+    "contracts/architecture-gate/revision-delta-r2.json",
+    "contracts/architecture-gate/traceability.yaml",
+    "contracts/architecture-gate/validate_architecture_gate.py",
+    "contracts/architecture-gate/validation-report.json",
+    "contracts/asyncapi/asyncapi.yaml",
+    "contracts/asyncapi/delivery-scenarios.yaml",
+    "contracts/asyncapi/lint-config.yaml",
+    "contracts/asyncapi/validate_asyncapi.py",
+    "contracts/asyncapi/validation-report.json",
+    "contracts/governance/decision-revisions.yaml",
+    "contracts/governance/validate_decision_revisions.py",
+    "contracts/governance/validation-report.json",
+    "contracts/openapi/components-v1.yaml",
+    "contracts/openapi/examples/invalid/identity-context-active-with-token.json",
+    "contracts/openapi/examples/manifest.yaml",
+    "contracts/openapi/examples/success/identity-context-active.json",
+    "contracts/openapi/examples/success/identity-context-inactive.json",
+    "contracts/openapi/internal-identity-v1.yaml",
+    "contracts/openapi/lint-config.yaml",
+    "contracts/openapi/validate_openapi.py",
+    "contracts/security/privacy-data-map.yaml",
+    "contracts/security/validate_security_model.py",
+    "contracts/security/validation-report.json",
+    "docs/architecture/adr/ADR-001-communication.md",
+    "docs/architecture/adr/ADR-002-persistence-storage-cache.md",
+    "docs/architecture/adr/ADR-003-monorepo-runtimes.md",
+    "docs/architecture/adr/ADR-004-observability.md",
+    "docs/architecture/adr/ADR-005-identity-integration.md",
+    "docs/architecture/container-map.md",
+    "docs/architecture/event-delivery-semantics.md",
+    "docs/architecture/event-ownership-matrix.md",
+    "docs/architecture/http-api-v1.md",
+    "docs/architecture/privacy-model.md",
+    "docs/architecture/schema-open-fields.md",
+    "docs/architecture/threat-data-flow.md",
+    "docs/decision-log.md",
+    "docs/progress/02-architecture-gate.md",
+    "docs/progress/02.7.md",
+    "prompts/manifest.json"
+  ],
+  "generated_evidence": [
+    {
+      "before_sha256": null,
+      "path": "contracts/architecture-gate/revision-delta-r2.json",
+      "reason": "generated evidence is validated by command exit/status and snapshot membership, not a self-referential final hash"
+    },
+    {
+      "before_sha256": "d5ad83fd22a93ed73696a7b27fceb3ab98f624eb6bda8cfa5e9414ca73e5ec51",
+      "path": "contracts/architecture-gate/validation-report.json",
+      "reason": "generated evidence is validated by command exit/status and snapshot membership, not a self-referential final hash"
+    },
+    {
+      "before_sha256": "39c57d749e9ced9d74f0f02966f7524fcdfa7863de280c86d32e18860e1519ec",
+      "path": "contracts/asyncapi/validation-report.json",
+      "reason": "generated evidence is validated by command exit/status and snapshot membership, not a self-referential final hash"
+    },
+    {
+      "before_sha256": null,
+      "path": "contracts/governance/validation-report.json",
+      "reason": "generated evidence is validated by command exit/status and snapshot membership, not a self-referential final hash"
+    },
+    {
+      "before_sha256": "ea155f5609877f987f7e26ff1b4010b6aaeb8990b1ca920de417b0feda71d3e7",
+      "path": "contracts/security/validation-report.json",
+      "reason": "generated evidence is validated by command exit/status and snapshot membership, not a self-referential final hash"
+    }
+  ],
+  "revision": "02.7-r2",
+  "start_snapshot": {
+    "started_at": "2026-08-16T04:05:58.773708+00:00",
+    "version": 1
+  }
+}

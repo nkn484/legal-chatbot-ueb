@@ -87,6 +87,16 @@ class GateFixture(unittest.TestCase):
                                     "--evidence", f"docs/{prompt_id}.txt").returncode)
         self.assertEqual(0, self.gate("approve", prompt_id, "--by", "USER", "--note", "approved").returncode)
 
+    def make_fail(self, prompt_id: str) -> None:
+        self.assertEqual(0, self.gate("start", prompt_id).returncode)
+        report = self.root / "docs" / f"{prompt_id}.md"
+        evidence = self.root / "docs" / f"{prompt_id}.txt"
+        report.write_text("Trạng thái\nĐã thay đổi\nBằng chứng\nSai lệch\nĐề xuất prompt tiếp theo\n", encoding="utf-8")
+        evidence.write_text("evidence\n", encoding="utf-8")
+        self.assertEqual(0, self.gate("submit", prompt_id, "--report", f"docs/{prompt_id}.md",
+                                     "--evidence", f"docs/{prompt_id}.txt").returncode)
+        self.assertEqual(0, self.gate("reject", prompt_id, "--by", "USER", "--note", "rejected").returncode)
+
 
 class CancelStartTests(GateFixture):
     def test_cancel_pristine_preserves_started_at_and_files(self) -> None:
@@ -244,14 +254,173 @@ class CancelStartTests(GateFixture):
 class ReopenTests(GateFixture):
     def test_reopen_pass_archives_approval_and_resets_target(self) -> None:
         self.make_pass("A")
+        prior_snapshot = self.read_state()["prompts"]["A"]["start_snapshot"]
         result = self.gate("reopen", "A", "--by", "USER", "--note", "correct")
         self.assertEqual(0, result.returncode, result.stderr)
         entry = self.read_state()["prompts"]["A"]
         self.assertEqual(("IN_PROGRESS", 2, None, None, []),
                          (entry["status"], entry["revision"], entry["human_approved_at"], entry["report"], entry["evidence"]))
         self.assertEqual("APPROVAL_ARCHIVED", entry["approval_history"][-1]["action"])
+        self.assertEqual(prior_snapshot, entry["approval_history"][-1]["prior_start_snapshot"])
         self.assertEqual(Path("docs") / "A.md", Path(entry["history"][-1]["prior_approval"]["report"]))
+        self.assertEqual("PASS", entry["history"][-1]["source_status"])
+        self.assertEqual(prior_snapshot, entry["history"][-1]["prior_start_snapshot"])
         self.assertEqual(["B", "C"], entry["history"][-1]["descendants_checked"])
+
+    def test_reopen_fail_preserves_rejection_and_clears_current_fields(self) -> None:
+        self.make_fail("A")
+        prior = self.read_state()["prompts"]["A"]
+        prior_snapshot = prior["start_snapshot"]
+        self.assertEqual("REJECTED", prior["rejection_history"][-1]["action"])
+        result = self.gate("reopen", "A", "--by", "USER", "--note", "fix rejection")
+        self.assertEqual(0, result.returncode, result.stderr)
+        self.assertIn("reopened from FAIL", result.stdout)
+        entry = self.read_state()["prompts"]["A"]
+        self.assertEqual("IN_PROGRESS", entry["status"])
+        self.assertEqual(2, entry["revision"])
+        self.assertIsNone(entry["submitted_at"])
+        self.assertIsNone(entry["report"])
+        self.assertEqual([], entry["evidence"])
+        self.assertIsNone(entry["human_approved_at"])
+        self.assertIsNone(entry["human_approved_by"])
+        self.assertIsNone(entry["approval_note"])
+        self.assertIsNone(entry["approved_revision"])
+        self.assertEqual(1, len(entry["rejection_history"]))
+        event = entry["history"][-1]
+        self.assertEqual("FAIL", event["source_status"])
+        self.assertEqual("REJECTED", event["prior_rejection"]["action"])
+        self.assertEqual(prior_snapshot, event["prior_start_snapshot"])
+        self.assertEqual(2, self.gate("check", "B").returncode)
+
+    def test_reject_archives_rejection_at_rejection_time(self) -> None:
+        self.assertEqual(0, self.gate("start", "A").returncode)
+        baseline = self.read_state()["prompts"]["A"]["start_snapshot"]
+        report = self.root / "docs" / "A.md"
+        evidence = self.root / "docs" / "A.txt"
+        report.write_text("Trạng thái\nĐã thay đổi\nBằng chứng\nSai lệch\nĐề xuất prompt tiếp theo\n", encoding="utf-8")
+        evidence.write_text("evidence\n", encoding="utf-8")
+        self.assertEqual(0, self.gate("submit", "A", "--report", "docs/A.md", "--evidence", "docs/A.txt").returncode)
+        self.assertEqual(0, self.gate("reject", "A", "--by", "USER", "--note", "no").returncode)
+        entry = self.read_state()["prompts"]["A"]
+        self.assertIsNone(entry["approved_revision"])
+        self.assertNotIn("approval_history", entry)
+        record = entry["rejection_history"][-1]
+        self.assertEqual(("REJECTED", 1, "USER", "no", "PATHS_CAPTURED_AT_REJECTION"),
+                         (record["action"], record["revision"], record["rejected_by"],
+                          record["rejection_note"], record["integrity"]))
+        self.assertEqual(Path("docs") / "A.md", Path(record["report"]))
+        self.assertEqual([Path("docs") / "A.txt"], [Path(value) for value in record["evidence"]])
+        self.assertEqual(baseline, record["prior_start_snapshot"])
+
+    def test_legacy_fail_reopen_archives_without_invented_submission_hashes(self) -> None:
+        legacy_snapshot = {"version": 1, "started_at": "old", "roots": {"work": "directory"},
+                           "files": {"work/tracked.txt": "known-at-start"}}
+        self.state["prompts"]["A"] = self.entry(
+            status="FAIL", revision=1, started_at="old", start_snapshot=legacy_snapshot,
+            submitted_at="submitted", report="docs/legacy.md", evidence=["docs/legacy.txt"],
+            human_approved_at="rejected", human_approved_by="USER", approval_note="legacy rejection",
+        )
+        self.write_state()
+        self.assertEqual(0, self.gate("reopen", "A", "--by", "USER", "--note", "fix").returncode)
+        entry = self.read_state()["prompts"]["A"]
+        self.assertEqual(1, len(entry["rejection_history"]))
+        record = entry["rejection_history"][0]
+        self.assertEqual("REJECTION_ARCHIVED_LEGACY", record["action"])
+        self.assertEqual("NOT_CAPTURED_AT_SUBMIT_LEGACY", record["integrity"])
+        self.assertNotIn("submitted_hashes", record)
+        self.assertEqual(record, entry["history"][-1]["prior_rejection"])
+
+    def test_fail_reopen_requires_complete_rejection_without_mutation(self) -> None:
+        self.make_fail("A")
+        valid = self.read_state()["prompts"]["A"]
+        cases = {
+            "actor": {"human_approved_by": None},
+            "time": {"human_approved_at": None},
+            "note": {"approval_note": " "},
+            "submitted": {"submitted_at": None},
+            "report": {"report": ""},
+            "evidence": {"evidence": []},
+            "approved-revision": {"approved_revision": 1},
+        }
+        for name, changes in cases.items():
+            with self.subTest(name=name):
+                self.state = self.read_state()
+                self.state["prompts"]["A"] = json.loads(json.dumps(valid))
+                self.state["prompts"]["A"].update(changes)
+                self.write_state()
+                before = (self.root / ".agent-run" / "prompt-state.json").read_bytes()
+                self.assertEqual(2, self.gate("reopen", "A", "--by", "USER", "--note", "fix").returncode)
+                self.assertEqual(before, (self.root / ".agent-run" / "prompt-state.json").read_bytes())
+
+    def test_reopen_only_accepts_pass_or_fail_without_mutation(self) -> None:
+        for status in ("NOT_STARTED", "IN_PROGRESS", "AWAITING_APPROVAL", "DEFERRED", "BLOCKED", "UNKNOWN"):
+            with self.subTest(status=status):
+                self.state["prompts"]["A"] = self.entry(status=status)
+                self.write_state()
+                before = (self.root / ".agent-run" / "prompt-state.json").read_bytes()
+                self.assertEqual(2, self.gate("reopen", "A", "--by", "USER", "--note", "no").returncode)
+                self.assertEqual(before, (self.root / ".agent-run" / "prompt-state.json").read_bytes())
+
+    def test_fail_reopen_fails_closed_for_descendants_graph_roots_and_snapshot(self) -> None:
+        self.make_fail("A")
+        for descendant_id, child in (
+            ("B", self.entry(status="IN_PROGRESS")), ("C", self.entry(status="FAIL")),
+            ("B", self.entry(report="docs/r")), ("C", self.entry(evidence=["docs/e"])),
+        ):
+            with self.subTest(descendant=descendant_id, status=child["status"]):
+                self.state = self.read_state()
+                self.state["prompts"]["B"] = self.entry()
+                self.state["prompts"]["C"] = self.entry()
+                self.state["prompts"][descendant_id] = child
+                self.write_state()
+                before = (self.root / ".agent-run" / "prompt-state.json").read_bytes()
+                self.assertEqual(2, self.gate("reopen", "A", "--by", "USER", "--note", "no").returncode)
+                self.assertEqual(before, (self.root / ".agent-run" / "prompt-state.json").read_bytes())
+        self.state = self.read_state()
+        self.state["prompts"]["B"] = self.entry()
+        self.state["prompts"]["C"] = self.entry()
+        self.write_state()
+        self.manifest["prompts"]["A"]["write_roots"] = ["../unsafe"]
+        self.write_manifest()
+        before = (self.root / ".agent-run" / "prompt-state.json").read_bytes()
+        self.assertEqual(2, self.gate("reopen", "A", "--by", "USER", "--note", "unsafe").returncode)
+        self.assertEqual(before, (self.root / ".agent-run" / "prompt-state.json").read_bytes())
+        self.manifest["prompts"]["A"]["write_roots"] = ["work/"]
+        self.write_manifest()
+        (self.root / "work" / "snapshot-link").symlink_to(self.root / "docs", target_is_directory=True)
+        before = (self.root / ".agent-run" / "prompt-state.json").read_bytes()
+        self.assertEqual(2, self.gate("reopen", "A", "--by", "USER", "--note", "snapshot").returncode)
+        self.assertEqual(before, (self.root / ".agent-run" / "prompt-state.json").read_bytes())
+        (self.root / "work" / "snapshot-link").unlink()
+        self.manifest["prompts"]["B"]["dependencies"] = ["C"]
+        self.manifest["prompts"]["C"]["dependencies"] = ["B"]
+        self.write_manifest()
+        before = (self.root / ".agent-run" / "prompt-state.json").read_bytes()
+        self.assertEqual(2, self.gate("reopen", "A", "--by", "USER", "--note", "cycle").returncode)
+        self.assertEqual(before, (self.root / ".agent-run" / "prompt-state.json").read_bytes())
+
+    def test_fail_reopen_requires_resubmission_and_approval_before_successor(self) -> None:
+        self.make_fail("A")
+        self.assertEqual(2, self.gate("submit", "A", "--report", "docs/A.md", "--evidence", "docs/A.txt").returncode)
+        self.assertEqual(2, self.gate("approve", "A", "--by", "USER", "--note", "cannot bypass").returncode)
+        self.assertEqual(0, self.gate("reopen", "A", "--by", "USER", "--note", "fix").returncode)
+        self.assertEqual(2, self.gate("check", "B").returncode)
+        self.assertEqual(2, self.gate("approve", "A", "--by", "USER", "--note", "cannot bypass").returncode)
+        self.assertEqual(0, self.gate("submit", "A", "--report", "docs/A.md", "--evidence", "docs/A.txt").returncode)
+        self.assertEqual(0, self.gate("approve", "A", "--by", "USER", "--note", "approved r2").returncode)
+        entry = self.read_state()["prompts"]["A"]
+        self.assertEqual(("PASS", 2, 2), (entry["status"], entry["revision"], entry["approved_revision"]))
+        self.assertEqual(0, self.gate("check", "B").returncode)
+
+    def test_repeated_rejection_reopen_preserves_each_revision(self) -> None:
+        self.make_fail("A")
+        self.assertEqual(0, self.gate("reopen", "A", "--by", "USER", "--note", "r1 fix").returncode)
+        self.make_fail("A")
+        self.assertEqual(0, self.gate("reopen", "A", "--by", "USER", "--note", "r2 fix").returncode)
+        entry = self.read_state()["prompts"]["A"]
+        self.assertEqual(("IN_PROGRESS", 3), (entry["status"], entry["revision"]))
+        self.assertEqual([1, 2], [record["revision"] for record in entry["rejection_history"]])
+        self.assertEqual(["REJECTED", "REJECTED"], [record["action"] for record in entry["rejection_history"]])
 
     def test_reopen_refuses_nonpristine_descendants(self) -> None:
         self.make_pass("A")
@@ -330,6 +499,17 @@ class ReopenTests(GateFixture):
         for command in (("reopen", "A"), ("cancel-start", "B")):
             result = self.gate(*command, "--by", " ", "--note", " ")
             self.assertEqual(2, result.returncode)
+
+    def test_reject_rejects_empty_human_metadata_without_mutation(self) -> None:
+        self.assertEqual(0, self.gate("start", "A").returncode)
+        report = self.root / "docs" / "A.md"
+        evidence = self.root / "docs" / "A.txt"
+        report.write_text("Trạng thái\nĐã thay đổi\nBằng chứng\nSai lệch\nĐề xuất prompt tiếp theo\n", encoding="utf-8")
+        evidence.write_text("evidence\n", encoding="utf-8")
+        self.assertEqual(0, self.gate("submit", "A", "--report", "docs/A.md", "--evidence", "docs/A.txt").returncode)
+        before = (self.root / ".agent-run" / "prompt-state.json").read_bytes()
+        self.assertEqual(2, self.gate("reject", "A", "--by", " ", "--note", " ").returncode)
+        self.assertEqual(before, (self.root / ".agent-run" / "prompt-state.json").read_bytes())
 
 
 if __name__ == "__main__":

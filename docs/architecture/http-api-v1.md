@@ -15,6 +15,7 @@ Mỗi contract internal là API của **một owner service**, không có “int
 | INTERNAL | `internal-index-v1.yaml` | index-service |
 | INTERNAL | `internal-retrieval-v1.yaml` | retrieval-service |
 | INTERNAL | `internal-citation-v1.yaml` | citation-service |
+| INTERNAL | `internal-identity-v1.yaml` | identity-service |
 
 ## Endpoint inventory và DAG
 
@@ -26,12 +27,13 @@ Mỗi contract internal là API của **một owner service**, không có “int
 | Internal document | metadata/content, eligibility batch, canonical metadata batch |
 | Internal processing/index | chunks batch; search; retrieval-context validate |
 | Internal retrieval/citation | retrieval run; citation validation |
+| Internal identity | current identity-context verification |
 
-Luồng logic bị giới hạn: `chat → retrieval → index/document/processing → citation → chat public rendering`. Citation canonical được citation-service trả về; chat-service chỉ công bố claim/citation an toàn. Publish không đồng bộ gọi Processing hoặc Index. Upload chỉ tạo request/job `QUEUED`, không là bằng chứng an toàn, publish hoặc hiệu lực pháp luật.
+Luồng logic bị giới hạn: `gateway → identity` để verify current identity context, `gateway → processing` chỉ cho bounded processing-job query, và `chat → retrieval → index/document/processing → citation → chat public rendering`. Gateway không aggregate hoặc điều phối nghiệp vụ. Citation canonical được citation-service trả về; chat-service chỉ công bố claim/citation an toàn. Publish không đồng bộ gọi Processing hoặc Index. Upload chỉ tạo request/job `QUEUED`, không là bằng chứng an toàn, publish hoặc hiệu lực pháp luật.
 
 ## Auth, lỗi và cache
 
-Public question ghi rõ `security: []`. Mọi admin/internal operation dùng `BearerAuth`, có non-empty `x-ueb-required-scopes`; không có OAuth/OIDC discovery URL hoặc role header được tin cậy. Owner service vẫn kiểm tra resource authorization; resource không được phép có thể là 404 không enumeration.
+Public question ghi rõ `security: []`. Mọi admin/internal operation dùng `BearerAuth`, có non-empty `x-ueb-required-scopes`; không có OAuth/OIDC discovery URL hoặc role header được tin cậy. `verifyIdentityContext` additionally requires the separate sensitive `X-Identity-Presentation` header and never returns that presentation, a raw token, role, or client scope. Identity verifies context; domain owners still authorize their resources, and a resource không được phép có thể là 404 không enumeration.
 
 Lỗi 4xx/5xx dùng `application/problem+json` theo RFC 9457: `type` URI tuyệt đối, title/status, safe detail, opaque instance, code, correlation_id và optional JSON Pointer errors. Không trả stack, SQL, raw payload, internal ID hoặc secret. Response dynamic/auth dùng `Cache-Control: no-store`. `X-Request-Id` là correlation opaque; `Retry-After` chỉ có transient 429/503 đã document.
 
@@ -53,11 +55,11 @@ Internal Index, Retrieval và Citation mang `request_binding_id`. Request/respon
 
 Citation semantic gate còn kiểm tra completeness: mỗi grounded claim phải có ít nhất một citation VALID; không được có citation cho claim ngoài request; `grounded_answer_id`, context, request binding và chunk lineage phải khớp. Chunk citation không rỗng và là tập con chunk của claim. REFUSAL chỉ có Common Refusal an toàn, không có citations.
 
-Không có endpoint source catalog, source-system, connector, Provider, Feedback, Evaluation hay training. Upload multipart chỉ nhận đúng một PDF và không có `source_system_id`: manual upload không khẳng định SourceDocumentRef/provenance; declared/detected MIME, signature, malware và quarantine là runtime `NOT_MEASURED`. DEC-005 vẫn mở, connector `NOT_IMPLEMENTED` và allowlist trống; do đó không có thực thi nguồn. API view không có secret/credential, storage object, presigned URL, manifest reference hay location.
+Không có endpoint source catalog, source-system, connector, Provider, Feedback, Evaluation hay training. Identity API không đưa issuer/discovery/JWKS/IdP URL hay OIDC claim vào Core. Upload multipart chỉ nhận đúng một PDF và không có `source_system_id`: manual upload không khẳng định SourceDocumentRef/provenance; declared/detected MIME, signature, malware và quarantine là runtime `NOT_MEASURED`. `DEC-015` is pending human approval; connector `NOT_IMPLEMENTED` và allowlist trống; do đó không có thực thi nguồn. API view không có secret/credential, storage object, presigned URL, manifest reference hay location.
 
 ## Open fields và đo lường còn thiếu
 
-Contract là bounded design artifact. Runtime token verification, scopes/resource authorization, idempotency store/TTL/fingerprint, upload content security, actual byte/decompression enforcement, timeout/cancellation/deadline propagation, rate-limit/cache và service networking là `NOT_MEASURED`. Custom validator không thay thế OAS meta-validator đầy đủ; Redocly/Spectral/openapi-spec-validator không có trong môi trường.
+Contract là bounded design artifact. Runtime token verification, identity-presentation handling, scopes/resource authorization, idempotency store/TTL/fingerprint, upload content security, actual byte/decompression enforcement, timeout/cancellation/deadline propagation, rate-limit/cache và service networking là `NOT_MEASURED`. Custom validator không thay thế OAS meta-validator đầy đủ; Redocly/Spectral/openapi-spec-validator không có trong môi trường.
 
 ## Tham chiếu chính thức
 

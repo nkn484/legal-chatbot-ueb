@@ -15,7 +15,7 @@ from referencing.jsonschema import DRAFT202012
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1].resolve()
 CONTRACTS = (REPO / "contracts").resolve()
-SPEC_NAMES = ("public-v1.yaml", "admin-v1.yaml", "internal-document-v1.yaml", "internal-processing-v1.yaml", "internal-index-v1.yaml", "internal-retrieval-v1.yaml", "internal-citation-v1.yaml")
+SPEC_NAMES = ("public-v1.yaml", "admin-v1.yaml", "internal-document-v1.yaml", "internal-processing-v1.yaml", "internal-index-v1.yaml", "internal-retrieval-v1.yaml", "internal-citation-v1.yaml", "internal-identity-v1.yaml")
 
 
 class StrictLoader(yaml.SafeLoader):
@@ -136,6 +136,24 @@ def has_ref(parameters: list[dict], name: str) -> bool:
     return any(p.get("$ref", "").endswith("/" + name) or p.get("name") == name for p in parameters)
 
 
+def validate_identity_operation(operation: dict, parameters: list[dict], errors: list[str]) -> None:
+    if operation.get("x-ueb-owner-service") != "identity-service":
+        errors.append("verifyIdentityContext: owner identity-service required")
+    if operation.get("x-ueb-required-scopes") != ["identity:context:verify"]:
+        errors.append("verifyIdentityContext: required scope")
+    if operation.get("x-ueb-request-max-bytes") != 0 or operation.get("x-ueb-timeout-ms") != 1000:
+        errors.append("verifyIdentityContext: zero body and timeout policy")
+    if operation.get("requestBody") is not None or len(parameters) != 2 or not has_ref(parameters, "X-Request-Deadline-At") or not has_ref(parameters, "X-Identity-Presentation"):
+        errors.append("verifyIdentityContext: required headers or no-body policy")
+    responses = operation.get("responses", {})
+    if set(responses) != {"200", "400", "401", "403", "429", "503", "504"}:
+        errors.append("verifyIdentityContext: response inventory")
+    success = responses.get("200", {})
+    schema_ref = success.get("content", {}).get("application/json", {}).get("schema", {}).get("$ref")
+    if schema_ref != "components-v1.yaml#/components/schemas/IdentityContextVerificationResult":
+        errors.append("verifyIdentityContext: result schema")
+
+
 def validate_public_paths(public_spec: dict, lint: dict, errors: list[str]) -> None:
     allowed_public_paths = set(lint["public_allowed_paths"])
     if set(public_spec.get("paths", {})) != allowed_public_paths:
@@ -209,6 +227,8 @@ def validate_specs(specs: dict[str, dict], lint: dict, errors: list[str]) -> int
                         errors.append(f"{operation_id}: internal deadline missing")
                     if operation.get("security") != [{"BearerAuth": []}] or not operation.get("x-ueb-required-scopes"):
                         errors.append(f"{operation_id}: internal security/scopes")
+                    if operation_id == "verifyIdentityContext":
+                        validate_identity_operation(operation, parameters, errors)
                 elif audience == "ADMIN":
                     if operation.get("security") != [{"BearerAuth": []}] or not operation.get("x-ueb-required-scopes"):
                         errors.append(f"{operation_id}: admin security/scopes")
@@ -306,6 +326,14 @@ def citation_claim_complete(request: dict, result: dict) -> bool:
     return bool(claims) and all(count >= 1 for count in seen.values())
 
 
+def identity_context_semantic(value: dict) -> bool:
+    if value.get("active") is False:
+        return set(value) == {"active"}
+    if value.get("active") is True:
+        return set(value) == {"active", "principal_ref", "principal_kind", "grants", "expires_at", "auth_context_version"}
+    return False
+
+
 def build_registry(documents: dict[Path, object]) -> Registry:
     pairs = []
     for path, document in documents.items():
@@ -357,6 +385,8 @@ def validate_examples(components: dict, manifest: dict, registry: Registry, erro
             semantic = citation_binding_semantic(instance)
         elif entry.get("semantic_check") == "citation_claim_complete":
             semantic = citation_claim_complete(load(ROOT / "examples/success/citation-request.json"), instance)
+        elif entry.get("semantic_check") == "identity_context":
+            semantic = identity_context_semantic(instance)
         elif entry.get("semantic_check") in {"binding_index", "binding_context", "binding_retrieval", "binding_citation"}:
             semantic = binding_chain_candidate(entry["semantic_check"].split("_")[1], instance)
         elif entry.get("semantic_check") is not None:
@@ -403,8 +433,8 @@ def main() -> int:
         if lint.get("external_local_ref_policy") != "local_under_contracts_only":
             errors.append("external local ref policy")
         schema_defs = components["components"]["schemas"]
-        for name in ("IndexSearchRequest", "IndexSearchResult", "ContextValidationRequest", "ContextValidationResult", "RetrievalRequest", "RetrievalRunResult", "CitationValidationRequest", "CitationValidationResult"):
-            if name not in schema_defs or ("oneOf" not in schema_defs[name] and "request_binding_id" not in schema_defs[name].get("required", [])):
+        for name in ("IndexSearchRequest", "IndexSearchResult", "ContextValidationRequest", "ContextValidationResult", "RetrievalRequest", "RetrievalRunResult", "CitationValidationRequest", "CitationValidationResult", "IdentityContextVerificationResult"):
+            if name not in schema_defs or (name != "IdentityContextVerificationResult" and "oneOf" not in schema_defs[name] and "request_binding_id" not in schema_defs[name].get("required", [])):
                 errors.append(f"request binding schema missing: {name}")
         documents = reachable_documents([ROOT / name for name in SPEC_NAMES] + [ROOT / "components-v1.yaml"], errors)
         refs_checked, refs_resolved = resolve_refs(documents, errors)
@@ -416,7 +446,8 @@ def main() -> int:
         for path, document in documents.items():
             key_scan(document, str(path.relative_to(REPO)), errors, forbidden_tokens)
         for entry in manifest.get("examples", []):
-            key_scan(load(ROOT / entry["path"]), entry["path"], errors, forbidden_tokens)
+            if entry["path"] != "examples/invalid/identity-context-active-with-token.json":
+                key_scan(load(ROOT / entry["path"]), entry["path"], errors, forbidden_tokens)
         operation_count = validate_specs(specs, lint, errors)
         validate_response_policy(specs, lint, errors)
         registry = build_registry(documents)
@@ -436,7 +467,19 @@ def main() -> int:
         public_probe["paths"]["/extra"] = {}
         public_errors: list[str] = []
         validate_public_paths(public_probe, lint, public_errors)
-        self_tests = {"broken_ref": "broken ref self-test did not fail" not in errors, "forbidden_property": bool(probe_errors), "idempotency_missing": not has_ref([], "Idempotency-Key"), "owner_mismatch": "document-service" != "index-service", "extra_public_path": "public path policy" in public_errors, "forbidden_path": any(token in "/v1/provider" for token in lint["forbidden_path_tokens"]), "missing_response_header": any("getProcessingJob: 200 missing success response header" == value for value in header_errors), "semantic_citation_dangling": not public_answer_semantic({"outcome":"ANSWER","claims":[{"claim_ref":"a","citation_refs":["missing"]}],"citations":[]}), "request_binding_mismatch": not citation_binding_semantic(mismatch), "request_binding_chain": binding_chain_valid(), "citation_claim_complete": citation_claim_complete(load(ROOT / "examples/success/citation-request.json"), load(ROOT / "examples/success/citation-result.json")), "citation_claim_mutation": not citation_claim_complete(load(ROOT / "examples/success/citation-request.json"), load(ROOT / "examples/invalid/citation-result-missing-claim.json")), "external_ref_escape": (ROOT / "../../outside.yaml").resolve() not in documents}
+        identity_op = specs["internal-identity-v1.yaml"]["paths"]["/internal/v1/identity-context/current"]["get"]
+        identity_parameters = operation_parameters(identity_op, specs["internal-identity-v1.yaml"]["paths"]["/internal/v1/identity-context/current"])
+        identity_header_probe = deepcopy(identity_op)
+        identity_header_probe["parameters"] = identity_header_probe["parameters"][:1]
+        identity_header_errors: list[str] = []
+        validate_identity_operation(identity_header_probe, operation_parameters(identity_header_probe, {}), identity_header_errors)
+        identity_owner_probe = deepcopy(identity_op)
+        identity_owner_probe["x-ueb-owner-service"] = "document-service"
+        identity_owner_errors: list[str] = []
+        validate_identity_operation(identity_owner_probe, identity_parameters, identity_owner_errors)
+        identity_schema = {"$schema":"https://json-schema.org/draft/2020-12/schema", "$ref": (ROOT / "components-v1.yaml").resolve().as_uri()+"#/components/schemas/IdentityContextVerificationResult"}
+        raw_role = {"active": True, "principal_ref": "principal-01", "principal_kind": "USER", "grants": ["documents:read"], "expires_at": "2026-08-16T12:00:00Z", "auth_context_version": 1, "role": "admin"}
+        self_tests = {"broken_ref": "broken ref self-test did not fail" not in errors, "forbidden_property": bool(probe_errors), "idempotency_missing": not has_ref([], "Idempotency-Key"), "owner_mismatch": "document-service" != "index-service", "extra_public_path": "public path policy" in public_errors, "forbidden_path": any(token in "/v1/provider" for token in lint["forbidden_path_tokens"]), "missing_response_header": any("getProcessingJob: 200 missing success response header" == value for value in header_errors), "semantic_citation_dangling": not public_answer_semantic({"outcome":"ANSWER","claims":[{"claim_ref":"a","citation_refs":["missing"]}],"citations":[]}), "request_binding_mismatch": not citation_binding_semantic(mismatch), "request_binding_chain": binding_chain_valid(), "citation_claim_complete": citation_claim_complete(load(ROOT / "examples/success/citation-request.json"), load(ROOT / "examples/success/citation-result.json")), "citation_claim_mutation": not citation_claim_complete(load(ROOT / "examples/success/citation-request.json"), load(ROOT / "examples/invalid/citation-result-missing-claim.json")), "identity_inactive_minimal": identity_context_semantic({"active": False}), "identity_raw_role_rejected": bool(list(Draft202012Validator(identity_schema, registry=registry, format_checker=FormatChecker()).iter_errors(raw_role))), "identity_header_required": any("verifyIdentityContext: required headers or no-body policy" == value for value in identity_header_errors), "identity_owner_required": any("verifyIdentityContext: owner identity-service required" == value for value in identity_owner_errors), "external_ref_escape": (ROOT / "../../outside.yaml").resolve() not in documents}
         if not all(self_tests.values()):
             errors.append("policy self-test failed")
         summary = {"errors": sorted(errors), "invalid_example_count": invalid, "lint_security_checks": self_tests, "operation_count": operation_count, "operation_error_coverage": error_coverage, "operations_covered": len(covered | set(manifest.get("contract_only_coverage", []))), "refs_checked": refs_checked, "refs_resolved": refs_resolved, "spec_count": len(specs), "valid_example_count": valid}

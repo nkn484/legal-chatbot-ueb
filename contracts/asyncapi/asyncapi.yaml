@@ -490,9 +490,10 @@ operations:
     - retrieval-service
     - citation-service
     - chat-service
+    x-ueb-planned-producer-services:
+    - provider-service
     - feedback-service
     - evaluation-service
-    - provider-service
     x-ueb-multi-producer-exception: AuditFact
     bindings:
       amqp:
@@ -744,11 +745,12 @@ components:
         - retrieval-service
         - citation-service
         - chat-service
-        - feedback-service
-        - evaluation-service
-        - provider-service
         consume:
         - audit-service
+      x-ueb-planned-producer-services:
+      - provider-service
+      - feedback-service
+      - evaluation-service
     ProviderConfigurationValidated:
       name: ProviderConfigurationValidated
       contentType: application/json

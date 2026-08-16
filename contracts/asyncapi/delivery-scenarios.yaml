@@ -139,3 +139,17 @@ scenarios:
   dlq: true
   action: no_core_side_effect
   validator_check: later_injection_rejected
+- id: planned-audit-producer-injection
+  input: planned_producer_added_to_active_audit_operation
+  expected: rejected
+  retry: none
+  dlq: true
+  action: reject
+  validator_check: planned_audit_producer_rejected
+- id: audit-self-publish
+  input: audit_service_added_to_audit_publish_acl
+  expected: rejected
+  retry: none
+  dlq: true
+  action: reject
+  validator_check: audit_self_publish_rejected

@@ -18,18 +18,35 @@ flowchart LR
   subgraph TB04[TB-04 Document]
     D[Document] --> DS[(Document store)]
     D --> Q[Quarantine object]
+    DO[Document owned outbox]
+    DI[Document owned inbox/projection]
   end
   subgraph TB05[TB-05 Processing sandbox]
     Q --> P[Processing sandbox]
     P --> PA[Artifact store]
+    PO[Processing owned outbox]
+    PI[Processing owned inbox/projection]
   end
   subgraph TB06[TB-06 Service and broker]
     G --> D[Document]
     G --> P[Processing]
     G --> AU[Audit]
     G --> C[Chat]
-    D --> B[Broker]
-    P --> B
+    B[RabbitMQ broker transport only]
+    D --> DO
+    DO -->|Document→Processing · FLOW-39 · processing requested| B
+    B -->|Document→Processing · FLOW-39| PI
+    PI --> P
+    P --> PO
+    PO -->|Processing→Document · FLOW-40 · processing outcome| B
+    B -->|Processing→Document · FLOW-40| DI
+    DI --> D
+    IX --> IO[Index owned outbox]
+    IO -->|Index→Document · FLOW-41 · index projection outcome| B
+    B -->|Index→Document · FLOW-41| DI
+    DO -->|Document→Citation · FLOW-42 · source invalidated/revoked| B
+    B -->|Document→Citation · FLOW-42| CI[Citation owned inbox/projection]
+    CI --> CT
     B --> X[Retry/DLQ]
     B --> IX[Index]
     B --> AU[Audit]
@@ -94,5 +111,6 @@ flowchart LR
 | FLOW-27, FLOW-28 | LATER feedback/evaluation; DENIED_NOT_SENT | CTRL-RELEASE-001 |
 | FLOW-29, FLOW-30, FLOW-38 | LATER source endpoint/content/secret; DENIED_NOT_SENT | CTRL-SOURCE-001 |
 | FLOW-32, FLOW-33, FLOW-34 | gateway→Processing job query, Audit query, Chat question route | CTRL-AUTH-003 |
+| FLOW-39, FLOW-40, FLOW-41, FLOW-42 | broker-mediated directed safe event metadata only: IDs, hashes, revisions; producer outbox to consumer inbox/projection | CTRL-EVENT-001 |
 
 The complete source, destination, protocol, class, retention, protection, and owner fields are authoritative in `contracts/security/privacy-data-map.yaml`.

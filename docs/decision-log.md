@@ -159,3 +159,34 @@ Không sửa hoặc xóa entry đã ghi. Mỗi entry mới có: `ID`, `date`, `p
 - owner: governance/human
 - closure evidence: `scripts/prompt_gate.py`; lifecycle tests; transition rules section C.
 - supersedes: none
+
+### DEC-015 — DEC-005@2
+- date: 2026-08-16
+- prompt: 02.7 revision 2
+- decision_key: DEC-005
+- revision: 2
+- decision-or-condition: Candidate revision resolves the Citation Core sequencing conflict by changing only manifest dependency `05.8 -> 05.4`. Citation remains Core and provider-independent; Provider remains LATER from the approved architecture evidence. The retained `05.5 -> 05.6 -> 05.7` Provider chain and `05.9 -> 05.8` dependency are not changed.
+- basis: approved `docs/architecture/container-map.md` establishes Citation Core/provider independence and Provider LATER; `prompts/manifest.json` is the executable prompt dependency source.
+- authority: human approval of the current Prompt 02.7 revision, then the approved manifest revision.
+- status: PROPOSED_PENDING_HUMAN_APPROVAL
+- owner: governance/human
+- effective_at: null
+- effective_on: human approval of Prompt 02.7 current revision
+- closure evidence: candidate evidence is `prompts/manifest.json`, `docs/architecture/container-map.md`, `contracts/governance/decision-revisions.yaml`, `contracts/governance/validate_decision_revisions.py`, `contracts/governance/validation-report.json`, `scripts/verify_pack.py`, and `tests/test_prompt_gate_lifecycle.py`. No commit currently exists; approval binds the current revision artifacts, not a placeholder commit.
+- manifest_disposition: `05.8.dependencies` is candidate `['05.4']`; its transitive path reaches `05.4` and does not reach `05.5`, `05.6`, or `05.7`.
+- supersedes: DEC-005@1
+
+### DEC-016 — DEC-007@2
+- date: 2026-08-16
+- prompt: 02.7 revision 2
+- decision_key: DEC-007
+- revision: 2
+- decision-or-condition: Candidate governance revision defines latest-effective decisions as the newest approved, non-revoked, valid superseding revision in an immutable chain; old entries remain immutable. The approved user choice is that `reopen` supports both PASS and FAIL, archives approval and rejection distinctly, increments the revision, and never treats FAIL as an effective approval or permits direct bypass. Legacy records without a hash are marked `LEGACY_UNKNOWN_HASH` rather than asserted immutable by an invented hash.
+- basis: current `scripts/prompt_gate.py`, `tests/test_prompt_gate_lifecycle.py`, `scripts/verify_pack.py`, and the current governance validation report; this entry does not assert a placeholder commit.
+- authority: human approval of the current Prompt 02.7 revision, then the approved governance revision.
+- status: PROPOSED_PENDING_HUMAN_APPROVAL
+- owner: governance/human
+- effective_at: null
+- effective_on: human approval of Prompt 02.7 current revision
+- closure evidence: candidate evidence is `contracts/governance/decision-revisions.yaml`, `contracts/governance/validate_decision_revisions.py`, `contracts/governance/validation-report.json`, `scripts/prompt_gate.py`, `tests/test_prompt_gate_lifecycle.py`, and `scripts/verify_pack.py`. No commit currently exists; approval binds the current revision artifacts, not a placeholder commit.
+- supersedes: DEC-007@1

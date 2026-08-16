@@ -18,7 +18,7 @@ The intended local implementation flow is: producer domain effect plus local out
 
 Stale owner revisions are no-ops; a gap reconciles through the owner API. Unpublish/revoke dominates a delayed publish/activation. Processing artifacts must bind the original request's document/version/input hash. Core IndexProjection events use `mode=FTS`; `status` conveys READY, ACTIVE, FAILED, or RETIRED. VECTOR and HYBRID are LATER. `ACTIVE` projection status is operational only and cannot establish legal truth.
 
-Some catalog components carry `x-ueb-planned-consumers` metadata. These seven links are future, non-routable planning metadata: they do not add an active ACL consumer, channel, operation, delivery authorization, or Core side effect.
+Some catalog components carry `x-ueb-planned-consumers` metadata. These seven links are future, non-routable planning metadata: they do not add an active ACL consumer, channel, operation, delivery authorization, or Core side effect. `AuditFactObserved` additionally names exactly seven active Core publishers (identity, document, processing, index, retrieval, citation, and chat) in its operation and publish ACL. Its `x-ueb-planned-producer-services` names Provider, Feedback, and Evaluation only as LATER planning metadata; those services have no active AuditFact operation, route, or ACL entitlement. Audit-service never self-publishes.
 
 ## Retry, DLQ, and replay
 

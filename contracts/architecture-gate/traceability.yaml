@@ -1,0 +1,238 @@
+version: 1
+matrix_type: supplemental_architecture_gate
+does_not_mutate: docs/requirements-traceability-matrix.md
+requirements:
+  - id: REQ-SCP-001
+    priority: MUST
+    owners: [retrieval-service, chat-service]
+    ac_ids: [AC-001]
+    hr_mappings: [HR-18, HR-19]
+    api_operations: [askQuestion, runRetrieval]
+    asyncapi_message_types: []
+    schema_concept_refs: [contracts/schemas/retrieval.schema.json, contracts/schemas/chat.schema.json]
+    security_test_ids: [SEC-RAG-003, SEC-RAG-005]
+    architecture_evidence_paths: [docs/architecture/container-map.md, docs/architecture/data-ownership.md]
+    implementation_status: DESIGN_CONTRACT_ONLY
+    runtime_status: NOT_MEASURED
+    na_rationale: {asyncapi_message_types: "N/A: scope/refusal is a bounded synchronous capability; no Core event is declared."}
+  - id: REQ-USR-001
+    priority: MUST
+    owners: [identity-service, api-gateway]
+    ac_ids: [AC-002]
+    hr_mappings: [HR-27]
+    api_operations: [verifyIdentityContext]
+    asyncapi_message_types: []
+    schema_concept_refs: [contracts/openapi/internal-identity-v1.yaml, docs/architecture/adr/ADR-005-identity-integration.md]
+    security_test_ids: [SEC-AUTH-006, SEC-AUTH-007]
+    architecture_evidence_paths: [docs/architecture/container-map.md, docs/architecture/adr/ADR-005-identity-integration.md]
+    implementation_status: DESIGN_CONTRACT_ONLY
+    runtime_status: NOT_MEASURED
+    na_rationale: {asyncapi_message_types: "N/A: identity context verification is a bounded synchronous owner API; no Core event contract is declared."}
+  - id: REQ-USR-002
+    priority: MUST
+    owners: [identity-service, document-service, api-gateway]
+    ac_ids: [AC-003]
+    hr_mappings: [HR-23, HR-27]
+    api_operations: [createDocumentUpload, recordVersionReview, publishDocument]
+    asyncapi_message_types: []
+    schema_concept_refs: [contracts/openapi/admin-v1.yaml, docs/architecture/adr/ADR-005-identity-integration.md]
+    security_test_ids: [SEC-AUTH-004, SEC-AUTH-005, SEC-AUTH-007]
+    architecture_evidence_paths: [docs/architecture/container-map.md, contracts/security/privacy-data-map.yaml]
+    implementation_status: DESIGN_CONTRACT_ONLY
+    runtime_status: NOT_MEASURED
+    na_rationale: {asyncapi_message_types: "N/A: administration authorization is represented by HTTP scopes and owner authorization, not an event."}
+  - id: REQ-DOC-001
+    priority: MUST
+    owners: [document-service, processing-service]
+    ac_ids: [AC-004]
+    hr_mappings: [HR-09, HR-19, HR-21, HR-22, HR-23, HR-26, HR-39]
+    api_operations: [createDocumentUpload, getInternalDocumentVersionMetadata, streamInternalDocumentVersionContent]
+    asyncapi_message_types: [legal.document.version.processing.requested.v1]
+    schema_concept_refs: [contracts/schemas/document.schema.json, contracts/schemas/source-connector-port.schema.json, contracts/schemas/processing.schema.json]
+    security_test_ids: [SEC-PDF-001, SEC-PDF-002, SEC-SOURCE-001, SEC-SOURCE-002, SEC-SOURCE-003]
+    architecture_evidence_paths: [docs/architecture/data-ownership.md, docs/architecture/source-connector-port.md]
+    implementation_status: DESIGN_CONTRACT_ONLY
+    runtime_status: NOT_MEASURED
+    na_rationale: {api_operations: "Not applicable: none; concrete owner operations are listed.", asyncapi_message_types: "Not applicable: none; the processing command is listed."}
+  - id: REQ-DOC-002
+    priority: MUST
+    owners: [document-service, processing-service, index-service]
+    ac_ids: [AC-005]
+    hr_mappings: [HR-15, HR-21, HR-22]
+    api_operations: [recordVersionReview, publishDocument, unpublishDocument, getProcessingChunksBatch]
+    asyncapi_message_types: [legal.processing.job.succeeded.v1, legal.processing.artifacts.ready.v1, legal.document.published.v1, legal.document.unpublished.v1]
+    schema_concept_refs: [contracts/schemas/document.schema.json, contracts/schemas/processing.schema.json, contracts/state-machines/domain-state-machines.v1.json]
+    security_test_ids: [SEC-AUTH-003, SEC-PDF-006, SEC-RAG-003, SEC-RAG-004]
+    architecture_evidence_paths: [docs/architecture/container-map.md, docs/architecture/data-ownership.md]
+    implementation_status: DESIGN_CONTRACT_ONLY
+    runtime_status: NOT_MEASURED
+    na_rationale: {api_operations: "Not applicable: none; concrete lifecycle operations are listed.", asyncapi_message_types: "Not applicable: none; lifecycle event types are listed."}
+  - id: REQ-RET-001
+    priority: MUST
+    owners: [retrieval-service, chat-service]
+    ac_ids: [AC-006]
+    hr_mappings: [HR-18, HR-23]
+    api_operations: [askQuestion, runRetrieval]
+    asyncapi_message_types: []
+    schema_concept_refs: [contracts/schemas/retrieval.schema.json, contracts/schemas/chat.schema.json]
+    security_test_ids: [SEC-CITE-004, SEC-PRIV-003]
+    architecture_evidence_paths: [docs/architecture/container-map.md, contracts/security/privacy-data-map.yaml]
+    implementation_status: DESIGN_CONTRACT_ONLY
+    runtime_status: NOT_MEASURED
+    na_rationale: {asyncapi_message_types: "N/A: no answer-provider event is active in Core."}
+  - id: REQ-RET-002
+    priority: MUST
+    owners: [document-service, index-service, retrieval-service]
+    ac_ids: [AC-007]
+    hr_mappings: [HR-15]
+    api_operations: [searchIndex, checkDocumentVersionEligibilityBatch]
+    asyncapi_message_types: [legal.document.published.v1, legal.document.unpublished.v1, legal.document.source.revoked.v1]
+    schema_concept_refs: [contracts/schemas/document.schema.json, contracts/schemas/index.schema.json, contracts/schemas/retrieval.schema.json]
+    security_test_ids: [SEC-RAG-003, SEC-RAG-004, SEC-RAG-005]
+    architecture_evidence_paths: [docs/architecture/container-map.md, docs/architecture/data-ownership.md]
+    implementation_status: DESIGN_CONTRACT_ONLY
+    runtime_status: NOT_MEASURED
+    na_rationale: {api_operations: "Not applicable: none; concrete eligibility operations are listed.", asyncapi_message_types: "Not applicable: none; relevant event types are listed."}
+  - id: REQ-RET-003
+    priority: MUST
+    owners: [citation-service, document-service, processing-service, chat-service]
+    ac_ids: [AC-008]
+    hr_mappings: [HR-16, HR-17, HR-23]
+    api_operations: [validateCitations, getCanonicalMetadataBatch, getProcessingChunksBatch, validateIndexRetrievalContext]
+    asyncapi_message_types: [legal.document.source.invalidated.v1, legal.document.source.revoked.v1]
+    schema_concept_refs: [contracts/schemas/citation.schema.json, contracts/schemas/document.schema.json, contracts/schemas/processing.schema.json]
+    security_test_ids: [SEC-CITE-001, SEC-CITE-002, SEC-CITE-003]
+    architecture_evidence_paths: [docs/decision-log.md, docs/architecture/container-map.md, docs/architecture/data-ownership.md]
+    implementation_status: DECISION_REVISION_PENDING_APPROVAL
+    runtime_status: NOT_MEASURED
+    na_rationale: {api_operations: "Not applicable: none; concrete validation operations are listed.", asyncapi_message_types: "Not applicable: none; source invalidation/revocation types are listed.", decision_revision: "DEC-015 (DEC-005@2) is pending human approval; this is neither executable nor closed."}
+  - id: REQ-RET-004
+    priority: MUST
+    owners: [retrieval-service, chat-service]
+    ac_ids: [AC-009]
+    hr_mappings: [HR-18]
+    api_operations: [runRetrieval, askQuestion]
+    asyncapi_message_types: []
+    schema_concept_refs: [contracts/schemas/retrieval.schema.json, contracts/schemas/chat.schema.json]
+    security_test_ids: [SEC-CITE-004, SEC-RAG-005]
+    architecture_evidence_paths: [docs/architecture/container-map.md, contracts/security/risk-register.yaml]
+    implementation_status: DESIGN_CONTRACT_ONLY
+    runtime_status: NOT_MEASURED
+    na_rationale: {asyncapi_message_types: "N/A: insufficiency is a request-bound synchronous refusal result."}
+  - id: REQ-RET-005
+    priority: MUST
+    owners: [document-service, processing-service, retrieval-service, chat-service]
+    ac_ids: [AC-010]
+    hr_mappings: [HR-19, HR-20]
+    api_operations: [runRetrieval, validateCitations]
+    asyncapi_message_types: [legal.document.source.invalidated.v1, legal.document.source.revoked.v1]
+    schema_concept_refs: [contracts/schemas/document.schema.json, contracts/schemas/retrieval.schema.json, contracts/schemas/citation.schema.json]
+    security_test_ids: [SEC-RAG-001, SEC-CITE-004]
+    architecture_evidence_paths: [docs/architecture/data-ownership.md, docs/architecture/container-map.md]
+    implementation_status: DESIGN_CONTRACT_ONLY
+    runtime_status: NOT_MEASURED
+    na_rationale: {api_operations: "Not applicable: none; concrete retrieval and citation operations are listed.", asyncapi_message_types: "Not applicable: none; revocation event types are listed."}
+  - id: REQ-UX-001
+    priority: SHOULD
+    owners: [web-chat]
+    ac_ids: [AC-011]
+    hr_mappings: [HR-17]
+    api_operations: []
+    asyncapi_message_types: []
+    schema_concept_refs: [docs/acceptance-criteria.md]
+    security_test_ids: []
+    architecture_evidence_paths: [docs/requirements-traceability-matrix.md]
+    implementation_status: NOT_STARTED
+    runtime_status: NOT_MEASURED
+    na_rationale: {api_operations: "N/A: notice is a future client capability, not a backend operation.", asyncapi_message_types: "N/A: notice has no event.", security_test_ids: "N/A: no concrete security test is assigned in the approved inventory."}
+  - id: REQ-OPS-001
+    priority: MUST
+    owners: [document-service, admin-portal, deploy]
+    ac_ids: [AC-012]
+    hr_mappings: [HR-04, HR-27, HR-42]
+    api_operations: [createDocumentUpload, listDocuments]
+    asyncapi_message_types: []
+    schema_concept_refs: [docs/architecture/adr/ADR-003-monorepo-runtimes.md]
+    security_test_ids: [SEC-AUTH-005]
+    architecture_evidence_paths: [docs/architecture/container-map.md, docs/architecture/adr/ADR-003-monorepo-runtimes.md]
+    implementation_status: DESIGN_ONLY
+    runtime_status: NOT_MEASURED
+    na_rationale: {asyncapi_message_types: "N/A: local/demo deployment is not an event contract."}
+  - id: REQ-NFR-001
+    priority: MUST
+    owners: [audit-service, chat-service, document-service, platform-security]
+    ac_ids: [AC-013]
+    hr_mappings: [HR-23, HR-38]
+    api_operations: [listAuditRecords]
+    asyncapi_message_types: [legal.audit.fact.observed.v1]
+    schema_concept_refs: [contracts/security/privacy-data-map.yaml, contracts/asyncapi/delivery-policy.yaml]
+    security_test_ids: [SEC-PRIV-001, SEC-PRIV-002, SEC-AUD-001]
+    architecture_evidence_paths: [docs/architecture/privacy-model.md, docs/architecture/threat-data-flow.md]
+    implementation_status: DESIGN_REGISTRY_ONLY
+    runtime_status: NOT_MEASURED
+    na_rationale: {api_operations: "Not applicable: none; audit query operation is listed.", asyncapi_message_types: "Not applicable: none; audit fact is listed."}
+  - id: REQ-NFR-002
+    priority: SHOULD
+    owners: [chat-service, retrieval-service, evaluation-service]
+    ac_ids: [AC-014]
+    hr_mappings: [HR-05, HR-39, HR-41]
+    api_operations: []
+    asyncapi_message_types: []
+    schema_concept_refs: [docs/acceptance-criteria.md]
+    security_test_ids: []
+    architecture_evidence_paths: [docs/requirements-traceability-matrix.md]
+    implementation_status: NOT_STARTED
+    runtime_status: NOT_MEASURED
+    na_rationale: {api_operations: "N/A: benchmark has no current API operation.", asyncapi_message_types: "N/A: benchmark has no current event.", security_test_ids: "N/A: no security test is assigned to the performance acceptance criterion."}
+  - id: REQ-DATA-001
+    priority: MUST
+    owners: [document-service, retrieval-service, evaluation-service]
+    ac_ids: [AC-015]
+    hr_mappings: [HR-20, HR-21, HR-22, HR-39]
+    api_operations: []
+    asyncapi_message_types: []
+    schema_concept_refs: [contracts/schemas/document.schema.json, contracts/schemas/retrieval.schema.json]
+    security_test_ids: [SEC-RAG-001, SEC-CITE-004]
+    architecture_evidence_paths: [docs/acceptance-criteria.md, docs/architecture/data-ownership.md]
+    implementation_status: NOT_STARTED
+    runtime_status: NOT_MEASURED
+    na_rationale: {api_operations: "N/A: the frozen acceptance fixture has no current API operation.", asyncapi_message_types: "N/A: fixture execution has no current event.", security_test_ids: "Not applicable: none; assigned security tests are listed."}
+  - id: REQ-PLN-001
+    priority: MUST
+    owners: [Planning capability]
+    ac_ids: [AC-016]
+    hr_mappings: [HR-01, HR-02, HR-05, HR-41]
+    api_operations: []
+    asyncapi_message_types: []
+    schema_concept_refs: [docs/requirements-traceability-matrix.md]
+    security_test_ids: []
+    architecture_evidence_paths: [docs/decision-log.md, docs/progress/01.3.md]
+    implementation_status: DESIGN_EVIDENCE_ONLY
+    runtime_status: NOT_MEASURED
+    na_rationale: {api_operations: "N/A: planning is governance, not a service API.", asyncapi_message_types: "N/A: planning has no event contract.", security_test_ids: "N/A: no security test is assigned."}
+  - id: REQ-AI-001
+    priority: LATER
+    owners: [feedback-service, evaluation-service]
+    ac_ids: [AC-017]
+    hr_mappings: [HR-29, HR-30, HR-33, HR-34]
+    api_operations: []
+    asyncapi_message_types: [legal.feedback.recorded.v1, legal.golden.answer.approved.v1, legal.evaluation.completed.v1]
+    schema_concept_refs: [contracts/schemas/feedback.schema.json, contracts/schemas/evaluation.schema.json]
+    security_test_ids: [SEC-REL-001, SEC-REL-002]
+    architecture_evidence_paths: [docs/architecture/container-map.md, contracts/asyncapi/lint-config.yaml]
+    implementation_status: LATER_NOT_ROUTABLE
+    runtime_status: NOT_MEASURED
+    na_rationale: {api_operations: "N/A: no Provider/Feedback/Evaluation API operation is active in the Core inventory.", asyncapi_message_types: "Not applicable: none; listed LATER messages are non-routable by design."}
+  - id: REQ-OPS-002
+    priority: LATER
+    owners: [Future capability]
+    ac_ids: [AC-018]
+    hr_mappings: [HR-04, HR-23, HR-33, HR-42]
+    api_operations: []
+    asyncapi_message_types: []
+    schema_concept_refs: [contracts/security/privacy-data-map.yaml]
+    security_test_ids: [SEC-PRIV-006]
+    architecture_evidence_paths: [docs/architecture/container-map.md, docs/architecture/threat-data-flow.md]
+    implementation_status: LATER_DENIED
+    runtime_status: NOT_MEASURED
+    na_rationale: {api_operations: "N/A: production/HA/backup capability is excluded from Core.", asyncapi_message_types: "N/A: backup/DR is denied and has no active event."}

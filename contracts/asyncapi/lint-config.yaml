@@ -33,7 +33,7 @@ safe_property_exceptions:
 - content_hash
 - payload_hash
 - detail_hash
-audit_allowed_producers:
+audit_active_producers:
 - identity-service
 - document-service
 - processing-service
@@ -41,9 +41,10 @@ audit_allowed_producers:
 - retrieval-service
 - citation-service
 - chat-service
+audit_planned_producers:
+- provider-service
 - feedback-service
 - evaluation-service
-- provider-service
 messages:
   legal.document.version.processing.requested.v1:
     component: DocumentVersionProcessingRequested

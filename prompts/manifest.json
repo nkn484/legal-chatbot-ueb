@@ -166,18 +166,25 @@
       "required_report": "docs/progress/02.6.md"
     },
     "02.7": {
-      "title": "Cổng nghiệm thu kiến trúc",
+      "title": "Hiệu chỉnh và nghiệm thu lại kiến trúc",
       "group": "02",
       "dependencies": [
         "02.6"
       ],
       "command": "/prompt-02-7",
       "write_roots": [
+        "prompts/manifest.json",
+        "docs/decision-log.md",
         "docs/architecture/",
         "contracts/",
-        "docs/progress/"
+        "docs/progress/",
+        "scripts/prompt_gate.py",
+        "scripts/verify_pack.py",
+        "tests/test_prompt_gate_lifecycle.py",
+        "docs/prompt-transition-rules.md"
       ],
       "preferred_agents": [
+        "explorer",
         "oracle",
         "librarian",
         "council"
@@ -891,7 +898,7 @@
       "title": "Citation Service",
       "group": "05",
       "dependencies": [
-        "05.7"
+        "05.4"
       ],
       "command": "/prompt-05-8",
       "write_roots": [

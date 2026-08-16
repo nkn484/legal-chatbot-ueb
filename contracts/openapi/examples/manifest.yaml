@@ -27,6 +27,8 @@ examples:
   - {path: examples/success/retrieval-result.json, schema_ref: components-v1.yaml#/components/schemas/RetrievalRunResult, expected: VALID, operation_id: runRetrieval, role: RESPONSE}
   - {path: examples/success/citation-request.json, schema_ref: components-v1.yaml#/components/schemas/CitationValidationRequest, expected: VALID, operation_id: validateCitations, role: REQUEST, semantic_check: citation_binding}
   - {path: examples/success/citation-result.json, schema_ref: components-v1.yaml#/components/schemas/CitationValidationResult, expected: VALID, operation_id: validateCitations, role: RESPONSE, semantic_check: citation_claim_complete}
+  - {path: examples/success/identity-context-active.json, schema_ref: components-v1.yaml#/components/schemas/IdentityContextVerificationResult, expected: VALID, operation_id: verifyIdentityContext, role: RESPONSE, semantic_check: identity_context}
+  - {path: examples/success/identity-context-inactive.json, schema_ref: components-v1.yaml#/components/schemas/IdentityContextVerificationResult, expected: VALID, operation_id: verifyIdentityContext, role: RESPONSE, semantic_check: identity_context}
   - {path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem, expected: VALID, role: ERROR}
   - {path: examples/invalid/public-answer-claim-without-citation-ids.json, schema_ref: components-v1.yaml#/components/schemas/QuestionResult, expected: INVALID_SCHEMA, keyword: required}
   - {path: examples/invalid/public-refusal-with-citations.json, schema_ref: components-v1.yaml#/components/schemas/QuestionResult, expected: INVALID_SCHEMA, keyword: oneOf}
@@ -46,6 +48,7 @@ examples:
   - {path: examples/invalid/retrieval-result-wrong-binding.json, schema_ref: components-v1.yaml#/components/schemas/RetrievalRunResult, expected: INVALID_SEMANTIC, semantic_check: binding_retrieval}
   - {path: examples/invalid/citation-request-wrong-binding.json, schema_ref: components-v1.yaml#/components/schemas/CitationValidationRequest, expected: INVALID_SEMANTIC, semantic_check: binding_citation}
   - {path: examples/invalid/context-validation-request-injected-chunk.json, schema_ref: components-v1.yaml#/components/schemas/ContextValidationRequest, expected: INVALID_SEMANTIC, semantic_check: binding_context}
+  - {path: examples/invalid/identity-context-active-with-token.json, schema_ref: components-v1.yaml#/components/schemas/IdentityContextVerificationResult, expected: INVALID_SCHEMA, keyword: oneOf}
 error_examples:
   - {operation_id: askQuestion, status: '400', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
   - {operation_id: createDocumentUpload, status: '400', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
@@ -66,4 +69,5 @@ error_examples:
   - {operation_id: validateIndexRetrievalContext, status: '422', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
   - {operation_id: runRetrieval, status: '422', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
   - {operation_id: validateCitations, status: '422', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
+  - {operation_id: verifyIdentityContext, status: '400', path: examples/error/problem.json, schema_ref: components-v1.yaml#/components/schemas/Problem}
 contract_only_coverage: [streamInternalDocumentVersionContent]

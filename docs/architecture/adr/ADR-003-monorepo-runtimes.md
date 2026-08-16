@@ -1,9 +1,13 @@
 # ADR-003: Monorepo và runtime độc lập
 
-- Status: **PROPOSED**
+- Status: **ACCEPTED**
 - Date: 2026-08-13
 
-ADR này chỉ trở thành ACCEPTED thông qua phê duyệt của con người cho Prompt 02.2; bản thân tài liệu không cho phép triển khai.
+## Status history and acceptance lineage
+
+- 2026-08-13: `PROPOSED` in Prompt 02.2 revision 1.
+- 2026-08-13T08:10:51.287717+00:00: Status is `ACCEPTED` only because the unchanged substantive content was human-approved for Prompt 02.2 revision 1. Evidence paths recorded in `.agent-run/prompt-state.json`: `docs/architecture/adr/ADR-001-communication.md`, `docs/architecture/adr/ADR-002-persistence-storage-cache.md`, `docs/architecture/adr/ADR-003-monorepo-runtimes.md`, `docs/architecture/adr/ADR-004-observability.md`, `docs/architecture/adr/ADR-005-identity-integration.md`; report: `docs/progress/02.2.md`.
+- 2026-08-16: Prompt 02.7 revision 2 reconciles only stale status metadata. Any later substantive change requires a new ADR revision and human approval; this metadata correction does not pre-approve altered ADR content.
 
 ## Context
 

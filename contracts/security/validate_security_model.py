@@ -29,8 +29,10 @@ CORE_TOPOLOGY = {
     ("document-service", "index-service"), ("chat-service", "retrieval-service"), ("retrieval-service", "index-service"),
     ("retrieval-service", "document-service"), ("retrieval-service", "chat-service"), ("chat-service", "citation-service"),
     ("citation-service", "index-service"), ("citation-service", "document-service"), ("citation-service", "processing-service"),
-    ("chat-service", "public-browser"), ("all-services", "audit-service"), ("all-services", "telemetry-platform"),
+    ("chat-service", "public-browser"), ("core-audit-producers", "audit-service"), ("all-services", "telemetry-platform"),
     ("service-workloads", "KMS-vault"),
+    ("document-service", "processing-service"), ("processing-service", "document-service"),
+    ("index-service", "document-service"), ("document-service", "citation-service"),
 }
 DB_SERVICES = {"identity-service", "audit-service", "document-service", "processing-service", "index-service", "retrieval-service", "provider-service", "citation-service", "chat-service", "feedback-service", "evaluation-service"}
 
@@ -111,7 +113,7 @@ def check_model(model: dict[str, Any], docs: dict[str, str] | None = None) -> li
     if risk_ids != {f"RISK-{n:03d}" for n in range(1, 42)}: errors.append("RISK-001..RISK-041 exact coverage required")
     if len(tests) != 70: errors.append(f"expected 70 tests, got {len(tests)}")
     if len(privacy["trust_boundaries"]) < 13 or not {f"TB-{n:02d}" for n in range(1, 14)} <= boundary_ids: errors.append("TB-01..TB-13 required")
-    if len(class_ids) < 12 or len(encryption_ids) < 12 or len(flow_ids) < 28: errors.append("minimum privacy registry coverage missing")
+    if len(class_ids) < 12 or len(encryption_ids) < 12 or len(flow_ids) != 42: errors.append("privacy registry must contain exactly 42 flows")
     for risk in risks:
         ident = risk.get("id", "<unknown>")
         score = risk.get("score")
@@ -202,6 +204,21 @@ def check_model(model: dict[str, Any], docs: dict[str, str] | None = None) -> li
     if any(word in json.dumps(enc08, ensure_ascii=False).lower() for word in ("{service}", "service-specific", "generic")):
         errors.append("ENC-08 rejects template or generic key mapping labels")
     flow_by_id = {flow.get("id"): flow for flow in privacy["data_flows"]}
+    expected_event_flows = {
+        "FLOW-39": ("Document→Processing", "document-service", "processing-service", "processing-requested"),
+        "FLOW-40": ("Processing→Document", "processing-service", "document-service", "processing-outcome"),
+        "FLOW-41": ("Index→Document", "index-service", "document-service", "index-projection-outcome"),
+        "FLOW-42": ("Document→Citation", "document-service", "citation-service", "document-source-invalidated-revoked"),
+    }
+    for ident, (label, source, destination, purpose) in expected_event_flows.items():
+        flow = flow_by_id.get(ident, {})
+        if (flow.get("semantic_label"), flow.get("source"), flow.get("destination"), flow.get("purpose")) != (label, source, destination, purpose) or flow.get("owner") != source or flow.get("protocol") != "AMQP-0-9-1-via-RabbitMQ" or flow.get("data_class_ids") != ["DC-10"] or flow.get("retention_ids") != ["RET-09"] or flow.get("control_ids") != ["CTRL-EVENT-001"] or flow.get("at_rest") != "ENC-04" or flow.get("contains_secret") or flow.get("contains_pii") or flow.get("default_state") != "ACTIVE_DESIGN_ONLY":
+            errors.append(f"{ident}: exact broker-mediated safe event flow required")
+        if flow.get("in_transit") != "ENC-03" or "body" in str(flow.get("elements", "")).lower() or flow.get("log_policy") != "BODY_FORBIDDEN":
+            errors.append(f"{ident}: event transport/body minimization required")
+    audit_flow = flow_by_id.get("FLOW-20", {})
+    if audit_flow.get("source") != "core-audit-producers" or audit_flow.get("protocol") != "AMQP-0-9-1-via-RabbitMQ" or any(name not in str(audit_flow.get("elements", "")) for name in ("identity", "document", "processing", "index", "retrieval", "citation", "chat")):
+        errors.append("FLOW-20 must identify only active Core AuditFact producers")
     for ident in ("FLOW-22", "FLOW-23"):
         flow = flow_by_id.get(ident, {})
         if flow.get("phase") != "LATER" or flow.get("default_state") != "DENIED_NOT_SENT": errors.append(f"{ident}: backup/DR must be LATER denied")
@@ -253,7 +270,8 @@ def check_model(model: dict[str, Any], docs: dict[str, str] | None = None) -> li
             if flow["id"] not in dfd: errors.append(f"DFD missing {flow['id']}")
         if any(word not in threat for word in ("NOT_MEASURED", "NOT_ACCEPTED", "DEC-005", "OWASP", "API1", "API10", "API6", "REQ-OPS-002", "local/demo", "LATER")): errors.append("threat model required warning/reference missing")
         if "not legal advice" not in privacy_doc.lower() or "HUMAN_APPROVAL_REQUIRED" not in privacy_doc: errors.append("privacy model legal approval warning missing")
-        if any(edge not in dfd for edge in ("C --> CT", "R --> C", "CT --> IX")) or any(edge in dfd for edge in ("B --> R", "R --> CT")):
+        event_labels = ("Document→Processing", "Processing→Document", "Index→Document", "Document→Citation")
+        if any(edge not in dfd for edge in ("C --> CT", "R --> C", "CT --> IX", "RabbitMQ broker transport only", "owned outbox", "owned inbox/projection", *event_labels)) or any(edge in dfd for edge in ("B --> R", "R --> CT", "D --> P", "P --> D", "IX --> D", "D --> CT")):
             errors.append("DFD topology does not match approved Citation/Retrieval/event paths")
         if "REQ-OPS-002" not in privacy_doc or "NOT_COLLECTED_CORE" not in privacy_doc:
             errors.append("privacy model must record LATER backup/DR exclusion")
@@ -268,6 +286,7 @@ def mutation_checks(model: dict[str, Any]) -> dict[str, bool]:
         "critical_accepted": ("risks", 0, "risk_acceptance", "ACCEPTED"), "test_pass": ("tests", 0, "status", "PASS"), "backup_test_core": ("tests", 42, "phase", "CORE"), "core_risk_later_test": ("risks", 24, "__append_to__", ("test_ids", "SEC-PRIV-006")), "core_control_later_test": ("controls", 16, "__append_to__", ("verification_test_ids", "SEC-PRIV-006")), "core_retention_later_test": ("privacy.retention_rules", 0, "__append_to__", ("test_ids", "SEC-PRIV-006")), "core_privacy_provider_test": ("controls", 15, "__append_to__", ("verification_test_ids", "SEC-PRIV-003")),
         "missing_llm_category": ("risks", 25, "owasp_llm_2025", []), "pii_flow_missing_retention": ("privacy.data_flows", 0, "retention_ids", []),
         "provider_flow_active": ("privacy.data_flows", 24, "default_state", "ACTIVE"), "feedback_flow_active": ("privacy.data_flows", 26, "default_state", "ACTIVE"), "evaluation_flow_active": ("privacy.data_flows", 27, "default_state", "ACTIVE"), "source_flow_active": ("privacy.data_flows", 28, "default_state", "ACTIVE"), "backup_flow_active": ("privacy.data_flows", 21, "default_state", "ACTIVE"), "retrieval_to_citation": ("privacy.data_flows", 15, "source", "retrieval-service"), "broker_to_retrieval": ("privacy.data_flows", 34, "__edge__", ("broker", "retrieval-service")), "retention_above_max": ("privacy.retention_rules", 8, "max_value", 25),
+        "missing_event_direction": ("privacy.data_flows", 38, "destination", "index-service"), "direct_db_arrow": ("privacy.data_flows", 38, "destination", "processing-service-db"), "broker_as_owner": ("privacy.data_flows", 38, "owner", "broker"), "event_body_injected": ("privacy.data_flows", 38, "elements", "body"), "event_pii_injected": ("privacy.data_flows", 38, "contains_pii", True),
         "vague_encryption": ("privacy.encryption_registry", 0, "algorithm_protocol", "encrypted"), "missing_key_owner": ("privacy.encryption_registry", 0, "key_owner", ""),
         "hold_missing_authority": ("privacy.retention_rules", 0, "legal_hold_authority", ""),
     }
@@ -304,7 +323,9 @@ def main() -> int:
         input_paths = [SECURITY / name for name in ("risk-register.yaml", "security-controls.yaml", "security-tests.yaml", "privacy-data-map.yaml")] + [ROOT / "docs/architecture" / name for name in ("threat-model.md", "threat-data-flow.md", "privacy-model.md")]
         hashes = {str(path.relative_to(ROOT)).replace("\\", "/"): hashlib.sha256(path.read_bytes()).hexdigest() for path in input_paths}
         later = [f for f in flows if f["phase"] == "LATER" and f["default_state"] == "DENIED_NOT_SENT"]
-        report = {"status": "PASS" if not errors else "FAIL", "input_sha256": hashes, "counts": {"risks": len(risks), "severity": {s: sum(r["severity"] == s for r in risks) for s in ("Critical", "High", "Medium", "Low")}, "phase": {p: sum(r["phase"] == p for r in risks) for p in ("CORE", "LATER", "BOTH")}, "critical_high_coverage": sum(r["severity"] in {"Critical", "High"} for r in risks), "controls": len(model["controls"]), "tests": len(model["tests"]), "boundaries": len(model["privacy"]["trust_boundaries"]), "flows": len(flows), "classes": len(model["privacy"]["data_classes"]), "retention": len(model["privacy"]["retention_rules"]), "encryption": len(model["privacy"]["encryption_registry"]), "pii_flows": sum(f["contains_pii"] for f in flows), "secret_flows": sum(f["contains_secret"] for f in flows), "external_flows": sum(f["external"] for f in flows), "later_denied_flows": len(later), "later_denied_families": {"backup_dr": sum(f["id"] in {"FLOW-22", "FLOW-23"} for f in later), "provider": sum(f["id"] in {"FLOW-25", "FLOW-26", "FLOW-37"} for f in later), "feedback_evaluation": sum(f["id"] in {"FLOW-27", "FLOW-28"} for f in later), "source": sum(f["id"] in {"FLOW-29", "FLOW-30", "FLOW-38"} for f in later)}, "stride": sorted({x for r in risks for x in r["stride"]}), "owasp_llm": sorted({x for r in risks for x in r["owasp_llm_2025"]}), "owasp_api": sorted({x for r in risks for x in r["owasp_api_2023"]})}, "mutation_checks": mutations, "errors": errors}
+        flows_by_id = {flow["id"]: flow for flow in flows}
+        event_flow_checks = {flow_id: {"semantic_label": flows_by_id[flow_id]["semantic_label"], "source": flows_by_id[flow_id]["source"], "destination": flows_by_id[flow_id]["destination"], "protocol": flows_by_id[flow_id]["protocol"], "contains_secret": flows_by_id[flow_id]["contains_secret"], "contains_pii": flows_by_id[flow_id]["contains_pii"], "log_policy": flows_by_id[flow_id]["log_policy"], "retention_ids": flows_by_id[flow_id]["retention_ids"], "in_transit": flows_by_id[flow_id]["in_transit"], "at_rest": flows_by_id[flow_id]["at_rest"], "control_ids": flows_by_id[flow_id]["control_ids"]} for flow_id in ("FLOW-39", "FLOW-40", "FLOW-41", "FLOW-42")}
+        report = {"status": "PASS" if not errors else "FAIL", "input_sha256": hashes, "counts": {"risks": len(risks), "severity": {s: sum(r["severity"] == s for r in risks) for s in ("Critical", "High", "Medium", "Low")}, "phase": {p: sum(r["phase"] == p for r in risks) for p in ("CORE", "LATER", "BOTH")}, "critical_high_coverage": sum(r["severity"] in {"Critical", "High"} for r in risks), "controls": len(model["controls"]), "tests": len(model["tests"]), "boundaries": len(model["privacy"]["trust_boundaries"]), "flows": len(flows), "classes": len(model["privacy"]["data_classes"]), "retention": len(model["privacy"]["retention_rules"]), "encryption": len(model["privacy"]["encryption_registry"]), "pii_flows": sum(f["contains_pii"] for f in flows), "secret_flows": sum(f["contains_secret"] for f in flows), "external_flows": sum(f["external"] for f in flows), "later_denied_flows": len(later), "later_denied_families": {"backup_dr": sum(f["id"] in {"FLOW-22", "FLOW-23"} for f in later), "provider": sum(f["id"] in {"FLOW-25", "FLOW-26", "FLOW-37"} for f in later), "feedback_evaluation": sum(f["id"] in {"FLOW-27", "FLOW-28"} for f in later), "source": sum(f["id"] in {"FLOW-29", "FLOW-30", "FLOW-38"} for f in later)}, "stride": sorted({x for r in risks for x in r["stride"]}), "owasp_llm": sorted({x for r in risks for x in r["owasp_llm_2025"]}), "owasp_api": sorted({x for r in risks for x in r["owasp_api_2023"]})}, "event_flow_checks": event_flow_checks, "mutation_checks": mutations, "errors": errors}
         output.write_text(json.dumps(report, ensure_ascii=False, sort_keys=True, indent=2) + "\n", encoding="utf-8")
     except (OSError, KeyError, TypeError, ValueError, yaml.YAMLError) as exc:
         output.write_text(json.dumps({"status": "FAIL", "errors": [str(exc)]}, ensure_ascii=False, sort_keys=True, indent=2) + "\n", encoding="utf-8")

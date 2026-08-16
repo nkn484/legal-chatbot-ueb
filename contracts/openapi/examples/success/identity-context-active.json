@@ -1,0 +1,8 @@
+{
+  "active": true,
+  "principal_ref": "principal-01",
+  "principal_kind": "SERVICE",
+  "grants": ["documents:read", "identity:context:verify"],
+  "expires_at": "2026-08-16T12:00:00Z",
+  "auth_context_version": 1
+}

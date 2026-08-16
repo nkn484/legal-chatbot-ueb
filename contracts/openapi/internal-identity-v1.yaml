@@ -1,0 +1,36 @@
+openapi: 3.1.1
+jsonSchemaDialect: https://spec.openapis.org/oas/3.1/dialect/base
+info: {title: UEB Internal Identity API v1, version: 1.0.0}
+servers: [{url: /, description: Deployment base is injected; no domain is asserted by this contract.}]
+x-ueb-audience: INTERNAL
+paths:
+  /internal/v1/identity-context/current:
+    get:
+      operationId: verifyIdentityContext
+      tags: [identity-internal]
+      description: identity-service verifies the separate sensitive presentation against the authenticated workload. It returns only an inactive minimal result or bounded opaque context; no raw presentation, token, role, client scope, issuer, discovery, JWKS, IdP URL, or OIDC claim is returned.
+      security: [{BearerAuth: []}]
+      x-ueb-required-scopes: [identity:context:verify]
+      x-ueb-owner-service: identity-service
+      x-ueb-data-access: OWNER_SERVICE_ONLY
+      x-ueb-request-max-bytes: 0
+      x-ueb-timeout-ms: 1000
+      parameters: [{$ref: components-v1.yaml#/components/parameters/X-Request-Deadline-At}, {$ref: components-v1.yaml#/components/parameters/X-Identity-Presentation}]
+      responses:
+        '200':
+          description: Minimal inactive result or bounded verified identity context from the owner service.
+          headers:
+            Cache-Control: {schema: {const: no-store}}
+            X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}
+          content: {application/json: {schema: {$ref: components-v1.yaml#/components/schemas/IdentityContextVerificationResult}}}
+        '400': {$ref: '#/components/responses/Problem'}
+        '401': {$ref: '#/components/responses/Problem'}
+        '403': {$ref: '#/components/responses/Problem'}
+        '429': {$ref: '#/components/responses/ProblemRetry'}
+        '503': {$ref: '#/components/responses/ProblemRetry'}
+        '504': {$ref: '#/components/responses/Problem'}
+components:
+  securitySchemes: {BearerAuth: {$ref: components-v1.yaml#/components/securitySchemes/BearerAuth}}
+  responses:
+    Problem: {description: Safe problem, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}}, content: {application/problem+json: {schema: {$ref: components-v1.yaml#/components/schemas/Problem}}}}
+    ProblemRetry: {description: Safe transient problem, headers: {Cache-Control: {schema: {const: no-store}}, X-Request-Id: {$ref: components-v1.yaml#/components/headers/X-Request-Id}, Retry-After: {$ref: components-v1.yaml#/components/headers/Retry-After}}, content: {application/problem+json: {schema: {$ref: components-v1.yaml#/components/schemas/Problem}}}}

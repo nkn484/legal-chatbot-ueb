@@ -17,7 +17,7 @@ This contract catalog has no broker topology. `7/14` means planning maximum main
 | `legal.index.projection.activated.v1` | index-service | document-service | — | EVENT | IndexProjection: `index_id` / `projection_revision`; `mode=FTS`, `status=ACTIVE` | CORE / `legal.events` | 7/14 | transient-idempotent / family |
 | `legal.index.projection.failed.v1` | index-service | document-service | — | EVENT | IndexProjection: `index_id` / `projection_revision`; `mode=FTS`, `status=FAILED` | CORE / `legal.events` | 7/14 | permanent-or-transient / family |
 | `legal.index.projection.retired.v1` | index-service | document-service | — | EVENT | IndexProjection: `index_id` / `projection_revision`; `mode=FTS`, `status=RETIRED` | CORE / `legal.events` | 7/14 | transient-idempotent / family |
-| `legal.audit.fact.observed.v1` | allowlisted application services* | audit-service | — | EVENT | AuditObservation: `observation_id` / `observation_revision` | CORE / `legal.events` | 7/14† | transient-idempotent / family |
+| `legal.audit.fact.observed.v1` | seven active Core producers* | audit-service | Provider; Feedback; Evaluation (planned producer metadata only) | EVENT | AuditObservation: `observation_id` / `observation_revision` | CORE / `legal.events` | 7/14† | transient-idempotent / family |
 | Provider configuration (4 LATER types) | provider-service | — | — | EVENT | ProviderConfiguration: `configuration_id` / `configuration_revision` | LATER / no | 7/14 | not implemented |
 | Chat answer snapshot | chat-service | — | feedback-service | EVENT | ChatAnswer: `answer_id` / `answer_revision` | LATER / no | 7/14 | not implemented |
 | Feedback recorded / annotation requested | feedback-service | — | — | EVENT | Feedback: `feedback_id` / `feedback_revision` | LATER / no | 7/14 | not implemented |
@@ -26,7 +26,7 @@ This contract catalog has no broker topology. `7/14` means planning maximum main
 | Evaluation completed / failed | evaluation-service | — | — | EVENT | Evaluation: `evaluation_id` / `evaluation_revision` | LATER / no | 7/14 | not implemented |
 | Candidate evaluated / eligible / withdrawn | evaluation-service | — | — | EVENT | Candidate: `candidate_id` / `candidate_revision` | LATER / no | 7/14 | not implemented |
 
-* AuditFact producers are identity-service, document-service, processing-service, index-service, retrieval-service, citation-service, chat-service, feedback-service, evaluation-service, and provider-service. Audit-service is excluded, terminal, and internally assigns its canonical audit record; `AuditObservation` is producer-owned observation metadata, not that record. †Audit has a separate 30-day demo maximum and it is not inferred from catalog retention.
+* Active AuditFact producers are exactly identity-service, document-service, processing-service, index-service, retrieval-service, citation-service, and chat-service. Provider-service, feedback-service, and evaluation-service are explicit LATER planned-producer metadata only: they have no Core operation, route, or publish ACL entitlement. Audit-service is excluded from both lists, terminal, and internally assigns its canonical audit record; `AuditObservation` is producer-owned observation metadata, not that record. †Audit has a separate 30-day demo maximum and it is not inferred from catalog retention.
 
 ## Boundary rules
 

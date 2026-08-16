@@ -1,0 +1,9 @@
+{
+  "active": true,
+  "principal_ref": "principal-01",
+  "principal_kind": "USER",
+  "grants": ["documents:read"],
+  "expires_at": "2026-08-16T12:00:00Z",
+  "auth_context_version": 1,
+  "access_token": "not-returned"
+}

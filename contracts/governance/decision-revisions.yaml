@@ -1,0 +1,77 @@
+version: 1
+format: decision_revision_governance
+yaml_policy:
+  aliases_forbidden: true
+  duplicate_keys_forbidden: true
+current_prompt:
+  id: '02.7'
+  permitted_candidate_states: [IN_PROGRESS, AWAITING_APPROVAL]
+  approval_binds: current_revision_artifacts
+effective_resolution:
+  rule: newest approved non-revoked valid superseding revision is effective
+  candidate_effective_now: false
+  candidate_effective_if_current_prompt_approved: true
+  old_entries: immutable
+  legacy_hash_marker: LEGACY_UNKNOWN_HASH
+chains:
+  - decision_key: DEC-005
+    revisions:
+      - revision_id: DEC-005@1
+        append_id: DEC-005
+        status: OPEN
+        historical_integrity: LEGACY_UNKNOWN_HASH
+        current_observed_sha256: 7a9ec3d2f153a0c2de3655a01b4481392b01e9f55157e79fb2bad9249db9570a
+      - revision_id: DEC-005@2
+        append_id: DEC-015
+        status: PROPOSED_PENDING_HUMAN_APPROVAL
+        supersedes: DEC-005@1
+        effective_at: null
+        effective_on: human approval of Prompt 02.7 current revision
+        provider_disposition: LATER
+        citation_disposition: CORE_PROVIDER_INDEPENDENT
+  - decision_key: DEC-007
+    revisions:
+      - revision_id: DEC-007@1
+        append_id: DEC-007
+        status: OPEN/KNOWN
+        historical_integrity: LEGACY_UNKNOWN_HASH
+        current_observed_sha256: 294375b607bb7e1d54b7c9f0e65e2f9a181d49b06a6a2ef1da3a8fbbbfee1d79
+      - revision_id: DEC-007@2
+        append_id: DEC-016
+        status: PROPOSED_PENDING_HUMAN_APPROVAL
+        supersedes: DEC-007@1
+        effective_at: null
+        effective_on: human approval of Prompt 02.7 current revision
+        reopen_policy:
+          supports_terminal_statuses: [PASS, FAIL]
+          approval_archive: distinct_append_only
+          rejection_archive: distinct_append_only
+          revision_increment: required
+          fail_is_effective_approval: false
+          direct_bypass: forbidden
+manifest_dependency:
+  prompt: '05.8'
+  direct_dependencies: ['05.4']
+  transitively_reaches: ['05.4']
+  must_not_reach: ['05.5', '05.6', '05.7']
+  preserved_edges:
+    - ['05.6', '05.5']
+    - ['05.7', '05.6']
+    - ['05.9', '05.8']
+evidence:
+  approved_architecture: docs/architecture/container-map.md
+  decision_log: docs/decision-log.md
+  manifest: prompts/manifest.json
+  governance_validator: contracts/governance/validate_decision_revisions.py
+  validation_report: contracts/governance/validation-report.json
+  lifecycle_test: tests/test_prompt_gate_lifecycle.py
+  verify_pack: scripts/verify_pack.py
+  commit: null
+required_markers:
+  - DEC-015 — DEC-005@2
+  - DEC-016 — DEC-007@2
+  - Provider remains LATER
+  - approval binds the current revision artifacts
+  - contracts/governance/validate_decision_revisions.py
+  - tests/test_prompt_gate_lifecycle.py
+  - scripts/verify_pack.py

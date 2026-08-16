@@ -1,0 +1,687 @@
+{
+  "baseline_id": "group2-v1-initial",
+  "files": [
+    {
+      "path": "contracts/asyncapi/asyncapi.yaml",
+      "sha256": "b4cb694acfa526ab3ba7efc14f32de265e2c283a5759bcf49d497bb2dd3f3232"
+    },
+    {
+      "path": "contracts/asyncapi/delivery-policy.yaml",
+      "sha256": "83e8de66530a621f008e5c142cd4657d572f9a389416c704b2f708af44de21c6"
+    },
+    {
+      "path": "contracts/asyncapi/delivery-scenarios.yaml",
+      "sha256": "aec416524ac4d433d28bf6287c2315d03f644f69caf3e3cd5eef81fd4ca97e4e"
+    },
+    {
+      "path": "contracts/asyncapi/examples/invalid/candidate-activation.json",
+      "sha256": "354a3b067a447634390cafde12b1bb7c9d443493b664c7f4a6fbe5fbd536d65b"
+    },
+    {
+      "path": "contracts/asyncapi/examples/invalid/command-target-field.json",
+      "sha256": "df3b721e3ce0ff1704bd62c79f8539921b5cdc6283205ebb7a4e4d7c84dda303"
+    },
+    {
+      "path": "contracts/asyncapi/examples/invalid/extra-property.json",
+      "sha256": "54ca77413deeeed95f2d733b74c8d19643c34bcb68d607ea0fdc7d75f58e71d2"
+    },
+    {
+      "path": "contracts/asyncapi/examples/invalid/full-text.json",
+      "sha256": "8650533993eaf1ba01cc7ed75f557a3fa674297b520090a89fc3a55217858728"
+    },
+    {
+      "path": "contracts/asyncapi/examples/invalid/golden-approved-missing-refs.json",
+      "sha256": "c750357ab59d6bfe7096f980935a6aea22cf7baf55c6dc81ce28e88a2b4cfc9c"
+    },
+    {
+      "path": "contracts/asyncapi/examples/invalid/provider-secret-or-endpoint.json",
+      "sha256": "da81052c576da27442cbee8e1fd80bd1760e8d649e8e8fc5966429bbba50ef3c"
+    },
+    {
+      "path": "contracts/asyncapi/examples/invalid/semantic-artifacts-input-mismatch.json",
+      "sha256": "0079a341080c2f6afbcb680de9032b3202cedfe36c118a1e1ffef9920f3c2f33"
+    },
+    {
+      "path": "contracts/asyncapi/examples/invalid/semantic-duplicate-altered.json",
+      "sha256": "62ec2628901e3029e4d1390f5db7ca3cff362512dbd4571cf1fa11a2c28766bf"
+    },
+    {
+      "path": "contracts/asyncapi/examples/invalid/semantic-later-routed.json",
+      "sha256": "8144f427ea190606d008dfd4c217ad280ac7036d4fb422a0268dae2095784268"
+    },
+    {
+      "path": "contracts/asyncapi/examples/invalid/semantic-ordering-key-mismatch.json",
+      "sha256": "50820d80da02e17af1266ebb9e46af0fdfaf07c79c338368825be19b2b2f14e8"
+    },
+    {
+      "path": "contracts/asyncapi/examples/invalid/semantic-stale-publish.json",
+      "sha256": "1bc878a8c6c42dda889fda206d5ac2f1799e6656a62470771cea7a775a11f792"
+    },
+    {
+      "path": "contracts/asyncapi/examples/invalid/storage-url-key.json",
+      "sha256": "97f17f59b0f3c78daafd58f041b904a6a507247b1e7cbdabd04e13a03b4f8f0c"
+    },
+    {
+      "path": "contracts/asyncapi/examples/invalid/unknown-major-type.json",
+      "sha256": "285632dd137ef89a82d31f8073f5782047a09666a615a9087614efe3385ab6ec"
+    },
+    {
+      "path": "contracts/asyncapi/examples/manifest.yaml",
+      "sha256": "7a9139f5eadd5fd0a7c3e134694316dff482b011b1721642ea0dbc25f8b3e595"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/audit-fact-observed.json",
+      "sha256": "d0f536777a04b48b0ad3872f59cd15b3cd487d27e510a86ff7ed3f5a9a29631d"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/candidate-eligible.json",
+      "sha256": "8144f427ea190606d008dfd4c217ad280ac7036d4fb422a0268dae2095784268"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/candidate-evaluated.json",
+      "sha256": "2a6deae4bba12174821a462b1492ff801bf0fd5737c8a3dd1ff741d0cbfca1ce"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/candidate-withdrawn.json",
+      "sha256": "b68bf7b6d895137f05157369b716b2d73641432625831a2aac480036cf8177fb"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/chat-answer-snapshot-available.json",
+      "sha256": "f4e2de0624f2c6545f1780efcb3a6a7d6a8040ce7db28ae98636072a717c5440"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/dataset-frozen.json",
+      "sha256": "15f05a1b243e43af6f07e4dd424e0d6b61407d475749e77663deac311c4d6a4b"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/dataset-revoked.json",
+      "sha256": "07789fc1d2d2d7850ef2202048e5356106421f69757aa3c766db29508b4bcdc3"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/document-archived.json",
+      "sha256": "f969d82a61241556c90d5d18bd38021165f616a191c6d19ec77668c38333b240"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/document-published.json",
+      "sha256": "21ab017df57b48b12bb4e342f6625ecf51b0a0c01e9c77df624b5a6c6c24c1df"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/document-source-invalidated.json",
+      "sha256": "b43e9d32aa9d032089207f4adbf764574830fdc76537328072abbd5b0e512f26"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/document-source-revoked.json",
+      "sha256": "3ec4a2965f445cae88e80bf7766e9bbc48b32d886af9b9b27ea368a18832e167"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/document-unpublished.json",
+      "sha256": "38844654ef63757afcc0fb7741745ff6d9c54a9d3915e8b55648e853b1a4cec6"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/document-version-processing-requested.json",
+      "sha256": "e7054679500a4959e70aece76a693e69157496d554400b2953fe7634e43f4217"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/evaluation-completed.json",
+      "sha256": "8a14a7c35b20ba6e57402b87b19ac711aa7555a654699afeaab4d41b7ec86194"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/evaluation-failed.json",
+      "sha256": "031ce578f293f406ac15ec95cf841213699c8066c8db26aede16df919b588b86"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/feedback-annotation-requested.json",
+      "sha256": "03ebab7f8789963e5fcf526177725de21add686ce417a5c13e68ee3a52debf47"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/feedback-recorded.json",
+      "sha256": "5f133deab1de1b87a8a34c071eede07730b5c16319e02c1ccfcd4fb66390c156"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/golden-answer-approved.json",
+      "sha256": "0745cdeacfb82f0cb0750ef4d0bb5995ac4e691477828d62dd1370896beab56b"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/golden-answer-revoked.json",
+      "sha256": "297b6d96f06ec3c257340f54a76b68efdec2038291c80d027f3981f57051dd8b"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/index-projection-activated.json",
+      "sha256": "10b3c0d8a53790afcd651320930108c6f5f9279b0416790e87ba5afc4444eda9"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/index-projection-failed.json",
+      "sha256": "1bc2bdd1d84a21802e8fdad9f742237b66aa3de5f02005e86e5b00f86ba86260"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/index-projection-ready.json",
+      "sha256": "b3985f76b81711a7ec2141eea55702d3046c94bb891db0aa98add8092dd5696e"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/index-projection-retired.json",
+      "sha256": "b68edb6c2095ca94ed8f69d21dcbc7a96fe9914495811f0a919c44528a061a0b"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/processing-artifacts-ready.json",
+      "sha256": "627d60fa8f5cf3b6bc2edc22883fdf92c3da2abde907a9283cdbc8d1f1057f32"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/processing-job-failed.json",
+      "sha256": "47694ecb96ee22cc9462ce1f54af7f3ba620e2b776390c5a3ff6902f3a1d4bfb"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/processing-job-succeeded.json",
+      "sha256": "cc36003a2956208d7495eaca236d7a0475403323db8b9b5e85fbf4a4f94904ca"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/provider-configuration-activated.json",
+      "sha256": "2502414b79579d419f13938de18ee80eff9774b147d440631b50211db5a679e6"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/provider-configuration-disabled.json",
+      "sha256": "beca6e1540f8943be0a552febb9c85820de63f33f962bf140316b3d42f8e5e26"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/provider-configuration-retired.json",
+      "sha256": "e0bb711fbbaf7d59631f571b61c5a9e40337af2a49613969b810173563b1c163"
+    },
+    {
+      "path": "contracts/asyncapi/examples/valid/provider-configuration-validated.json",
+      "sha256": "65035edcba7f08149a5945c6d585431d2210a7dc3115772d02a758c5022b992c"
+    },
+    {
+      "path": "contracts/asyncapi/lint-config.yaml",
+      "sha256": "7afb210408c2bc022449c78cd88cbccae6b91c2c0abd5ba502eae99953b47218"
+    },
+    {
+      "path": "contracts/asyncapi/schemas/audit-message.schema.json",
+      "sha256": "f0eb307bbd20f91def288b959484682481e6f8cb16fc9de0afd932c1656f5c9a"
+    },
+    {
+      "path": "contracts/asyncapi/schemas/common.schema.json",
+      "sha256": "178fe2bdf72309c29caac4ec44e386bd41a7986443348354bb01d1c1979413ae"
+    },
+    {
+      "path": "contracts/asyncapi/schemas/core-messages.schema.json",
+      "sha256": "5d305d65637a685f479da6adb6ee47a7a5127e83f9c065f64b15fd8000fcac71"
+    },
+    {
+      "path": "contracts/asyncapi/schemas/envelope.schema.json",
+      "sha256": "3a517c6a5d3b1047c5e1a56a030149c0ee6caf13d205490f85e067ea2ce63bf4"
+    },
+    {
+      "path": "contracts/asyncapi/schemas/later-messages.schema.json",
+      "sha256": "3f9d0d75cf679d52bea80eded46f942f6fe0e280d3647bc52559bbd61154cbf8"
+    },
+    {
+      "path": "contracts/asyncapi/validate_asyncapi.py",
+      "sha256": "7daa8ef57034f10c036b7cb6f907d5e6e9f792c5df5f58e1abffa4c9b4a82068"
+    },
+    {
+      "path": "contracts/examples/error/domain-validation-error.json",
+      "sha256": "7390f114016d7adee3132e695bde6d57259b610d2c0d3931a9cef8d1dbb893b0"
+    },
+    {
+      "path": "contracts/examples/invalid/candidate-active-status.json",
+      "sha256": "5200793b86d38fa17d9a0c9ed6d9fcafa7d1f8a3e0f5a668aa1698fc46f09a71"
+    },
+    {
+      "path": "contracts/examples/invalid/citation-invalid-with-authoritative-fields.json",
+      "sha256": "7e40f027d2feac163570858b88d0955f67132ad4d140b53c591a313f7244c256"
+    },
+    {
+      "path": "contracts/examples/invalid/dataset-frozen-empty-members.json",
+      "sha256": "fc6fa268ed9495ceedc91b30ad1e47346ff1e8a17a05fe4088ad3139952e4d13"
+    },
+    {
+      "path": "contracts/examples/invalid/dataset-frozen-missing-metadata.json",
+      "sha256": "27c448ac409319682aee95dbbae6763a4d5c53727e5c4520ac8ba9a231e58144"
+    },
+    {
+      "path": "contracts/examples/invalid/document-active-not-published.json",
+      "sha256": "3bb68db0cfd1422304bb76897673041ad2e2cb85991ed09ba44e573240420103"
+    },
+    {
+      "path": "contracts/examples/invalid/golden-answer-approved-missing-approval.json",
+      "sha256": "d83de7fe63bbc4e7b5c548264c6624cc7e40f6ea7064dca9ae44d5b8fe3d7924"
+    },
+    {
+      "path": "contracts/examples/invalid/grounded-answer-answer-with-refusal.json",
+      "sha256": "340f117bac65c22bf3d12328750ac29391b51616cfea1e1139ae2be5fb8b789b"
+    },
+    {
+      "path": "contracts/examples/invalid/grounded-answer-answer-without-chunk-ids.json",
+      "sha256": "86c893b3bc7c133c8c54899a955417b95c521ec61ef06d7e3e2b54196928e0fe"
+    },
+    {
+      "path": "contracts/examples/invalid/grounded-answer-refusal-with-claims.json",
+      "sha256": "2316cd1fb6b40320a9220f672b39d095a00ef52fea41a397251f3ff00e7971bb"
+    },
+    {
+      "path": "contracts/examples/invalid/grounded-answer-with-source-url.json",
+      "sha256": "faeed93d6ab6b9a3069635e10fc57a08e0406764f78cc729347db470766fa5fe"
+    },
+    {
+      "path": "contracts/examples/invalid/provider-config-with-api-key.json",
+      "sha256": "145b46c00ec546fe6f93917bc5627dc8788c3472a5e6df2fa70038b1436a3ff9"
+    },
+    {
+      "path": "contracts/examples/invalid/retrieval-insufficient-missing-refusal.json",
+      "sha256": "3a6d544978fabbb7cc3fb15200240f15e051ec7e0e88fb15ac23d75bd1ef934d"
+    },
+    {
+      "path": "contracts/examples/invalid/retrieval-sufficient-with-refusal.json",
+      "sha256": "fd68fe7a5f1eab5070e542bdcc844920ff0b7eb43f54716ac9a42c8f61744337"
+    },
+    {
+      "path": "contracts/examples/invalid/source-document-ref-foreign-host.json",
+      "sha256": "08313c237509655fb91bd825cac348026c455af27e621c372d99f0b6a08b6007"
+    },
+    {
+      "path": "contracts/examples/invalid/source-document-ref-missing-mapping-version.json",
+      "sha256": "a3870059d80a2297b2c87e787d65a11215e3f21032ff2b98317bbe142dcd9339"
+    },
+    {
+      "path": "contracts/examples/invalid/source-document-ref-registry-endpoint.json",
+      "sha256": "ce1e6358cfec480ca8c0bae4a138015cd143770a1795f4235655c6d2bc796724"
+    },
+    {
+      "path": "contracts/examples/invalid/source-document-ref-ueb.json",
+      "sha256": "ae58f4ce712c4b6c27dbab59030b6a181d4ad926e0f636c0ecb065b42a4da23e"
+    },
+    {
+      "path": "contracts/examples/invalid/source-document-ref-vnu.json",
+      "sha256": "7c477434fc5060aff3481de2bec5691d18af2f6a52fe9cf9d00bde3f1f156c3e"
+    },
+    {
+      "path": "contracts/examples/invalid/source-system-catalog-duplicate.json",
+      "sha256": "3437fe1ebe02d2c22da408f119ce90076321ca8a4e1a22f0cb09311f4fa8499c"
+    },
+    {
+      "path": "contracts/examples/invalid/source-system-catalog-reordered.json",
+      "sha256": "4ec16241f3e68e27f0d0d709b392bc6240ac6e6470be96f722c42ddbbc565ce2"
+    },
+    {
+      "path": "contracts/examples/invalid/source-system-ueb-wrong-priority.json",
+      "sha256": "67ac166453c377694fc9e79df7fc314a30e138a23d8c891d0a221bb9db9a28d6"
+    },
+    {
+      "path": "contracts/examples/invalid/source-system-vbqppl-unverified-nonempty-allowlist.json",
+      "sha256": "b662ce82969436a0649df6bb7cdc1a3b24c1bd42bdb746f1768f4dc72f8cad9b"
+    },
+    {
+      "path": "contracts/examples/invalid/source-system-vbqppl-write-operation.json",
+      "sha256": "6a53afb345c5203eff1b98679b2f0fb875ccd2892d38363e3436012d131252d0"
+    },
+    {
+      "path": "contracts/examples/invalid/source-system-vnu-wrong-priority.json",
+      "sha256": "dedce8a7defad06d3f2d316a521b6ff87e415cbe4a403d86295fa3ddb59d6d55"
+    },
+    {
+      "path": "contracts/examples/invalid/version-source-fetch-missing-ref.json",
+      "sha256": "74a39a9450a2b066bf7f17617e48d48f3bb0216e785a981a873224ee49c03501"
+    },
+    {
+      "path": "contracts/examples/manifest.json",
+      "sha256": "05719bea77490cc0aa6ccd60e2c4159591a0fbc21e7af70dc98952d96434c5d5"
+    },
+    {
+      "path": "contracts/examples/refusal/citation-invalid.json",
+      "sha256": "3d365c1249838805ac648bb82c478380e4a058fa91513b3ae413c4775223afd4"
+    },
+    {
+      "path": "contracts/examples/refusal/citation-revoked.json",
+      "sha256": "3919c0e64d40f0a50915481da22654c3a8dd600f2cbdea49d7eded53f467c387"
+    },
+    {
+      "path": "contracts/examples/refusal/grounded-answer-insufficient.json",
+      "sha256": "c84282c311db39aad9810df69a56a3cdfb8291781d926ffaa6b010493b208c88"
+    },
+    {
+      "path": "contracts/examples/success/citation-valid.json",
+      "sha256": "51b6489c144c74becf280aa472abc293e43a7e50bda910a6415f05fcad2bfe27"
+    },
+    {
+      "path": "contracts/examples/success/dataset-frozen.json",
+      "sha256": "2b187b13509a752a7da51a9c8d043044dfba69992c7c10a83465bf33463cbf44"
+    },
+    {
+      "path": "contracts/examples/success/document-published.json",
+      "sha256": "c0bbbcd9dd2563cb7a55832a0afede8e170d8e5f152669108d4fa9ad2b057037"
+    },
+    {
+      "path": "contracts/examples/success/golden-answer-approved.json",
+      "sha256": "88d04342a495f393c61d1b73282015d002267680e09dd90bb91ce44b9ad12b74"
+    },
+    {
+      "path": "contracts/examples/success/grounded-answer.json",
+      "sha256": "068bfe6bb449a077b7c6a5320c7ec9a9168b23653f219e8148249e94272cd490"
+    },
+    {
+      "path": "contracts/examples/success/provider-config-view.json",
+      "sha256": "061890aada3065f88410f9578befa44a549ada7c617119ad8a0310c2bdf43b2b"
+    },
+    {
+      "path": "contracts/examples/success/retrieval-sufficient.json",
+      "sha256": "ea5064f1197e392ba5c3bb60c963f2a3dc5f7f98e9b51c46da6abc24be04d1e4"
+    },
+    {
+      "path": "contracts/examples/success/source-system-catalog.json",
+      "sha256": "30e787213e12aa61a8823900fbcd54c312ea288ade03507051e2d8f458607c2b"
+    },
+    {
+      "path": "contracts/examples/success/version-upload.json",
+      "sha256": "e623cace44f3ebdf7a69a042491194050e65c26e9de922879a1fbe7689f93d88"
+    },
+    {
+      "path": "contracts/openapi/admin-v1.yaml",
+      "sha256": "de98b7f30fc2e4365101e41e7c5ebd0f65938d7a383c61fe1da9614a802921b2"
+    },
+    {
+      "path": "contracts/openapi/components-v1.yaml",
+      "sha256": "dfb07a0fac9982c207821eb4a210e0c6c9f959152bee8bfc5b2415c0fdd81692"
+    },
+    {
+      "path": "contracts/openapi/examples/error/problem.json",
+      "sha256": "97ed90487419edc2fb88cf24d3252037483aaad1ca032d4cd1af63630b93868b"
+    },
+    {
+      "path": "contracts/openapi/examples/invalid/admin-document-with-source-endpoint-url.json",
+      "sha256": "e294ecc4794e2118e7ca12d8bd3ffe298f7537eddf0c00347b0f74c726d83859"
+    },
+    {
+      "path": "contracts/openapi/examples/invalid/citation-request-wrong-binding.json",
+      "sha256": "f1d000f7b78b5f050b91aa0d2cffb12539afae73442f40d546f93f0e35d75633"
+    },
+    {
+      "path": "contracts/openapi/examples/invalid/citation-result-injected-chunk.json",
+      "sha256": "6a5f8088e274341ff3a6354bbf40dbd6ccbfb67e56a57a9a2c809d5846f37443"
+    },
+    {
+      "path": "contracts/openapi/examples/invalid/citation-result-missing-claim.json",
+      "sha256": "c759610ae832d4899c36057cbebd5151d9b0f872e931437188c59c2b32a351d7"
+    },
+    {
+      "path": "contracts/openapi/examples/invalid/citation-result-wrong-binding.json",
+      "sha256": "cb154f0af0d7f28467f1370a83848aca24a730e675ff21e3b917d1799f40ec6f"
+    },
+    {
+      "path": "contracts/openapi/examples/invalid/context-validation-request-injected-chunk.json",
+      "sha256": "6eb12070f7d152651900190ddde4925b905d22c7459bbcf534831463d776d0fc"
+    },
+    {
+      "path": "contracts/openapi/examples/invalid/context-validation-request-wrong-binding.json",
+      "sha256": "0ab8ee45349dfc04011abc31b28052680928ce96c89a7a25241b0de82f2b306c"
+    },
+    {
+      "path": "contracts/openapi/examples/invalid/index-search-result-wrong-binding.json",
+      "sha256": "31afc0345b279680870bced66a3f0cd13debc31e7a7611234f03ddca0a92c164"
+    },
+    {
+      "path": "contracts/openapi/examples/invalid/internal-citation-request-with-canonical-url.json",
+      "sha256": "002faaae9881cdc2e3ff7fb9b40eb5154b17e908c1ea002439ad023617cc8229"
+    },
+    {
+      "path": "contracts/openapi/examples/invalid/page-limit-over-100.json",
+      "sha256": "39b8dc3fc8b44765c8e6f1adee04c5b465e555ab791cc42d0d9e810d5b64297c"
+    },
+    {
+      "path": "contracts/openapi/examples/invalid/public-answer-claim-without-citation-ids.json",
+      "sha256": "fb55130a95e8d969db2108ffed1457c6b1a2bd14faa47f8d46f514e1a7a5f936"
+    },
+    {
+      "path": "contracts/openapi/examples/invalid/public-answer-dangling-citation-ref.json",
+      "sha256": "9d8a1756dc2d7505f5df7421ed14333f68af5a1e8dde8810403202a2a7a99c2b"
+    },
+    {
+      "path": "contracts/openapi/examples/invalid/public-answer-duplicate-citation-ref.json",
+      "sha256": "2462759c4e3c1eaa2a523dd4c2c2cc80afa29b7f7ba5f203cde84d90a7e6116c"
+    },
+    {
+      "path": "contracts/openapi/examples/invalid/public-answer-wrong-claim-mapping.json",
+      "sha256": "938bcd9cce7eb2a1206d024c8b236d734625509524b95090e518dadfc4af6747"
+    },
+    {
+      "path": "contracts/openapi/examples/invalid/public-refusal-with-citations.json",
+      "sha256": "37db1280fca1fafc6efc6145065656909e15cfd50cb9dc5e44c3541c0a7bb236"
+    },
+    {
+      "path": "contracts/openapi/examples/invalid/question-over-4000.json",
+      "sha256": "d6cf3cb845bee310599699912f3ccaa51031b6f41a0d486a690babab2dbfc813"
+    },
+    {
+      "path": "contracts/openapi/examples/invalid/retrieval-result-wrong-binding.json",
+      "sha256": "d30befa6dd6ce816dc3c4b62364b7a06f730776157166dd40e2d828e07fe6562"
+    },
+    {
+      "path": "contracts/openapi/examples/invalid/upload-response-with-object-location.json",
+      "sha256": "a70c8c1e849e9a59672ca9f24eeb2839eb5d0a283317deef6456c011ca46127b"
+    },
+    {
+      "path": "contracts/openapi/examples/manifest.yaml",
+      "sha256": "9bf5cacae656c624e7a2c6de88b0feb78dfe3f4e262c708118df42ef67870810"
+    },
+    {
+      "path": "contracts/openapi/examples/refusal/public-refusal.json",
+      "sha256": "75f68d00630c7b0711435b91456c18410734d0db430b3fa483a42d574bd72deb"
+    },
+    {
+      "path": "contracts/openapi/examples/success/accepted-ingestion.json",
+      "sha256": "1134ce86bb5681b42f84561fffef81392f52ccdebf61dfb80f1f78ceaa8fc09f"
+    },
+    {
+      "path": "contracts/openapi/examples/success/audit-page.json",
+      "sha256": "743f31769a48876bf997ca5b02b708c008539b56babdb63b0c641c0a9a59e235"
+    },
+    {
+      "path": "contracts/openapi/examples/success/canonical-metadata-request.json",
+      "sha256": "fda4765c8969f61b7fa0a9a3da2381ba523ec600aae0d0f86f9d67694e2e5037"
+    },
+    {
+      "path": "contracts/openapi/examples/success/canonical-metadata-result.json",
+      "sha256": "255c24ce49e393a08a548795b8421fe5050e550166d7b29741cb1b70006d4f15"
+    },
+    {
+      "path": "contracts/openapi/examples/success/chunk-batch-request.json",
+      "sha256": "6392086d210413b228f10927e56fd831f612f18d5001620e5806a541256d46b7"
+    },
+    {
+      "path": "contracts/openapi/examples/success/chunk-batch-result.json",
+      "sha256": "e764bb037c698737bc6194db03e8ee9effac5f47826c4d6f4ff3a9cfe9af089d"
+    },
+    {
+      "path": "contracts/openapi/examples/success/citation-request.json",
+      "sha256": "7495868ae59e99dcf0f6d37257ef35b9a8d67a6143a3baf8fee990a8bb6ebeb5"
+    },
+    {
+      "path": "contracts/openapi/examples/success/citation-result.json",
+      "sha256": "e6cb882efd0fee1b868b9807698f8c4adb7203890082c92e3cd258a124da3b9b"
+    },
+    {
+      "path": "contracts/openapi/examples/success/context-validation-request.json",
+      "sha256": "2f9441dad1f05d566b889f08081060116ca02a88f25e0c501405d12f874c04f2"
+    },
+    {
+      "path": "contracts/openapi/examples/success/context-validation-result.json",
+      "sha256": "3f9ab87a064dd752ddc8fa0a5ceb7908785454e156b4411688fd5d304f718ab6"
+    },
+    {
+      "path": "contracts/openapi/examples/success/document-page.json",
+      "sha256": "bcbe9db2e6c3647ebf48027a6be1960b8c9e2bb9151027eed91de794a12bac6b"
+    },
+    {
+      "path": "contracts/openapi/examples/success/document-version-view.json",
+      "sha256": "9a7a90b3b621eea42677031851144bdd2aee040ca899f0f9b084cebadc201e37"
+    },
+    {
+      "path": "contracts/openapi/examples/success/document-view.json",
+      "sha256": "be238c3721817630647f32ea0f1eb4c717bbb266223939eca2a824f55ae7b519"
+    },
+    {
+      "path": "contracts/openapi/examples/success/index-search-request.json",
+      "sha256": "ffe2b204cc6f0c086db6b7632fd93eb02ccad80f6080015e252d085e4332952d"
+    },
+    {
+      "path": "contracts/openapi/examples/success/index-search-result.json",
+      "sha256": "54c4ee7b747282a3ddf5adc44dd346c2b50cf629519f700fd4e8f5c05f1192f4"
+    },
+    {
+      "path": "contracts/openapi/examples/success/internal-eligibility-request.json",
+      "sha256": "c57ee1da13b664ec625903df03145f3c386da35b6a6be4f5e6dd83f4926f5306"
+    },
+    {
+      "path": "contracts/openapi/examples/success/internal-eligibility-result.json",
+      "sha256": "0707cece6b5bace238d13a96158144bca558251d8731f9ead81567591f7f0f7f"
+    },
+    {
+      "path": "contracts/openapi/examples/success/internal-metadata-response.json",
+      "sha256": "3ad5e06b3ccebe5af93bdc630a21474daa7c09d6b82b234dd9d1c19f49e71db9"
+    },
+    {
+      "path": "contracts/openapi/examples/success/job-view.json",
+      "sha256": "c1153aa7508c9b5a6dbd32e7ae801be404d2f6ceaa903d12ea8ccb42797ac8c7"
+    },
+    {
+      "path": "contracts/openapi/examples/success/public-answer.json",
+      "sha256": "e12eda8aae56e1ce9f1efa6d78ad2744368cb6715fb21986feec587f9728af04"
+    },
+    {
+      "path": "contracts/openapi/examples/success/publish-request.json",
+      "sha256": "d696de1d3b3bff3e874900f6ceeb2df66fc131f494386a575b5938ffa3d4a247"
+    },
+    {
+      "path": "contracts/openapi/examples/success/question-request.json",
+      "sha256": "2bb970ed2a79c8bc38e7c46f589ae7ecdbf82851415a4a6e2ceb06a26a1f2025"
+    },
+    {
+      "path": "contracts/openapi/examples/success/retrieval-request.json",
+      "sha256": "5a01777a918f85b0b73f51ff5b16a1473d50e0f128cd26c4d510dc3772540e52"
+    },
+    {
+      "path": "contracts/openapi/examples/success/retrieval-result.json",
+      "sha256": "a9ea0d3ca0db07e8d09b21f96e37105975c38be695d632a7bd4396b692cff5ba"
+    },
+    {
+      "path": "contracts/openapi/examples/success/review-request.json",
+      "sha256": "b441660ec3c5bd3482b3861c315bdc514f6cfa2024470e6fb90d3a2519bf59e5"
+    },
+    {
+      "path": "contracts/openapi/examples/success/unpublish-request.json",
+      "sha256": "ae5b6b602e446b5f857f4ed8d877ec56f776fa42300e172cf42e3b179ff73ad5"
+    },
+    {
+      "path": "contracts/openapi/internal-citation-v1.yaml",
+      "sha256": "3a5322aabb825d24ae0b4057885f107a82745834ab9b03fbfdd772cb03cd4eec"
+    },
+    {
+      "path": "contracts/openapi/internal-document-v1.yaml",
+      "sha256": "e8deb75ea5bd450fba1a649bb67d5371c88151ec1cd296348f2d8122252f41e6"
+    },
+    {
+      "path": "contracts/openapi/internal-index-v1.yaml",
+      "sha256": "e4a217af9a93748063b00d9e7dc34bed9c396817ccb91bc6c5bf87137935d49c"
+    },
+    {
+      "path": "contracts/openapi/internal-processing-v1.yaml",
+      "sha256": "f0f24c9c685fe3aa0f4465d61f0415116402addbff5baa3e2504cf4d233945d4"
+    },
+    {
+      "path": "contracts/openapi/internal-retrieval-v1.yaml",
+      "sha256": "4f6b39b9a25beb4849bd05cdfcd2fbf3b5fc2eaa9e1a462c4055aa1e45646439"
+    },
+    {
+      "path": "contracts/openapi/lint-config.yaml",
+      "sha256": "5221ad53acf7bf1f77436ab1f5dd1cc7f4b82e7530cae1e120c88692614fd403"
+    },
+    {
+      "path": "contracts/openapi/public-v1.yaml",
+      "sha256": "c41f59f844f7ad0711896fc26901c178b8f11b7ac69349fbf33c7e410357c3ee"
+    },
+    {
+      "path": "contracts/openapi/validate_openapi.py",
+      "sha256": "0e3c662b944fe1c793d43a4eea2998dae274d47304fd39be6e835b392eb051f3"
+    },
+    {
+      "path": "contracts/schemas/chat.schema.json",
+      "sha256": "7be29c25b42d9d11d1d2a0d28f4a57e7387a3355cf17aea18721bf20ae9a46d1"
+    },
+    {
+      "path": "contracts/schemas/citation.schema.json",
+      "sha256": "f048ac4e7998f4c6629379d4ff7bf227729d3651a0d51750b8ca2139684990fe"
+    },
+    {
+      "path": "contracts/schemas/common.schema.json",
+      "sha256": "2b046e13aa84b92505983657a3a67781d9cade666f8b5ba6fe2ab773316e9047"
+    },
+    {
+      "path": "contracts/schemas/document.schema.json",
+      "sha256": "5fcf8f58493c72458ee526090186f2aa31f9b6bcd34cb0e6c5addcdd5b64a9c2"
+    },
+    {
+      "path": "contracts/schemas/error.schema.json",
+      "sha256": "43b1d6084149d9d6215b3d19836972db25be914a46e44d2d3576aac4a7095ed3"
+    },
+    {
+      "path": "contracts/schemas/evaluation.schema.json",
+      "sha256": "bddc93b067cd1cd5b8f119ea55948110098ce7c455f3e79b77b28cf122f3b2ac"
+    },
+    {
+      "path": "contracts/schemas/feedback.schema.json",
+      "sha256": "78b9c1ef0cf6425591cc04d4e889b489b2fa36fc80ec06211a3b8d869781b4fc"
+    },
+    {
+      "path": "contracts/schemas/index.schema.json",
+      "sha256": "95df5180d1b53292fe98524c556a735284cc502bd1b982ee5fb81ccc08a6eb2f"
+    },
+    {
+      "path": "contracts/schemas/processing.schema.json",
+      "sha256": "3095a7bebbc2fb1e6f81ba8d35bf6e73000ad447c44fc1cf5147e50c615422bd"
+    },
+    {
+      "path": "contracts/schemas/provider-config-view.schema.json",
+      "sha256": "1bce74a3315d3c0de5dd4236595d81d0ead95b1fe996fbf68e5b451ec9d8ec06"
+    },
+    {
+      "path": "contracts/schemas/retrieval.schema.json",
+      "sha256": "140906d88313b980f1c385bfe24d248e58645f03d1a71b7176523550e15d62bf"
+    },
+    {
+      "path": "contracts/schemas/source-connector-port.schema.json",
+      "sha256": "60d9cda8a74e26ede83153ed43a1660614242e832e7319078f4d9e533c338bfe"
+    },
+    {
+      "path": "contracts/schemas/state-machine.schema.json",
+      "sha256": "a6cf90d855aabea91b82e23e165bf422a7296b1384319c54494b97064f21c01e"
+    },
+    {
+      "path": "contracts/schemas/status.schema.json",
+      "sha256": "06d1bce2608cb475de9c528bd286e41d3fed9fb418de4c84de67da948a6c3aed"
+    },
+    {
+      "path": "contracts/security/privacy-data-map.yaml",
+      "sha256": "b7e27cbe004ba64f6fa455948fb031f06683e1a0bb558f7f028dc6431394b4a4"
+    },
+    {
+      "path": "contracts/security/risk-register.yaml",
+      "sha256": "cbe61b1dc4e0a7c43426f6c08f0e0c1e83bd05ea3a1604c7710c8eff67814350"
+    },
+    {
+      "path": "contracts/security/security-controls.yaml",
+      "sha256": "1cd934e91bfabf4b13abc5682bc340a3ada410b84da7f5f6de7c6cdae85add9a"
+    },
+    {
+      "path": "contracts/security/security-tests.yaml",
+      "sha256": "2f18bef6382e8da75cf5fdf09df5604346f9baf0a04ce44bca49a75b804a1fb0"
+    },
+    {
+      "path": "contracts/security/validate_security_model.py",
+      "sha256": "c9b173c6e5fc95d3dee6031114f185f6eba9c2dcd473e1a25fd521ae77bccfe7"
+    },
+    {
+      "path": "contracts/state-machines/domain-state-machines.v1.json",
+      "sha256": "48930bcafe4633cb6d07a4eb89eb8f2f5e132ef79b77dd9fd8184e999ac19d40"
+    }
+  ],
+  "predecessor": "NONE",
+  "semantic_status": "INITIAL_BASELINE_NO_PREDECESSOR"
+}
