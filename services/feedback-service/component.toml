@@ -1,0 +1,7 @@
+[component]
+id = "feedback-service"
+kind = "service"
+status = "LATER"
+path = "services/feedback-service"
+build_artifact = "feedback-service-skeleton.zip"
+allowed_workspace_dependencies = ["packages/generated-contracts"]

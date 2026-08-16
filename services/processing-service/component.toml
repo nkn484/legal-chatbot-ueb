@@ -1,0 +1,7 @@
+[component]
+id = "processing-service"
+kind = "service"
+status = "CORE"
+path = "services/processing-service"
+build_artifact = "processing-service-skeleton.zip"
+allowed_workspace_dependencies = ["packages/generated-contracts"]

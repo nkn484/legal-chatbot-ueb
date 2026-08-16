@@ -1,0 +1,7 @@
+[component]
+id = "retrieval-service"
+kind = "service"
+status = "CORE"
+path = "services/retrieval-service"
+build_artifact = "retrieval-service-skeleton.zip"
+allowed_workspace_dependencies = ["packages/generated-contracts"]

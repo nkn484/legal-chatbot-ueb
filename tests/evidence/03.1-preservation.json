@@ -1,0 +1,70 @@
+{
+  "prompt_id": "03.1",
+  "evidence_type": "tracked-repository-preservation",
+  "baseline": {
+    "immutable_git_head": "638ea5112923cc9448599f0ad18d87d7e2623678",
+    "scope": "tracked repository files",
+    "pre_prompt_working_tree_hash": "NOT_MEASURED",
+    "hash_note": "No before-state working-tree hash was measured; this evidence does not claim one."
+  },
+  "prompt_start_status_snapshot": [
+    {
+      "path": ".agent-run/prompt-state.json",
+      "status": "M",
+      "classification": "gate-managed prompt-start change",
+      "writer_action": "not modified directly"
+    },
+    {
+      "path": "Chatbot_Phap_luat_OpenCode_OMO_Repo_Pack.zip",
+      "status": "D",
+      "classification": "pre-existing deletion",
+      "writer_action": "not restored, staged, or otherwise touched"
+    }
+  ],
+  "commands": [
+    {
+      "command": "git rev-parse HEAD",
+      "exit_code": 0,
+      "result": "638ea5112923cc9448599f0ad18d87d7e2623678"
+    },
+    {
+      "command": "git diff --name-status 638ea5112923cc9448599f0ad18d87d7e2623678 --",
+      "exit_code": 0,
+      "result": [
+        "M .agent-run/prompt-state.json",
+        "D Chatbot_Phap_luat_OpenCode_OMO_Repo_Pack.zip"
+      ]
+    },
+    {
+      "command": "git status --short",
+      "exit_code": 0,
+      "result": "The two prompt-start tracked changes plus only authorized untracked work products were reported."
+    }
+  ],
+  "current_tracked_changes_relative_to_baseline": [
+    {
+      "path": ".agent-run/prompt-state.json",
+      "status": "M",
+      "classification": "gate-managed prompt-start change"
+    },
+    {
+      "path": "Chatbot_Phap_luat_OpenCode_OMO_Repo_Pack.zip",
+      "status": "D",
+      "classification": "pre-existing deletion"
+    }
+  ],
+  "authorized_new_work_product_paths": [
+    "Makefile",
+    "apps/",
+    "deploy/",
+    "docs/architecture/service-ownership.yaml",
+    "docs/progress/03.1.md",
+    "infra/",
+    "packages/",
+    "services/",
+    "tests/.gitignore",
+    "tests/evidence/",
+    "tests/test_monorepo_skeleton.py"
+  ],
+  "finding": "The baseline tracked-file diff contains exactly the two prompt-start entries above; no other pre-existing tracked repository file is changed. Authorized work products are untracked and within the Prompt 03.1 write scope."
+}

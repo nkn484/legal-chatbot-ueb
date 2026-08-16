@@ -1,0 +1,7 @@
+[component]
+id = "index-service"
+kind = "service"
+status = "CORE"
+path = "services/index-service"
+build_artifact = "index-service-skeleton.zip"
+allowed_workspace_dependencies = ["packages/generated-contracts"]

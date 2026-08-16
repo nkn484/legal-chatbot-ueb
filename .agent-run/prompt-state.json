@@ -1857,14 +1857,87 @@
       ]
     },
     "03.1": {
-      "status": "NOT_STARTED",
-      "started_at": null,
-      "submitted_at": null,
-      "human_approved_at": null,
-      "human_approved_by": null,
-      "approval_note": null,
-      "report": null,
-      "evidence": []
+      "status": "PASS",
+      "started_at": "2026-08-16T15:42:22.976445+00:00",
+      "submitted_at": "2026-08-16T17:24:25.004542+00:00",
+      "human_approved_at": "2026-08-16T17:28:43.112559+00:00",
+      "human_approved_by": "USER",
+      "approval_note": "Duyệt",
+      "report": "docs\\progress\\03.1.md",
+      "evidence": [
+        "tests\\evidence\\03.1-validation.json",
+        "tests\\evidence\\03.1-preservation.json"
+      ],
+      "start_snapshot": {
+        "version": 1,
+        "started_at": "2026-08-16T15:42:22.976445+00:00",
+        "roots": {
+          ".github": "missing",
+          "Makefile": "missing",
+          "deploy": "missing",
+          "docs": "directory",
+          "infra": "missing",
+          "packages": "missing",
+          "services": "missing",
+          "tests": "directory"
+        },
+        "files": {
+          "docs/OMO_SLIM_AGENTS.md": "289d32a624f0dd8ad773d7ed16333cad9ebaa05f74b6f0f50f8731e34db39e12",
+          "docs/acceptance-criteria.md": "4f846e9ea068b5155578bb2084c26eb6a4ccaad6269f165e188f9d4a8ba32967",
+          "docs/architecture/adr/ADR-001-communication.md": "3d7e188cde5a197fe16c0d4c6940c01bbb77ae5366562714b07f5d1be4e0b24b",
+          "docs/architecture/adr/ADR-002-persistence-storage-cache.md": "b025a7a5935566bfded179ff691d68bdf11f2069c9f1881645ee9b2da15ca3ab",
+          "docs/architecture/adr/ADR-003-monorepo-runtimes.md": "baa8e0ded7e3baafd6cac751cad3c5fa7d101666fa2d8a9ca71af1ec4b4268e9",
+          "docs/architecture/adr/ADR-004-observability.md": "869d856c210e5ee0ee98195b1e9aed645cf641cbd814221495e2004910e99405",
+          "docs/architecture/adr/ADR-005-identity-integration.md": "318dc605c3eaab6f2928a0a78358831e42c93063065c1946f5e096e3bd99dc9a",
+          "docs/architecture/container-map.md": "4c5f0defd1274c16bdb89281ecbdf7e6643f18a16fd6b4449c4a274f699d9430",
+          "docs/architecture/data-ownership.md": "dcc40e0d974c07e37424d51d60a9d28f9404828f841b45332c0542bab17a28bb",
+          "docs/architecture/event-delivery-semantics.md": "dbeeeb00db91b4974023496c4cdc8a027f440fa456d650ee55451ab6c094a840",
+          "docs/architecture/event-ownership-matrix.md": "4bc8b8d7fb46f45a63125c768e3ed3eacbca86f34c4596d7b4ca9bb1243cb87c",
+          "docs/architecture/http-api-v1.md": "2b5477b41a8b193914a47cbd6aad8e3fd3595964f4e43f3ab725584bd51c5f43",
+          "docs/architecture/privacy-model.md": "ce9f1e93464f28032661302882648705bef3a34ff336b03eea17c3a6597083ee",
+          "docs/architecture/schema-open-fields.md": "22e77b8579fb73d3c73fe56f7a1c84debbdbd7c386a06406b608714566b9dc26",
+          "docs/architecture/source-connector-port.md": "7aefdbcd693867e093cc56be54a999af43365b986c96bacbfd4b83e18d13dd64",
+          "docs/architecture/threat-data-flow.md": "6b3bf0d3df380fade994a9ac08ce8b9bda9f7cbca1e991f9778cb24bae716360",
+          "docs/architecture/threat-model.md": "632102b181b5ac99f97e88762827ad7feabe4c81016a8f3f606f65c5266b9d42",
+          "docs/decision-log.md": "23014a17091047d4082866d3710a514c6a77a2c7a06f6169d9c4eb9ea50a3645",
+          "docs/known-limitations.md": "37b6d6323f8a7f7eccdc7f3f613d9e2adc9b6ea7b3f6811c0629189a78ab31e4",
+          "docs/progress/01.1.md": "f231710dc8d3144e53bac18bb34478d2922e1a77b86b0de1cd96b0849e995a2d",
+          "docs/progress/01.2.md": "360bd3ec3fe991542bb84f791cd25e3e9e10d4340271ad74d0d598fc3d7817e2",
+          "docs/progress/01.3.md": "cafc59b66523a75d80eaf4511537558150b21642a790d7a3ef5eec0f67b3390a",
+          "docs/progress/02-architecture-gate.md": "03ed0afec92836d087de066f06c098a5c391b69bf54eee15b83b89f2feba887f",
+          "docs/progress/02.1.md": "4ffb4eef250f105254cbaa693f1edfb532b8cb20fec25d872a01b23dcff2cc94",
+          "docs/progress/02.2.md": "1185572e4fbbad5ca06b8835163d7801e73a707b8c0a426307413d9f97fa7cf7",
+          "docs/progress/02.3.md": "2281f1f7df62709a76b82fb57513f2f8a61999bb391fd9b68af77f1b328905ea",
+          "docs/progress/02.4.md": "e209cbbefa144ce6f44567c48774fd50c0f61dbebb4bdc9b03722d97d36df5be",
+          "docs/progress/02.5.md": "abcd007d824587a5e9cd877411dc0d6fc136a8409809884159e78ba2162be1d4",
+          "docs/progress/02.6.md": "bd6b5939a9c635ef91b22bcba0de4e935d9ba15b6f7d2de7b4cdb775970abd0a",
+          "docs/progress/02.7.md": "7f6ffe9cf9bdff226f7f5f3c542c5f356d057869cff31b5e4765e1d42e20e542",
+          "docs/project-state.yaml": "e8899c7ec0db00ca1157ac139de6c26ad541c858d569b680b3021545cd18ccdd",
+          "docs/prompt-state.yaml": "cc48d732d218cff2ceecfaae40644496b2dae59579038b879952b1b1ab7f03d9",
+          "docs/prompt-transition-rules.md": "8b850b3c77d1a0242d351bb277732b67df34989fbd70b6a4a727d5e523515277",
+          "docs/repository-inventory.md": "e564d89eaf682e26c3db3a1206cec193dcdbe7a44808653cc121a01eff2fe7c5",
+          "docs/requirements-traceability-matrix.md": "247ce0c02599128dbfbbcf4e117cfb82103e2aa6837a29d21772cd021deae1c7",
+          "docs/scope-v1.md": "18fcf2db3c69c388c1ac031398a4b8b18b3922659361272066160d1afa463d5d",
+          "docs/templates/progress-report.md": "5bb8045325aabca9713a5bc7316089cc6e9eb00c174e83f2a86260a204989b2f",
+          "tests/test_prompt_gate_lifecycle.py": "e9997081d11054a6b4d783914cddecbc239e58d724d9cc577412fc45ba4010f0"
+        }
+      },
+      "approved_revision": 1,
+      "approval_history": [
+        {
+          "action": "APPROVED",
+          "revision": 1,
+          "at": "2026-08-16T17:28:43.112559+00:00",
+          "by": "USER",
+          "note": "Duyệt",
+          "report": "docs\\progress\\03.1.md",
+          "evidence": [
+            "tests\\evidence\\03.1-validation.json",
+            "tests\\evidence\\03.1-preservation.json"
+          ],
+          "submitted_at": "2026-08-16T17:24:25.004542+00:00"
+        }
+      ]
     },
     "03.2": {
       "status": "NOT_STARTED",

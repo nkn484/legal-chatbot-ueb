@@ -1,0 +1,6 @@
+[package]
+id = "generated-contracts"
+kind = "generated-contract-boundary"
+generated_only = true
+source = "contracts"
+allowed_workspace_dependencies = []

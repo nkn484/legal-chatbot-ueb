@@ -1,0 +1,7 @@
+[component]
+id = "api-gateway"
+kind = "service"
+status = "CORE"
+path = "services/api-gateway"
+build_artifact = "api-gateway-skeleton.zip"
+allowed_workspace_dependencies = ["packages/generated-contracts"]

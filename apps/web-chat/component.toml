@@ -1,0 +1,7 @@
+[component]
+id = "web-chat"
+kind = "app"
+status = "CLIENT"
+path = "apps/web-chat"
+build_artifact = "web-chat-skeleton.zip"
+allowed_workspace_dependencies = ["packages/generated-contracts"]

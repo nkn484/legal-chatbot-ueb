@@ -1,0 +1,7 @@
+[component]
+id = "evaluation-service"
+kind = "service"
+status = "LATER"
+path = "services/evaluation-service"
+build_artifact = "evaluation-service-skeleton.zip"
+allowed_workspace_dependencies = ["packages/generated-contracts"]

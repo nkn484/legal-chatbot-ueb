@@ -1,0 +1,7 @@
+[component]
+id = "provider-service"
+kind = "service"
+status = "LATER"
+path = "services/provider-service"
+build_artifact = "provider-service-skeleton.zip"
+allowed_workspace_dependencies = ["packages/generated-contracts"]

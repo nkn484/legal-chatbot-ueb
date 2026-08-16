@@ -1,0 +1,5 @@
+[package]
+id = "workspace-tooling"
+kind = "development-tooling"
+runtime = "python-stdlib-only"
+allowed_workspace_dependencies = []

@@ -1,0 +1,75 @@
+{
+  "prompt_id": "03.1",
+  "status": "PASS_CANDIDATE",
+  "evidence_type": "actual-local-command-results",
+  "commands": [
+    {
+      "command": "python packages\\workspace-tooling\\workspace.py bootstrap",
+      "exit_code": 0,
+      "result": "workspace skeleton is valid"
+    },
+    {
+      "command": "python packages\\workspace-tooling\\workspace.py lint",
+      "exit_code": 0,
+      "result": "workspace skeleton is valid"
+    },
+    {
+      "command": "python packages\\workspace-tooling\\workspace.py test",
+      "exit_code": 0,
+      "result": "ran 6 skeleton unittest cases successfully"
+    },
+    {
+      "command": "python packages\\workspace-tooling\\workspace.py build-all --output-dir deploy\\artifacts",
+      "exit_code": 0,
+      "result": "built 14 deterministic local skeleton ZIP artifacts"
+    },
+    {
+      "command": "python -m unittest tests.test_monorepo_skeleton.MonorepoSkeletonTests.test_targeted_build_succeeds_in_isolated_workspace",
+      "exit_code": 0,
+      "result": "1 isolated-workspace target-build regression test passed"
+    },
+    {
+      "command": "for %C in (12 service paths and 2 app paths) do python packages\\workspace-tooling\\workspace.py build %C --output-dir deploy\\artifacts\\independent",
+      "exit_code": 0,
+      "result": "14 targeted component builds succeeded"
+    },
+    {
+      "command": "python -m unittest tests/test_monorepo_skeleton.py",
+      "exit_code": 0,
+      "result": "6 tests passed"
+    },
+    {
+      "command": "python -m unittest tests/test_prompt_gate_lifecycle.py",
+      "exit_code": 0,
+      "result": "26 tests passed"
+    },
+    {
+      "command": "python scripts\\verify_pack.py",
+      "exit_code": 0,
+      "result": "PASS: 72 commands, configs, manifest/state structure, and revision governance lifecycle are valid"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "no whitespace errors"
+    },
+    {
+      "command": "where make",
+      "exit_code": 1,
+      "result": "INFO: Could not find files for the given pattern(s)."
+    }
+  ],
+  "not_measured": [
+    {
+      "command": "make bootstrap/lint/test/build",
+      "status": "NOT_MEASURED",
+      "reason": "local Windows environment does not provide make; Make targets were not executed"
+    }
+  ],
+  "artifacts": {
+    "directory": "deploy/artifacts",
+    "count": 14,
+    "artifact_format": "deterministic ZIP containing only local README, component manifest, and generated artifact metadata"
+  },
+  "preservation_evidence": "tests/evidence/03.1-preservation.json"
+}

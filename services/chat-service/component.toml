@@ -1,0 +1,7 @@
+[component]
+id = "chat-service"
+kind = "service"
+status = "CORE"
+path = "services/chat-service"
+build_artifact = "chat-service-skeleton.zip"
+allowed_workspace_dependencies = ["packages/generated-contracts"]

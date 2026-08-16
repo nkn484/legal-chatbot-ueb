@@ -1,0 +1,7 @@
+[component]
+id = "citation-service"
+kind = "service"
+status = "CORE"
+path = "services/citation-service"
+build_artifact = "citation-service-skeleton.zip"
+allowed_workspace_dependencies = ["packages/generated-contracts"]

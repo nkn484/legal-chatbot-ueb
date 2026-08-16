@@ -1,0 +1,7 @@
+[component]
+id = "document-service"
+kind = "service"
+status = "CORE"
+path = "services/document-service"
+build_artifact = "document-service-skeleton.zip"
+allowed_workspace_dependencies = ["packages/generated-contracts"]

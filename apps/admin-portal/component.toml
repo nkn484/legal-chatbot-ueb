@@ -1,0 +1,7 @@
+[component]
+id = "admin-portal"
+kind = "app"
+status = "CLIENT"
+path = "apps/admin-portal"
+build_artifact = "admin-portal-skeleton.zip"
+allowed_workspace_dependencies = ["packages/generated-contracts"]
