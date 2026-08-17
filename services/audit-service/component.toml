@@ -3,5 +3,5 @@ id = "audit-service"
 kind = "service"
 status = "CORE"
 path = "services/audit-service"
-build_artifact = "audit-service-skeleton.zip"
+build_artifact = "audit-service-runtime.zip"
 allowed_workspace_dependencies = ["packages/generated-contracts"]

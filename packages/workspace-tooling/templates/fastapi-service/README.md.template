@@ -1,4 +1,4 @@
-# audit-service
+# {{SERVICE_NAME}}
 
 Production-oriented FastAPI runtime template sample. It contains operational health only: no AuditFact, database, broker, auth, or business routes.
 
@@ -15,7 +15,7 @@ python -m ruff format --check src tests
 python -m mypy src tests
 set PYTHONPATH=src && python -m unittest discover -s tests
 python -m build --wheel --outdir <temporary-output-directory>  # run from a fresh temporary copy
-uvicorn audit_service.main:create_app --factory --host 127.0.0.1 --port 8000 --timeout-graceful-shutdown 30
+uvicorn {{MODULE_NAME}}.main:create_app --factory --host 127.0.0.1 --port 8000 --timeout-graceful-shutdown 30
 ```
 
-The runtime requires the service-local `AUDIT_` configuration fields documented by `audit_service.settings`; it does not require a credential. Never place secrets in command lines or logs.
+The runtime requires the service-local `{{ENV_PREFIX}}` configuration fields documented by `{{MODULE_NAME}}.settings`; it does not require a credential. Never place secrets in command lines or logs.

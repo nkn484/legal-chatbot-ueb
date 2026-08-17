@@ -34,6 +34,27 @@ COMPONENTS = tuple(("services", identifier) for identifier in SERVICES) + tuple(
     ("apps", identifier) for identifier in APPS
 )
 ALLOWED_DEPENDENCIES = ["packages/generated-contracts"]
+AUDIT_RUNTIME_FILES = {
+    ".gitignore",
+    "README.md",
+    "component.toml",
+    "pyproject.toml",
+    "requirements.in",
+    "requirements.txt",
+    "requirements-dev.in",
+    "requirements-dev.txt",
+    "src/audit_service/__init__.py",
+    "src/audit_service/app.py",
+    "src/audit_service/context.py",
+    "src/audit_service/health.py",
+    "src/audit_service/http_client.py",
+    "src/audit_service/logging.py",
+    "src/audit_service/main.py",
+    "src/audit_service/middleware.py",
+    "src/audit_service/migrations.py",
+    "src/audit_service/settings.py",
+    "tests/test_runtime.py",
+}
 
 
 def run_tool(*arguments: str) -> subprocess.CompletedProcess[str]:
@@ -63,15 +84,32 @@ class MonorepoSkeletonTests(unittest.TestCase):
         self.assertEqual({entry.name for entry in (ROOT / "apps").iterdir() if entry.is_dir()}, set(APPS))
         for root_name, identifier in COMPONENTS:
             component = ROOT / root_name / identifier
+            expected_files = AUDIT_RUNTIME_FILES if identifier == "audit-service" else {"README.md", "component.toml"}
             self.assertEqual(
-                {path.relative_to(component).as_posix() for path in component.rglob("*") if path.is_file()},
-                {"README.md", "component.toml"},
+                {
+                    path.relative_to(component).as_posix()
+                    for path in component.rglob("*")
+                    if path.is_file()
+                    and not {
+                        "__pycache__",
+                        ".mypy_cache",
+                        ".ruff_cache",
+                        "build",
+                        "dist",
+                    }.intersection(path.parts)
+                    and not any(part.endswith(".egg-info") for part in path.parts)
+                    and path.suffix != ".pyc"
+                },
+                expected_files,
             )
             manifest = tomllib.loads((component / "component.toml").read_text(encoding="utf-8"))["component"]
             self.assertEqual(manifest["id"], identifier)
             self.assertEqual(manifest["kind"], "service" if root_name == "services" else "app")
             self.assertEqual(manifest["path"], f"{root_name}/{identifier}")
-            self.assertEqual(manifest["build_artifact"], f"{identifier}-skeleton.zip")
+            self.assertEqual(
+                manifest["build_artifact"],
+                "audit-service-runtime.zip" if identifier == "audit-service" else f"{identifier}-skeleton.zip",
+            )
             self.assertEqual(manifest["allowed_workspace_dependencies"], ALLOWED_DEPENDENCIES)
         self.assertEqual(
             {identifier for identifier in SERVICES if tomllib.loads((ROOT / "services" / identifier / "component.toml").read_text(encoding="utf-8"))["component"]["status"] == "CORE"},
@@ -85,14 +123,29 @@ class MonorepoSkeletonTests(unittest.TestCase):
                 output_dir = output_root / identifier
                 result = run_tool("build", f"{root_name}/{identifier}", "--output-dir", str(output_dir))
                 self.assertEqual(result.returncode, 0, msg=result.stderr)
-                artifact = output_dir / f"{identifier}-skeleton.zip"
+                artifact_name = "audit-service-runtime.zip" if identifier == "audit-service" else f"{identifier}-skeleton.zip"
+                artifact = output_dir / artifact_name
                 self.assertTrue(artifact.is_file())
                 with zipfile.ZipFile(artifact) as archive:
-                    self.assertEqual(archive.namelist(), ["README.md", "artifact-metadata.json", "component.toml"])
+                    component_files = {
+                        path.relative_to(ROOT / root_name / identifier).as_posix()
+                        for path in (ROOT / root_name / identifier).rglob("*")
+                        if path.is_file()
+                        and not {
+                            "__pycache__",
+                            ".mypy_cache",
+                            ".ruff_cache",
+                            "build",
+                            "dist",
+                        }.intersection(path.parts)
+                        and not any(part.endswith(".egg-info") for part in path.parts)
+                        and path.suffix != ".pyc"
+                    }
+                    self.assertEqual(archive.namelist(), sorted({*component_files, "artifact-metadata.json"}))
                     metadata = json.loads(archive.read("artifact-metadata.json"))
                     self.assertEqual(metadata["component"]["id"], identifier)
                     self.assertEqual(metadata["component"]["path"], f"{root_name}/{identifier}")
-                    self.assertEqual(set(metadata["local_files"]), {"README.md", "component.toml"})
+                    self.assertEqual(set(metadata["local_files"]), component_files)
                     self.assertNotIn("services/", "\n".join(archive.namelist()))
                     self.assertNotIn("apps/", "\n".join(archive.namelist()))
 

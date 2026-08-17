@@ -1,0 +1,109 @@
+{
+  "prompt_id": "03.2",
+  "status": "PASS_CANDIDATE",
+  "evidence_type": "actual-local-command-results",
+  "environment": {
+    "python": "3.12.10",
+    "venv": "C:/Users/longz/AppData/Local/Temp/opencode/prompt032-runtime-20260817-01",
+    "venv_path_was_verified_fresh_before_creation": true
+  },
+  "commands": [
+    {
+      "command": "pip-compile --generate-hashes --allow-unsafe --output-file requirements-dev.txt requirements-dev.in",
+      "exit_code": 0,
+      "result": "development hash lock regenerated with setuptools==83.0.0 and wheel==0.46.2"
+    },
+    {
+      "command": "python -m pip install --require-hashes -r requirements-dev.txt",
+      "exit_code": 0,
+      "result": "hash-locked development requirements installed in the fresh temporary virtual environment"
+    },
+    {
+      "command": "python -c \"import setuptools, wheel; assert setuptools.__version__ == '83.0.0'; assert wheel.__version__ == '0.46.2'\"",
+      "exit_code": 0,
+      "result": "setuptools=83.0.0 wheel=0.46.2"
+    },
+    {
+      "command": "python -m pip_audit --strict --require-hashes --disable-pip -r requirements.txt --format json --output tests/evidence/03.2-pip-audit-runtime.json",
+      "exit_code": 0,
+      "result": "No known vulnerabilities found"
+    },
+    {
+      "command": "python -m pip_audit --strict --require-hashes --disable-pip -r requirements-dev.txt --format json --output tests/evidence/03.2-pip-audit-dev.json",
+      "exit_code": 0,
+      "result": "No known vulnerabilities found"
+    },
+    {
+      "command": "python -m unittest discover -s tests (PYTHONPATH=src)",
+      "exit_code": 0,
+      "result": "10 audit-service unit and in-process ASGI integration tests passed"
+    },
+    {
+      "command": "ruff check src tests && ruff format --check src tests",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "command": "mypy src tests (strict)",
+      "exit_code": 0,
+      "result": "Success: no issues found in 11 source files"
+    },
+    {
+      "command": "python -m pip check",
+      "exit_code": 0,
+      "result": "No broken requirements found"
+    },
+    {
+      "command": "python -m build --wheel --no-isolation --outdir <fresh-temporary-directory>",
+      "exit_code": 0,
+      "result": "built audit_service-0.1.0-py3-none-any.whl from a fresh temporary service copy with installed audited setuptools==83.0.0 and wheel==0.46.2; no build or egg-info output was created in the repository"
+    },
+    {
+      "command": "python packages/workspace-tooling/workspace.py bootstrap && lint && test && build-all",
+      "exit_code": 0,
+      "result": "workspace validation passed; 14 artifacts built including audit-service-runtime.zip"
+    },
+    {
+      "command": "python -m unittest tests/test_monorepo_skeleton.py",
+      "exit_code": 0,
+      "result": "6 tests passed"
+    },
+    {
+      "command": "python -m unittest tests/test_prompt_gate_lifecycle.py",
+      "exit_code": 0,
+      "result": "26 tests passed"
+    },
+    {
+      "command": "python scripts/verify_pack.py",
+      "exit_code": 0,
+      "result": "PASS: 72 commands, configs, manifest/state structure, and revision governance lifecycle are valid"
+    },
+    {
+      "command": "git check-ignore -v services/audit-service/__pycache__/placeholder.pyc services/audit-service/.mypy_cache/cache.db services/audit-service/dist/placeholder services/audit-service/src/audit_service.egg-info/PKG-INFO",
+      "exit_code": 0,
+      "result": "all four representative generated paths matched services/audit-service/.gitignore"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "no whitespace errors"
+    }
+  ],
+  "template_parity": {
+    "result": "passed as part of the 10 service tests",
+    "rendered_artifacts": [
+      "all Python runtime modules",
+      "README.md",
+      "pyproject.toml",
+      "requirements.in",
+      "requirements-dev.in",
+      ".gitignore"
+    ],
+    "excluded_generated_artifacts": ["requirements.txt", "requirements-dev.txt"]
+  },
+  "not_measured": [
+    "Actual Uvicorn signal handling and network deployment",
+    "Database connection, migration execution, broker integration, authentication, and AuditFact/business behavior",
+    "Make targets: local Windows environment has no make"
+  ]
+}

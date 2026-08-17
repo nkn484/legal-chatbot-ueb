@@ -15,9 +15,53 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-COMPONENT_FILES = frozenset({"README.md", "component.toml"})
+SKELETON_FILES = frozenset({"README.md", "component.toml"})
+AUDIT_RUNTIME_FILES = frozenset(
+    {
+        "README.md",
+        ".gitignore",
+        "component.toml",
+        "pyproject.toml",
+        "requirements.in",
+        "requirements.txt",
+        "requirements-dev.in",
+        "requirements-dev.txt",
+        "src/audit_service/__init__.py",
+        "src/audit_service/app.py",
+        "src/audit_service/context.py",
+        "src/audit_service/health.py",
+        "src/audit_service/http_client.py",
+        "src/audit_service/logging.py",
+        "src/audit_service/main.py",
+        "src/audit_service/middleware.py",
+        "src/audit_service/migrations.py",
+        "src/audit_service/settings.py",
+        "tests/test_runtime.py",
+    }
+)
 GENERATED_FILES = frozenset({"README.md", "package.toml", "contracts-index.json"})
-TOOLING_FILES = frozenset({"README.md", "package.toml", "workspace.py"})
+TOOLING_FILES = frozenset(
+    {
+        "README.md",
+        "package.toml",
+        "workspace.py",
+        "templates/fastapi-service/README.md.template",
+        "templates/fastapi-service/.gitignore.template",
+        "templates/fastapi-service/pyproject.toml.template",
+        "templates/fastapi-service/requirements.in.template",
+        "templates/fastapi-service/requirements-dev.in.template",
+        "templates/fastapi-service/src/template_service/__init__.py",
+        "templates/fastapi-service/src/template_service/app.py",
+        "templates/fastapi-service/src/template_service/context.py",
+        "templates/fastapi-service/src/template_service/health.py",
+        "templates/fastapi-service/src/template_service/http_client.py",
+        "templates/fastapi-service/src/template_service/logging.py",
+        "templates/fastapi-service/src/template_service/main.py",
+        "templates/fastapi-service/src/template_service/middleware.py",
+        "templates/fastapi-service/src/template_service/migrations.py",
+        "templates/fastapi-service/src/template_service/settings.py",
+    }
+)
 ALLOWED_DEPENDENCIES = ["packages/generated-contracts"]
 
 
@@ -71,7 +115,20 @@ def component_by_path(raw_path: str) -> Component:
 def regular_relative_files(directory: Path) -> set[str]:
     if not directory.is_dir():
         raise ValidationError(f"missing directory: {directory.relative_to(ROOT).as_posix()}")
-    return {path.relative_to(directory).as_posix() for path in directory.rglob("*") if path.is_file()}
+    return {
+        path.relative_to(directory).as_posix()
+        for path in directory.rglob("*")
+        if path.is_file()
+        and not {
+            "__pycache__",
+            ".mypy_cache",
+            ".ruff_cache",
+            "build",
+            "dist",
+        }.intersection(path.parts)
+        and not any(part.endswith(".egg-info") for part in path.parts)
+        and path.suffix != ".pyc"
+    }
 
 
 def read_manifest(component: Component) -> dict[str, Any]:
@@ -88,7 +145,11 @@ def read_manifest(component: Component) -> dict[str, Any]:
         "kind": component.kind,
         "status": component.status,
         "path": component.path,
-        "build_artifact": f"{component.identifier}-skeleton.zip",
+        "build_artifact": (
+            "audit-service-runtime.zip"
+            if component.identifier == "audit-service"
+            else f"{component.identifier}-skeleton.zip"
+        ),
         "allowed_workspace_dependencies": ALLOWED_DEPENDENCIES,
     }
     if manifest != expected:
@@ -99,10 +160,11 @@ def read_manifest(component: Component) -> dict[str, Any]:
 def validate_component(component: Component) -> dict[str, Any]:
     directory = ROOT / component.path
     files = regular_relative_files(directory)
-    if files != COMPONENT_FILES:
+    expected_files = AUDIT_RUNTIME_FILES if component.identifier == "audit-service" else SKELETON_FILES
+    if files != expected_files:
         raise ValidationError(
             f"unexpected business/runtime file or missing skeleton file in {component.path}: "
-            f"expected {sorted(COMPONENT_FILES)}, found {sorted(files)}"
+            f"expected {sorted(expected_files)}, found {sorted(files)}"
         )
     return read_manifest(component)
 
@@ -230,7 +292,7 @@ def validate_workspace() -> None:
 def artifact_payload(component: Component, manifest: dict[str, Any]) -> bytes:
     directory = ROOT / component.path
     file_hashes = {
-        name: sha256_bytes((directory / name).read_bytes()) for name in sorted(COMPONENT_FILES)
+        name: sha256_bytes((directory / name).read_bytes()) for name in sorted(regular_relative_files(directory))
     }
     metadata = {
         "format": "skeleton-artifact-v1",
@@ -245,10 +307,10 @@ def write_deterministic_zip(component: Component, output_dir: Path) -> Path:
     output_dir.mkdir(parents=True, exist_ok=True)
     artifact = output_dir / manifest["build_artifact"]
     members = {
-        "README.md": (ROOT / component.path / "README.md").read_bytes(),
-        "artifact-metadata.json": artifact_payload(component, manifest),
-        "component.toml": (ROOT / component.path / "component.toml").read_bytes(),
+        name: (ROOT / component.path / name).read_bytes()
+        for name in regular_relative_files(ROOT / component.path)
     }
+    members["artifact-metadata.json"] = artifact_payload(component, manifest)
     try:
         with zipfile.ZipFile(artifact, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
             for name in sorted(members):
