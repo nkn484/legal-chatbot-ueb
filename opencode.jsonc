@@ -11,7 +11,7 @@
     "reserved": 12000
   },
   "permission": {
-    "*": "ask",
+    "*": "allow",
     "read": "allow",
     "glob": "allow",
     "grep": "allow",
@@ -19,6 +19,12 @@
     "skill": "allow",
     "task": "allow",
     "todowrite": "allow",
+    "webfetch": "allow",
+    "external_directory": {
+      "*": "ask",
+      "C:/Users/longz/AppData/Local/Temp/opencode": "allow",
+      "C:/Users/longz/AppData/Local/Temp/opencode/**": "allow"
+    },
     "edit": {
       "*": "ask",
       ".agent-run/prompt-state.json": "deny"
@@ -50,7 +56,7 @@
       "python scripts/prompt_gate.py approve*": "deny",
       "python scripts/prompt_gate.py reject*": "deny",
       "python scripts/prompt_gate.py defer-group*": "deny",
-      "git push*": "deny",
+      "git push*": "allow",
       "git reset --hard*": "deny",
       "git clean*": "deny",
       "rm -rf*": "deny",
